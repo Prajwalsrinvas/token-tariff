@@ -100,6 +100,7 @@ def load_data() -> pd.DataFrame:
 
 def calculate_costs(
     df: pd.DataFrame,
+    selected_providers: list,
     input_tokens: int,
     output_tokens: int,
     api_calls: int,
@@ -121,7 +122,7 @@ def calculate_costs(
     )
 
     df = df.sort_values(by="Total")
-
+    df = df[df.provider.isin(selected_providers)]
     if currency == "INR":
         df["Total"] = df["Total"].apply(lambda x: f"₹{x * exchange_rate:.2f}")
     else:
@@ -217,30 +218,31 @@ def main():
 
         currency = st.radio("Select Currency", options=["INR", "USD"], horizontal=True)
 
-    df_filtered = df[df.provider.isin(selected_providers)]
-    df_costs, default_cost = calculate_costs(
-        df_filtered,
-        input_tokens,
-        output_tokens,
-        api_calls,
-        default_model,
-        show_token_costs,
-        currency,
-        exchange_rate,
-    )
-
-    st.dataframe(df_costs, use_container_width=True, hide_index=True)
-
-    fig_total = create_total_cost_chart(df_costs, currency)
-    st.plotly_chart(fig_total, use_container_width=True)
-
-    # Display the default model cost
-    if currency == "INR":
-        st.write(
-            f"Default model ({default_model}) cost: ₹{default_cost * exchange_rate:.2f}"
+    if selected_providers:
+        df_costs, default_cost = calculate_costs(
+            df,
+            selected_providers,
+            input_tokens,
+            output_tokens,
+            api_calls,
+            default_model,
+            show_token_costs,
+            currency,
+            exchange_rate,
         )
-    else:
-        st.write(f"Default model ({default_model}) cost: ${default_cost:.2f}")
+
+        st.dataframe(df_costs, use_container_width=True, hide_index=True)
+
+        fig_total = create_total_cost_chart(df_costs, currency)
+        st.plotly_chart(fig_total, use_container_width=True)
+
+        # Display the default model cost
+        if currency == "INR":
+            st.write(
+                f"Default model ({default_model}) cost: ₹{default_cost * exchange_rate:.2f}"
+            )
+        else:
+            st.write(f"Default model ({default_model}) cost: ${default_cost:.2f}")
 
 
 if __name__ == "__main__":
