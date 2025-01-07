@@ -1,215 +1,430 @@
 {
     "Chat/Completion Models": [
         {
-            "model_name": "GPT-4o-2024-08-06",
-            "context": "128K",
-            "provider": "OpenAI",
-            "input_token_cost_per_thousand": 0.0025,
-            "output_token_cost_per_thousand": 0.01
-        },
-        {
             "model_name": "GPT-4o",
-            "context": "128K",
+            "model_slug": "gpt-4o",
+            "page_slug": "gpt-4o",
+            "context": "128K/16K",
             "provider": "OpenAI",
-            "input_token_cost_per_thousand": 0.005,
-            "output_token_cost_per_thousand": 0.015
+            "input_token_cost_per_million": 2.5,
+            "output_token_cost_per_million": 10
         },
         {
             "model_name": "GPT-4o mini",
+            "model_slug": "gpt-4o-mini",
+            "page_slug": "gpt-4o-mini",
+            "context": "128K/16K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 0.15,
+            "output_token_cost_per_million": 0.6
+        },
+        {
+            "model_name": "GPT-4o Mini Audio (Text)",
+            "model_slug": "gpt-4o-mini-audio-preview",
             "context": "128K",
             "provider": "OpenAI",
-            "input_token_cost_per_thousand": 0.00015,
-            "output_token_cost_per_thousand": 0.0006
+            "input_token_cost_per_million": 0.15,
+            "output_token_cost_per_million": 0.6
+        },
+        {
+            "model_name": "GPT-4o Mini Realtime (Text)",
+            "model_slug": "gpt-4o-mini-realtime-preview",
+            "context": "128K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 0.6,
+            "output_token_cost_per_million": 2.4
+        },
+        {
+            "model_name": "o1",
+            "model_slug": "o1",
+            "page_slug": "o1",
+            "context": "200K/100K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 15,
+            "output_token_cost_per_million": 60
+        },
+        {
+            "model_name": "o1-preview",
+            "model_slug": "o1-preview",
+            "page_slug": "o1-preview",
+            "context": "128K/32K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 15,
+            "output_token_cost_per_million": 60
+        },
+        {
+            "model_name": "o1-mini",
+            "model_slug": "o1-mini",
+            "page_slug": "o1-mini",
+            "context": "128K/65K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 3,
+            "output_token_cost_per_million": 12
+        },
+        {
+            "model_name": "GPT-4o Realtime (Text)",
+            "model_slug": "gpt-4o-realtime-preview",
+            "context": "128K/16K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 5,
+            "output_token_cost_per_million": 20
+        },
+        {
+            "model_name": "GPT-4o Audio (Text)",
+            "model_slug": "gpt-4o-audio-preview",
+            "context": "128K/16K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 2.5,
+            "output_token_cost_per_million": 10
         },
         {
             "model_name": "GPT-4 Turbo",
-            "context": "128K",
-            "provider": "OpenAI / Azure",
-            "input_token_cost_per_thousand": 0.01,
-            "output_token_cost_per_thousand": 0.03
+            "model_slug": "gpt-4-turbo-preview",
+            "page_slug": "gpt-4-turbo",
+            "context": "128K/4K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 10,
+            "output_token_cost_per_million": 30
         },
         {
             "model_name": "GPT-3.5 Turbo",
-            "context": "16K",
-            "provider": "OpenAI / Azure",
-            "input_token_cost_per_thousand": 0.0005,
-            "output_token_cost_per_thousand": 0.0015
+            "model_slug": "gpt-3.5-turbo",
+            "page_slug": "gpt-3-5-turbo",
+            "context": "16K/4K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 0.5,
+            "output_token_cost_per_million": 1.5
         },
         {
             "model_name": "GPT-4",
-            "context": "8K",
-            "provider": "OpenAI / Azure",
-            "input_token_cost_per_thousand": 0.03,
-            "output_token_cost_per_thousand": 0.06
+            "model_slug": "gpt-4",
+            "page_slug": "gpt-4",
+            "context": "8K/8K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 30,
+            "output_token_cost_per_million": 60
         },
         {
             "model_name": "Claude 3.5 Sonnet",
-            "context": "200K",
+            "model_slug": "claude-3-5-sonnet-20241022",
+            "page_slug": "claude-3-5-sonnet",
+            "context": "200K/8K",
             "provider": "Anthropic",
-            "input_token_cost_per_thousand": 0.003,
-            "output_token_cost_per_thousand": 0.015
+            "input_token_cost_per_million": 3,
+            "output_token_cost_per_million": 15
         },
         {
-            "model_name": "Claude 3 Opus",
-            "context": "200K",
+            "model_name": "Claude 3.5 Haiku",
+            "model_slug": "claude-3-5-haiku-20241022",
+            "page_slug": "claude-3-5-haiku",
+            "context": "200K/8K",
             "provider": "Anthropic",
-            "input_token_cost_per_thousand": 0.015,
-            "output_token_cost_per_thousand": 0.075
+            "input_token_cost_per_million": 0.8,
+            "output_token_cost_per_million": 4
         },
         {
-            "model_name": "Claude 3 Haiku",
-            "context": "200K",
-            "provider": "Anthropic",
-            "input_token_cost_per_thousand": 0.00025,
-            "output_token_cost_per_thousand": 0.00125
+            "model_name": "Llama 3.3 70b",
+            "page_slug": "llama-3-3-70b-instruct",
+            "context": "128K/2K",
+            "provider": "Meta",
+            "api_provider": "Deepinfra",
+            "input_token_cost_per_million": 0.23,
+            "output_token_cost_per_million": 0.4
         },
         {
             "model_name": "Llama 3.1 405b",
-            "context": "32K",
-            "provider": "Meta (via Deepinfra)",
-            "input_token_cost_per_thousand": 0.0027,
-            "output_token_cost_per_thousand": 0.0027
+            "page_slug": "llama-3-1-405b-instruct",
+            "context": "128K/2K",
+            "provider": "Meta",
+            "api_provider": "Deepinfra",
+            "input_token_cost_per_million": 1.79,
+            "output_token_cost_per_million": 1.79
+        },
+        {
+            "model_name": "Llama 3.2 90b Vision-Instruct",
+            "page_slug": "llama-3-2-90b-vision-instruct",
+            "context": "128K/2K",
+            "provider": "Meta",
+            "api_provider": "Deepinfra",
+            "input_token_cost_per_million": 0.35,
+            "output_token_cost_per_million": 0.4
         },
         {
             "model_name": "Llama 3.1 70b",
-            "context": "128K",
-            "provider": "Meta (via Deepinfra)",
-            "input_token_cost_per_thousand": 0.00059,
-            "output_token_cost_per_thousand": 0.00079
+            "page_slug": "llama-3-1-70b-instruct",
+            "context": "128K/2K",
+            "provider": "Meta",
+            "api_provider": "Deepinfra",
+            "input_token_cost_per_million": 0.23,
+            "output_token_cost_per_million": 0.4
+        },
+        {
+            "model_name": "Llama 3.2 11b Vision-Instruct",
+            "page_slug": "llama-3-2-11b-vision-instruct",
+            "context": "128K/2K",
+            "provider": "Meta",
+            "api_provider": "Deepinfra",
+            "input_token_cost_per_million": 0.055,
+            "output_token_cost_per_million": 0.055
         },
         {
             "model_name": "Llama 3 70b",
-            "context": "8K",
-            "provider": "Meta (via Deepinfra/Groq)",
-            "input_token_cost_per_thousand": 0.00059,
-            "output_token_cost_per_thousand": 0.00079
-        },
-        {
-            "model_name": "Gemini 1.5 Flash",
-            "context": "128K",
-            "provider": "Google",
-            "input_token_cost_per_thousand": 7.5e-05,
-            "output_token_cost_per_thousand": 3e-05
-        },
-        {
-            "model_name": "Gemini 1.5 Flash",
-            "context": "1M",
-            "provider": "Google",
-            "input_token_cost_per_thousand": 1.5e-05,
-            "output_token_cost_per_thousand": 6e-05
+            "page_slug": "llama-3-70b-instruct",
+            "context": "8K/2K",
+            "provider": "Meta",
+            "api_provider": "Deepinfra/Groq",
+            "input_token_cost_per_million": 0.59,
+            "output_token_cost_per_million": 0.79
         },
         {
             "model_name": "Gemini 1.5 Pro",
+            "model_slug": "gemini-1.5-pro",
+            "page_slug": "gemini-1-5-pro-002",
             "context": "128K",
             "provider": "Google",
-            "input_token_cost_per_thousand": 0.0035,
-            "output_token_cost_per_thousand": 0.0105
+            "input_token_cost_per_million": 1.25,
+            "output_token_cost_per_million": 5
         },
         {
             "model_name": "Gemini 1.5 Pro",
+            "model_slug": "gemini-1.5-pro",
+            "page_slug": "gemini-1-5-pro-002",
             "context": "2M",
             "provider": "Google",
-            "input_token_cost_per_thousand": 0.007,
-            "output_token_cost_per_thousand": 0.021
+            "input_token_cost_per_million": 2.5,
+            "output_token_cost_per_million": 10
         },
         {
-            "model_name": "Gemini 1.0 Pro",
-            "context": "32K",
+            "model_name": "Gemini 1.5 Flash",
+            "model_slug": "gemini-1.5-flash",
+            "page_slug": "gemini-1-5-flash-002",
+            "context": "128K",
             "provider": "Google",
-            "input_token_cost_per_thousand": 0.0005,
-            "output_token_cost_per_thousand": 0.0015
+            "input_token_cost_per_million": 0.075,
+            "output_token_cost_per_million": 0.3
+        },
+        {
+            "model_name": "Gemini 1.5 Flash",
+            "model_slug": "gemini-1.5-flash",
+            "page_slug": "gemini-1-5-flash-002",
+            "context": "1M",
+            "provider": "Google",
+            "input_token_cost_per_million": 0.15,
+            "output_token_cost_per_million": 0.6
+        },
+        {
+            "model_name": "Gemini 1.5 Flash-8B",
+            "model_slug": "gemini-1.5-flash-8b",
+            "page_slug": "gemini-1-5-flash-8b",
+            "context": "128K",
+            "provider": "Google",
+            "input_token_cost_per_million": 0.0375,
+            "output_token_cost_per_million": 0.15
+        },
+        {
+            "model_name": "Gemini 1.5 Flash-8B",
+            "model_slug": "gemini-1.5-flash-8b",
+            "page_slug": "gemini-1-5-flash-8b",
+            "context": "1M",
+            "provider": "Google",
+            "input_token_cost_per_million": 0.075,
+            "output_token_cost_per_million": 0.3
+        },
+        {
+            "model_name": "Amazon Nova Micro",
+            "model_slug": "us.amazon.nova-micro-v1:0",
+            "page_slug": "amazon-nova-micro",
+            "context": "128K",
+            "provider": "Amazon",
+            "input_token_cost_per_million": 0.035,
+            "output_token_cost_per_million": 0.14
+        },
+        {
+            "model_name": "Amazon Nova Lite",
+            "model_slug": "us.amazon.nova-lite-v1:0",
+            "page_slug": "amazon-nova-lite",
+            "context": "300K",
+            "provider": "Amazon",
+            "input_token_cost_per_million": 0.06,
+            "output_token_cost_per_million": 0.24
+        },
+        {
+            "model_name": "Amazon Nova Pro",
+            "model_slug": "us.amazon.nova-pro-v1:0",
+            "page_slug": "amazon-nova-pro",
+            "context": "300K",
+            "provider": "Amazon",
+            "input_token_cost_per_million": 0.8,
+            "output_token_cost_per_million": 3.2
         },
         {
             "model_name": "Command",
             "context": "4K",
             "provider": "Cohere",
-            "input_token_cost_per_thousand": 0.01,
-            "output_token_cost_per_thousand": 0.02
+            "input_token_cost_per_million": 10,
+            "output_token_cost_per_million": 20
         },
         {
             "model_name": "Command R",
-            "context": "128K IN/4K OUT",
+            "model_slug": "command-r-08-2024",
+            "page_slug": "command-r-08-2024",
+            "context": "128K/4K",
             "provider": "Cohere",
-            "input_token_cost_per_thousand": 0.0005,
-            "output_token_cost_per_thousand": 0.0015
+            "input_token_cost_per_million": 0.5,
+            "output_token_cost_per_million": 1.5
         },
         {
             "model_name": "Command R+",
+            "model_slug": "command-r-plus-08-2024",
+            "page_slug": "command-r-plus-08-2024",
             "context": "128K",
             "provider": "Cohere",
-            "input_token_cost_per_thousand": 0.003,
-            "output_token_cost_per_thousand": 0.015
+            "input_token_cost_per_million": 3,
+            "output_token_cost_per_million": 15
+        },
+        {
+            "model_name": "Mistral NeMo",
+            "model_slug": "open-mistral-nemo-2407",
+            "context": "128K",
+            "provider": "Mistral AI",
+            "input_token_cost_per_million": 0.15,
+            "output_token_cost_per_million": 0.15
         },
         {
             "model_name": "Mixtral 8x7B",
-            "context": "32K",
-            "provider": "Mistral AI (via Anyscale)",
-            "input_token_cost_per_thousand": 0.0005,
-            "output_token_cost_per_thousand": 0.0005
-        },
-        {
-            "model_name": "Mistral Small",
+            "page_slug": "mistral-8x7b-instruct",
             "context": "32K",
             "provider": "Mistral AI",
-            "input_token_cost_per_thousand": 0.002,
-            "output_token_cost_per_thousand": 0.006
+            "api_provider": "Anyscale",
+            "input_token_cost_per_million": 0.5,
+            "output_token_cost_per_million": 0.5
         },
         {
-            "model_name": "Mistral Large",
-            "context": "32K",
+            "model_name": "Mistral Small 24.09",
+            "context": "128K",
             "provider": "Mistral AI",
-            "input_token_cost_per_thousand": 0.008,
-            "output_token_cost_per_thousand": 0.024
+            "model_slug": "mistral-small-2409",
+            "input_token_cost_per_million": 0.2,
+            "output_token_cost_per_million": 0.6
         },
         {
-            "model_name": "DBRX",
-            "context": "32K",
-            "provider": "DataBricks",
-            "input_token_cost_per_thousand": 0.00225,
-            "output_token_cost_per_thousand": 0.00675
+            "model_name": "Mistral Large 2",
+            "context": "128K",
+            "provider": "Mistral AI",
+            "model_slug": "mistral-large-2407",
+            "page_slug": "mistral-large-2",
+            "input_token_cost_per_million": 2,
+            "output_token_cost_per_million": 6
+        },
+        {
+            "model_name": "DeepSeek-V3",
+            "model_slug": "deepseek-v3",
+            "context": "128K/8K",
+            "provider": "DeepSeek",
+            "input_token_cost_per_million": 0.14,
+            "output_token_cost_per_million": 0.28
+        }
+    ],
+    "Audio Models": [
+        {
+            "model_name": "GPT-4o Realtime (Audio)",
+            "model_slug": "gpt-4o-realtime-preview",
+            "context": "128K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 40,
+            "output_token_cost_per_million": 80
+        },
+        {
+            "model_name": "GPT-4o Audio (Audio)",
+            "model_slug": "gpt-4o-audio-preview",
+            "context": "128K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 40,
+            "output_token_cost_per_million": 80
+        },
+        {
+            "model_name": "GPT-4o Mini Audio (Audio)",
+            "model_slug": "gpt-4o-mini-audio-preview",
+            "context": "128K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 10,
+            "output_token_cost_per_million": 20
+        },
+        {
+            "model_name": "GPT-4o Mini Realtime (Audio)",
+            "model_slug": "gpt-4o-mini-realtime-preview",
+            "context": "128K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 10,
+            "output_token_cost_per_million": 20
         }
     ],
     "Fine-tuning models": [
         {
-            "model_name": "GPT-3.5 Turbo",
-            "context": "4K",
+            "model_name": "GPT-4o",
+            "model_slug": "gpt-4o-2024-08-06",
+            "context": "128K/16K",
             "provider": "OpenAI",
-            "input_token_cost_per_thousand": 0.012,
-            "output_token_cost_per_thousand": 0.016
+            "input_token_cost_per_million": 3.75,
+            "output_token_cost_per_million": 15,
+            "training_cost_per_million": 25
         },
         {
-            "model_name": "PaLM 2",
-            "context": "8K",
-            "provider": "Google",
-            "input_token_cost_per_thousand": 0.002,
-            "output_token_cost_per_thousand": 0.002
+            "model_name": "GPT-4o Mini",
+            "model_slug": "gpt-4o-mini-2024-07-18",
+            "context": "128K/16K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 0.3,
+            "output_token_cost_per_million": 1.2,
+            "training_cost_per_million": 3
+        },
+        {
+            "model_name": "GPT-3.5 Turbo",
+            "model_slug": "gpt-3.5-turbo-0125",
+            "context": "4K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 3,
+            "output_token_cost_per_million": 6,
+            "training_cost_per_million": 8
         }
     ],
     "Embedding models": [
         {
             "model_name": "3 Small",
-            "provider": "OpenAI / Azure",
-            "input_token_cost_per_thousand": 2e-05
+            "model_slug": "text-embedding-3-small",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 0.02
         },
         {
             "model_name": "3 Large",
-            "provider": "OpenAI / Azure",
-            "input_token_cost_per_thousand": 0.00013
+            "model_slug": "text-embedding-3-large",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 0.13
         },
         {
             "model_name": "Ada v2",
-            "provider": "OpenAI / Azure",
-            "input_token_cost_per_thousand": 0.0001
+            "model_slug": "text-embedding-ada-002",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 0.1
         },
         {
-            "model_name": "PaLM 2",
+            "model_name": "Gemini Text Embedding",
+            "model_slug": "text-embedding-004",
             "provider": "Google",
-            "input_token_cost_per_thousand": 0.0004
+            "input_token_cost_per_million": 0.1,
+            "context": "2K"
         },
         {
             "model_name": "Embed v3.0",
+            "model_slug": "embed-english-v3.0",
             "provider": "Cohere",
-            "input_token_cost_per_thousand": 0.0001
+            "input_token_cost_per_million": 0.1
+        },
+        {
+            "model_name": "Mistral Embed",
+            "model_slug": "mistral-embed",
+            "provider": "Mistral AI",
+            "input_token_cost_per_million": 0.1
         }
     ]
 }
