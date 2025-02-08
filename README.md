@@ -2,6 +2,9 @@
 
 Streamlit app to calculate and compare the costs of various LLM APIs based on input parameters.
 
+[streamlit-app-2025-02-08-10-02-97.webm](https://github.com/user-attachments/assets/785cf94f-6b8a-4f11-8a77-ae285ff46c5f)
+
+
 ![image](https://github.com/user-attachments/assets/da5e6e0f-8ef9-4a0b-ab23-2e90731eca05)
 
 ![image](https://github.com/user-attachments/assets/ee8f633e-1bdb-40fb-83f7-4eeed4454bd2)
