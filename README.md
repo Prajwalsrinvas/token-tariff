@@ -1,23 +1,40 @@
 # LLM API Cost Calculator
 
-Streamlit app to calculate and compare the costs of various LLM APIs based on input parameters.
-
-[streamlit-app-2025-02-08-10-02-97.webm](https://github.com/user-attachments/assets/785cf94f-6b8a-4f11-8a77-ae285ff46c5f)
-
-
-![image](https://github.com/user-attachments/assets/da5e6e0f-8ef9-4a0b-ab23-2e90731eca05)
-
-![image](https://github.com/user-attachments/assets/ee8f633e-1bdb-40fb-83f7-4eeed4454bd2)
-
-
+A Streamlit app to calculate, compare, and visualize the costs of various LLM APIs. The app includes real-time pricing data, interactive visualization, and advanced features like token estimation and query parameter support.
 
 ## Features
 
-- Fetches up-to-date pricing data from [docsbot.ai](https://docsbot.ai/tools/gpt-openai-api-pricing-calculator)
-- Allows user input for tokens and API calls
-- Filters results by provider
-- Calculates total and relative costs
-- Visualizes costs with an interactive bar chart
+- **Real-time Pricing Data:**  
+  Fetches up-to-date pricing information from [docsbot.ai](https://docsbot.ai/tools/gpt-openai-api-pricing-calculator) using BeautifulSoup, regex extraction, and caching to minimize redundant API calls. The raw data is optionally saved to a local file (`cost.json`) for debugging.
+
+- **Cost Calculation:**  
+  Computes the total cost based on input tokens, output tokens, and API calls. Costs are calculated on a per‑million tokens basis and further compared against a default model to provide a relative cost metric.
+
+- **Relative Cost Comparison:**  
+  Compares costs of various models using a user-selected default model (e.g., **GPT-4o mini**) as the baseline.
+
+- **Provider Filtering:**  
+  Allows filtering the results by LLM provider, with automatic normalization of provider names (e.g., "OpenAI / Azure" is treated as "OpenAI").
+
+- **Interactive Visualization:**  
+  Displays cost data in both a detailed table and an interactive horizontal bar chart built with Plotly.
+
+- **Currency Conversion:**  
+  Supports both USD and INR. A live USD-to-INR exchange rate is fetched and applied, with a fallback rate provided if the fetch fails.
+
+- **Token Estimation Dialog:**  
+  Provides a dialog (powered by the `tiktoken` module) for estimating token counts from sample input and output texts. Estimated values are stored in session state and automatically populate the token input fields.
+
+- **Detailed Token Cost Breakdown:**  
+  Offers an option to display individual input and output token costs in the results table.
+
+- **Query Parameters Support:**  
+  Reads URL query parameters (`input_tokens`, `output_tokens`, and `api_calls`) to pre-populate the respective input fields, ensuring a seamless user experience.
+
+- **Caching & Session State:**  
+  Utilizes Streamlit’s caching for data fetching and exchange rate lookups. The app leverages session state to retain token estimation results between interactions.
+
+---
 
 ## Dependencies
 
@@ -25,37 +42,64 @@ Streamlit app to calculate and compare the costs of various LLM APIs based on in
 - plotly
 - requests
 - beautifulsoup4
-- streamlit
+- streamlit (supports st.cache_data, st.dialog, and session state)
+- tiktoken (optional, for token estimation)
+
+---
 
 ## Key Functions
 
-### `fetch_llm_api_cost()`
+- **`fetch_llm_api_cost()`**  
+  Fetches and parses pricing data from the remote website using caching. The raw JSON data is optionally written to `cost.json` for debugging.
 
-Fetches and parses LLM API cost data from the website. Uses caching to reduce API calls.
+- **`load_data()`**  
+  Loads and preprocesses the fetched pricing data into a pandas DataFrame, including normalization of provider names.
 
-### `load_data()`
+- **`calculate_costs()`**  
+  Computes the total and relative costs based on user inputs (input tokens, output tokens, and API calls), applies currency conversion, and optionally includes a detailed breakdown of token costs.
 
-Loads and preprocesses the LLM API cost data into a pandas DataFrame.
+- **`create_total_cost_chart()`**  
+  Generates an interactive horizontal bar chart visualizing the total cost per model.
 
-### `calculate_costs()`
+- **`estimate_dialog()`**  
+  Opens a dialog for estimating token counts using sample texts. Estimated token counts are stored in session state and automatically populate the token input fields.
 
-Calculates total and relative costs for each model based on user inputs.
-
-### `create_total_cost_chart()`
-
-Creates a horizontal bar chart visualizing total costs by model.
+---
 
 ## Main Application Flow
 
-1. Load and preprocess data
-2. Display user input sidebar for parameters and filtering
-3. Calculate costs based on user inputs
-4. Display results in a table and chart
+1. **Data Loading & Preprocessing:**  
+   - Fetch pricing data and the live USD-to-INR exchange rate.
+   - Normalize provider names and prepare the data for cost calculations.
+
+2. **User Input Sidebar:**  
+   - **Provider and Model Selection:**  
+     Choose which LLM providers to include and select a default model for relative cost comparison.
+   - **Token and API Call Inputs:**  
+     - Manually enter the number of input tokens, output tokens, and API calls.
+     - Alternatively, use URL query parameters (`input_tokens`, `output_tokens`, and `api_calls`) to pre-populate these values. (ex: http://localhost:8501/?input_tokens=2000&output_tokens=300&api_calls=10)
+   - **Token Estimation:**  
+     Click the "Calculate Token Count" button to open the token estimation dialog. The resulting token counts are automatically populated into the input fields.
+   - **Display Options:**  
+     - Toggle the display of individual token cost breakdowns.
+     - Select the display currency (USD or INR).
+
+3. **Cost Calculation & Visualization:**  
+   - Calculate total and relative costs based on the provided inputs.
+   - Present the results in a detailed table and an interactive bar chart.
+
+4. **Performance & Debugging:**  
+   - Leverages caching to optimize data fetching and exchange rate lookups.
+   - Optionally writes fetched pricing data to `cost.json` for debugging purposes.
+
+---
 
 ## Usage
 
-Run the application with:
+To run the application locally:
 
 ```
 streamlit run app.py
 ```
+
+This command will launch the app in your browser. You can modify token values, filter providers, use URL query parameters to pre-populate inputs, and interactively view cost comparisons and visualizations.
