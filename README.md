@@ -1,6 +1,16 @@
-# LLM API Cost Calculator
+# LLM API Cost Calculator 🤖🧮
 
 A Streamlit app to calculate, compare, and visualize the costs of various LLM APIs. The app includes real-time pricing data, interactive visualization, and advanced features like token estimation and query parameter support.
+
+[LLM API Cost Calculator demo.webm](https://github.com/user-attachments/assets/b7bd21b6-ade2-4d56-b008-203e0724a464)
+
+![image](https://github.com/user-attachments/assets/7921cef2-507e-4521-8647-8ad7b76cd141)
+
+![image](https://github.com/user-attachments/assets/1ebec78f-61ce-4250-865a-00ed96a73b2c)
+
+![image](https://github.com/user-attachments/assets/ae342797-8d7b-48af-bf8f-91568afc3b9d)
+
+---
 
 ## Features
 
@@ -98,8 +108,14 @@ A Streamlit app to calculate, compare, and visualize the costs of various LLM AP
 
 To run the application locally:
 
-```
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv venv --python 3.11
+source .venv/bin/activate
+uv pip install -r requirements.txt
 streamlit run app.py
 ```
 
-This command will launch the app in your browser. You can modify token values, filter providers, use URL query parameters to pre-populate inputs, and interactively view cost comparisons and visualizations.
+Installs uv -> Installs python (if not present) -> creates and activates venv -> installs requirements  
+pip can be used for this too, uv is faster!  
+`streamlit run` command will launch the app in your browser. You can modify token values, filter providers, use URL query parameters to pre-populate inputs, and interactively view cost comparisons and visualizations.
