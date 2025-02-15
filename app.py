@@ -1,6 +1,6 @@
 """
 LLM API Cost Calculator
-Author: Your Name
+Author: Prajwal Srinivas
 Description: This app fetches pricing data for various LLM providers and calculates
              the total cost based on user inputs (tokens, API calls, etc.). It displays
              the results in both a table and an interactive chart.
