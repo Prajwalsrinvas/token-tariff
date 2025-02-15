@@ -35,6 +35,15 @@
             "output_token_cost_per_million": 2.4
         },
         {
+            "model_name": "o3-mini",
+            "model_slug": "o3-mini",
+            "page_slug": "o3-mini",
+            "context": "200K/100K",
+            "provider": "OpenAI",
+            "input_token_cost_per_million": 1.1,
+            "output_token_cost_per_million": 4.4
+        },
+        {
             "model_name": "o1",
             "model_slug": "o1",
             "page_slug": "o1",
@@ -58,8 +67,8 @@
             "page_slug": "o1-mini",
             "context": "128K/65K",
             "provider": "OpenAI",
-            "input_token_cost_per_million": 3,
-            "output_token_cost_per_million": 12
+            "input_token_cost_per_million": 1.1,
+            "output_token_cost_per_million": 4.4
         },
         {
             "model_name": "GPT-4o Realtime (Text)",
@@ -175,6 +184,24 @@
             "api_provider": "Deepinfra/Groq",
             "input_token_cost_per_million": 0.59,
             "output_token_cost_per_million": 0.79
+        },
+        {
+            "model_name": "Gemini 2.0 Flash",
+            "model_slug": "gemini-2.0-flash",
+            "page_slug": "gemini-2-0-flash",
+            "context": "1M",
+            "provider": "Google",
+            "input_token_cost_per_million": 0.1,
+            "output_token_cost_per_million": 0.4
+        },
+        {
+            "model_name": "Gemini 2.0 Flash-Lite",
+            "model_slug": "gemini-2.0-flash-lite",
+            "page_slug": "gemini-2-0-flash-lite",
+            "context": "1M",
+            "provider": "Google",
+            "input_token_cost_per_million": 0.075,
+            "output_token_cost_per_million": 0.3
         },
         {
             "model_name": "Gemini 1.5 Pro",
@@ -323,6 +350,14 @@
             "provider": "DeepSeek",
             "input_token_cost_per_million": 0.14,
             "output_token_cost_per_million": 0.28
+        },
+        {
+            "model_name": "DeepSeek-R1",
+            "model_slug": "deepseek-r1",
+            "context": "128K/8K",
+            "provider": "DeepSeek",
+            "input_token_cost_per_million": 0.55,
+            "output_token_cost_per_million": 2.19
         }
     ],
     "Audio Models": [

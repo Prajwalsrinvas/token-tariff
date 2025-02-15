@@ -34,7 +34,7 @@ def get_exchange_rate() -> float:
 
 def extract_pricing_data(js_content):
     # Look for the specific data structure in the file
-    pattern = r'n\s*=\s*({[\s\S]*?"Embedding models"[\s\S]*?}})'
+    pattern = r'\s*=\s*({[\s\S]*?"Embedding models"[\s\S]*?}})'
     match = re.search(pattern, js_content)
 
     if not match:
