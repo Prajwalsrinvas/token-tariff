@@ -120,8 +120,10 @@ def fetch_llm_api_cost() -> Dict:
         script_response.raise_for_status()
         json_data = extract_pricing_data(script_response.text)
         if json_data is None:
-            st.error("Failed to extract pricing data from the script.")
-            return {}
+            # st.error("Failed to extract pricing data from the script.")
+            with open(JSON_FILE_PATH) as f:
+                return json.load(f)["Chat/Completion Models"]
+            # return {}
         # Optionally write the JSON data to a local file for debugging
         try:
             with open(JSON_FILE_PATH, "w") as f:
