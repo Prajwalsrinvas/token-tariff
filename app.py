@@ -17,18 +17,17 @@ import pandas as pd
 import plotly.express as px
 import requests
 import streamlit as st
-from bs4 import BeautifulSoup
 
 # =============================================================================
 # Section 2: Global Constants and Configuration
 # =============================================================================
 st.set_page_config(page_title="LLM API Cost Calculator", page_icon="💰", layout="wide")
 
-DATA_URL = "https://docsbot.ai/tools/gpt-openai-api-pricing-calculator"
+DATA_URL = "https://raw.githubusercontent.com/BerriAI/litellm/refs/heads/main/model_prices_and_context_window.json"
 CACHE_TTL = 60 * 60  # 60 minutes caching time for remote data
 DEFAULT_PROVIDERS = ["Anthropic", "DeepSeek", "OpenAI"]
-DEFAULT_MODEL = "GPT-4o mini"
-JSON_FILE_PATH = "cost.json"
+DEFAULT_MODEL = "gpt-4o-mini"
+JSON_FILE_PATH = "model_prices_and_context_window.json"
 EXCHANGE_RATE_URL = "https://api.exchangerate-api.com/v4/latest/USD"
 
 # =============================================================================
@@ -54,86 +53,129 @@ def get_exchange_rate() -> float:
         return 83.91  # Fallback exchange rate
 
 
-def extract_pricing_data(js_content: str) -> Dict:
+def map_provider_name(provider: str) -> str:
     """
-    Extract pricing data from the given JavaScript content string.
+    Map provider names from litellm format to display format.
 
     Args:
-        js_content (str): JavaScript content containing the pricing data.
+        provider (str): Provider name from litellm data
 
     Returns:
-        dict: Parsed JSON pricing data if extraction is successful; otherwise, None.
+        str: Formatted provider name
     """
-    pattern = r'\s*=\s*({[\s\S]*?"Embedding models"[\s\S]*?}})'
-    match = re.search(pattern, js_content)
-    if not match:
-        return None
+    provider_mapping = {
+        "openai": "OpenAI",
+        "anthropic": "Anthropic",
+        "deepseek": "DeepSeek",
+        "google": "Google",
+        "amazon": "Amazon",
+        "cohere": "Cohere",
+        "mistral": "Mistral AI",
+        "meta": "Meta",
+    }
+    return provider_mapping.get(provider.lower(), provider.title())
 
-    data_str = match.group(1)
-    # Clean up the JavaScript object to make it valid JSON
-    data_str = data_str.replace("'", '"')
-    data_str = re.sub(r"([{,])\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*:", r'\1"\2":', data_str)
-    data_str = re.sub(r",(\s*[}\]])", r"\1", data_str)
-    data_str = re.sub(r":\s*\.([0-9]+)", r": 0.\1", data_str)
-    data_str = data_str[:-1]  # Remove any trailing characters that break JSON parsing
-    try:
-        data = json.loads(data_str)
-        return data
-    except json.JSONDecodeError as e:
-        st.error(f"Error parsing JSON: {e}")
-        return None
+
+def is_snapshot_model(model_name: str) -> bool:
+    """
+    Check if a model name represents a snapshot/dated version.
+
+    Args:
+        model_name (str): Model name to check
+
+    Returns:
+        bool: True if it's a snapshot model, False otherwise
+    """
+    # Patterns for dated models
+    date_patterns = [
+        r"\d{4}-\d{2}-\d{2}",  # YYYY-MM-DD
+        r"\d{8}",  # YYYYMMDD
+        r"\d{4}\d{2}\d{2}",  # YYYYMMDD (alternate)
+        r"-\d{4}-\d{1,2}-\d{1,2}",  # -YYYY-M-D or -YYYY-MM-DD
+        r"-\d{4}(?:-|$)",  # OpenAI MMDD format: -MMDD at end or -MMDD- in middle
+    ]
+
+    # Check if model name contains any date pattern
+    for pattern in date_patterns:
+        if re.search(pattern, model_name):
+            # Additional validation for OpenAI MMDD format
+            if pattern == r"-\d{4}(?:-|$)":
+                match = re.search(r"-(\d{4})(?:-|$)", model_name)
+                if match:
+                    mmdd = match.group(1)
+                    month = int(mmdd[:2])
+                    day = int(mmdd[2:])
+                    # Validate month (01-12) and day (01-31)
+                    if 1 <= month <= 12 and 1 <= day <= 31:
+                        return True
+            else:
+                return True
+
+    return False
+
+
+def format_context(model_data: Dict) -> str:
+    """
+    Format context information from model data.
+
+    Args:
+        model_data (Dict): Model data dictionary
+
+    Returns:
+        str: Formatted context string
+    """
+    max_input = model_data.get("max_input_tokens")
+    max_output = model_data.get("max_output_tokens")
+
+    # Format large numbers with K/M suffix
+    def format_number(num):
+        if num >= 1000000:
+            return f"{num/1000000:.0f}M"
+        elif num >= 1000:
+            return f"{num/1000:.0f}K"
+        else:
+            return str(num)
+
+    if max_input and max_output:
+        return f"{format_number(max_input)}/{format_number(max_output)}"
+    elif max_input:
+        return f"{format_number(max_input)}"
+    elif max_output:
+        return f"{format_number(max_output)}"
+    else:
+        return "N/A"
 
 
 @st.cache_data(ttl=CACHE_TTL)
 def fetch_llm_api_cost() -> Dict:
     """
-    Fetch and parse LLM API cost data from the remote website.
+    Fetch and parse LLM API cost data from LiteLLM GitHub repository.
 
     Returns:
         dict: Dictionary containing pricing data for Chat/Completion models, or an empty dict if an error occurs.
     """
-    headers = {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-        "accept-language": "en-US,en;q=0.9",
-        "cache-control": "no-cache",
-        "pragma": "no-cache",
-        "user-agent": (
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
-        ),
-    }
-
     try:
-        response = requests.get(DATA_URL, headers=headers, timeout=10)
+        response = requests.get(DATA_URL, timeout=30)
         response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
-        script_links = [i.get("src", "") for i in soup.find_all("script")]
-        # Find the script that contains the pricing data
-        target_links = [
-            i for i in script_links if "gpt-openai-api-pricing-calculator" in i
-        ]
-        if not target_links:
-            st.error("Pricing data script not found on the page.")
-            return {}
-        target_script = f"https://docsbot.ai{target_links[0]}"
-        script_response = requests.get(target_script, headers=headers, timeout=10)
-        script_response.raise_for_status()
-        json_data = extract_pricing_data(script_response.text)
-        if json_data is None:
-            # st.error("Failed to extract pricing data from the script.")
-            with open(JSON_FILE_PATH) as f:
-                return json.load(f)["Chat/Completion Models"]
-            # return {}
-        # Optionally write the JSON data to a local file for debugging
+        data = response.json()
+
+        # Save to local file for fallback
         try:
             with open(JSON_FILE_PATH, "w") as f:
-                json.dump(json_data, f, indent=4)
+                json.dump(data, f, indent=2)
         except Exception as e:
             st.warning(f"Could not write JSON data to file: {e}")
-        return json_data.get("Chat/Completion Models", {})
+
+        return data
     except requests.RequestException as e:
         st.error(f"Error fetching pricing data: {str(e)}")
-        return {}
+        # Try to load from local file as fallback
+        try:
+            with open(JSON_FILE_PATH, "r") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            st.error("No local fallback data available.")
+            return {}
 
 
 def load_data() -> pd.DataFrame:
@@ -143,13 +185,52 @@ def load_data() -> pd.DataFrame:
     Returns:
         pd.DataFrame: DataFrame containing preprocessed API cost data.
     """
-    data = fetch_llm_api_cost()
-    if not data:
+    raw_data = fetch_llm_api_cost()
+    if not raw_data:
         st.error("No pricing data available.")
         return pd.DataFrame()
-    df = pd.DataFrame(data)
-    # Normalize provider names for consistency
-    df["provider"] = df["provider"].replace("OpenAI / Azure", "OpenAI")
+
+    # Process the data
+    processed_models = []
+
+    for model_key, model_data in raw_data.items():
+        # Filter for chat models only
+        if model_data.get("mode") != "chat":
+            continue
+
+        # Skip fine-tuned models
+        if model_key.startswith("ft:"):
+            continue
+
+        # Skip snapshot/dated models
+        if is_snapshot_model(model_key):
+            continue
+
+        # Extract required fields
+        input_cost_per_token = model_data.get("input_cost_per_token", 0)
+        output_cost_per_token = model_data.get("output_cost_per_token", 0)
+        provider = model_data.get("litellm_provider", "unknown")
+
+        # Convert to per-million costs
+        input_cost_per_million = input_cost_per_token * 1_000_000
+        output_cost_per_million = output_cost_per_token * 1_000_000
+
+        processed_model = {
+            "model_name": model_key,
+            "provider": map_provider_name(provider),
+            "context": format_context(model_data),
+            "input_token_cost_per_million": input_cost_per_million,
+            "output_token_cost_per_million": output_cost_per_million,
+        }
+
+        processed_models.append(processed_model)
+
+    # Create DataFrame
+    df = pd.DataFrame(processed_models)
+
+    # Sort by provider and model name for consistent display
+    df = df.sort_values(["provider", "model_name"])
+
     return df
 
 
@@ -356,6 +437,11 @@ def main():
     providers = sorted(df_raw["provider"].unique())
     models = sorted(df_raw["model_name"].unique())
 
+    # Filter default providers to only include those available in the data
+    available_default_providers = [p for p in DEFAULT_PROVIDERS if p in providers]
+    if not available_default_providers:
+        available_default_providers = providers[:3]  # Fallback to first 3 providers
+
     # Retrieve query parameters for input tokens, output tokens, and API calls
     query_params = st.query_params
     default_input = int(
@@ -375,7 +461,7 @@ def main():
     # -----------------------------------------------------------------------------
     with st.sidebar:
         selected_providers = st.multiselect(
-            "Select Providers", options=providers, default=DEFAULT_PROVIDERS
+            "Select Providers", options=providers, default=available_default_providers
         )
         default_model = st.selectbox(
             "Select default model for relative cost comparison",

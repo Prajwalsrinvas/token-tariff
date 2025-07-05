@@ -15,16 +15,19 @@ A Streamlit app to calculate, compare, and visualize the costs of various LLM AP
 ## Features
 
 - **Real-time Pricing Data:**  
-  Fetches up-to-date pricing information from [docsbot.ai](https://docsbot.ai/tools/gpt-openai-api-pricing-calculator) using BeautifulSoup, regex extraction, and caching to minimize redundant API calls. The raw data is optionally saved to a local file (`cost.json`) for debugging.
+  Fetches up-to-date pricing information from [LiteLLM's GitHub repository](https://github.com/BerriAI/litellm) using direct JSON API calls with intelligent caching to minimize redundant requests. The raw data is saved to a local file (`model_prices_and_context_window.json`) for fallback and debugging.
+
+- **Smart Model Filtering:**  
+  Automatically filters out snapshot/dated model versions (e.g., `gpt-4-0613`, `claude-3-5-sonnet-20241022`) to show only the latest model versions, keeping the interface clean and focused on current offerings.
 
 - **Cost Calculation:**  
   Computes the total cost based on input tokens, output tokens, and API calls. Costs are calculated on a per‑million tokens basis and further compared against a default model to provide a relative cost metric.
 
 - **Relative Cost Comparison:**  
-  Compares costs of various models using a user-selected default model (e.g., **GPT-4o mini**) as the baseline.
+  Compares costs of various models using a user-selected default model (e.g., **gpt-4o-mini**) as the baseline.
 
 - **Provider Filtering:**  
-  Allows filtering the results by LLM provider, with automatic normalization of provider names (e.g., "OpenAI / Azure" is treated as "OpenAI").
+  Allows filtering the results by LLM provider, with automatic normalization of provider names (e.g., "openai" is displayed as "OpenAI").
 
 - **Interactive Visualization:**  
   Displays cost data in both a detailed table and an interactive horizontal bar chart built with Plotly.
@@ -42,7 +45,7 @@ A Streamlit app to calculate, compare, and visualize the costs of various LLM AP
   Reads URL query parameters (`input_tokens`, `output_tokens`, and `api_calls`) to pre-populate the respective input fields, ensuring a seamless user experience.
 
 - **Caching & Session State:**  
-  Utilizes Streamlit’s caching for data fetching and exchange rate lookups. The app leverages session state to retain token estimation results between interactions.
+  Utilizes Streamlit's caching for data fetching and exchange rate lookups. The app leverages session state to retain token estimation results between interactions.
 
 ---
 
@@ -51,7 +54,6 @@ A Streamlit app to calculate, compare, and visualize the costs of various LLM AP
 - pandas
 - plotly
 - requests
-- beautifulsoup4
 - streamlit (supports st.cache_data, st.dialog, and session state)
 - tiktoken (optional, for token estimation)
 
@@ -60,10 +62,13 @@ A Streamlit app to calculate, compare, and visualize the costs of various LLM AP
 ## Key Functions
 
 - **`fetch_llm_api_cost()`**  
-  Fetches and parses pricing data from the remote website using caching. The raw JSON data is optionally written to `cost.json` for debugging.
+  Fetches and parses pricing data from LiteLLM's GitHub repository using caching. The raw JSON data is written to `model_prices_and_context_window.json` for fallback and debugging.
 
 - **`load_data()`**  
-  Loads and preprocesses the fetched pricing data into a pandas DataFrame, including normalization of provider names.
+  Loads and preprocesses the fetched pricing data into a pandas DataFrame, including normalization of provider names and filtering of snapshot models.
+
+- **`is_snapshot_model()`**  
+  Detects and filters out snapshot/dated model versions using regex patterns for various date formats (YYYY-MM-DD, YYYYMMDD, OpenAI's MMDD format).
 
 - **`calculate_costs()`**  
   Computes the total and relative costs based on user inputs (input tokens, output tokens, and API calls), applies currency conversion, and optionally includes a detailed breakdown of token costs.
@@ -79,7 +84,8 @@ A Streamlit app to calculate, compare, and visualize the costs of various LLM AP
 ## Main Application Flow
 
 1. **Data Loading & Preprocessing:**  
-   - Fetch pricing data and the live USD-to-INR exchange rate.
+   - Fetch pricing data from LiteLLM's GitHub repository and the live USD-to-INR exchange rate.
+   - Filter for chat models only, exclude fine-tuned models and snapshot versions.
    - Normalize provider names and prepare the data for cost calculations.
 
 2. **User Input Sidebar:**  
@@ -100,7 +106,7 @@ A Streamlit app to calculate, compare, and visualize the costs of various LLM AP
 
 4. **Performance & Debugging:**  
    - Leverages caching to optimize data fetching and exchange rate lookups.
-   - Optionally writes fetched pricing data to `cost.json` for debugging purposes.
+   - Writes fetched pricing data to `model_prices_and_context_window.json` for fallback and debugging purposes.
 
 ---
 
@@ -119,3 +125,16 @@ streamlit run app.py
 Installs uv -> Installs python (if not present) -> creates and activates venv -> installs requirements  
 pip can be used for this too, uv is faster!  
 `streamlit run` command will launch the app in your browser. You can modify token values, filter providers, use URL query parameters to pre-populate inputs, and interactively view cost comparisons and visualizations.
+
+---
+
+## Data Source
+
+The app fetches pricing data from [LiteLLM's model pricing repository](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json), which is continuously updated with the latest model pricing information from various providers including OpenAI, Anthropic, Google, Meta, DeepSeek, and others.
+
+The data is automatically filtered to show only:
+- Chat/completion models (excluding embeddings, image generation, etc.)
+- Latest model versions (excluding snapshot/dated versions)
+- Currently available models (excluding fine-tuned models)
+
+This ensures users see only the most relevant and current pricing information for production use.
