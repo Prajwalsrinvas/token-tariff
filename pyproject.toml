@@ -1,0 +1,19 @@
+[project]
+name = "token-tariff"
+version = "1.0.0"
+description = "A live LLM API cost calculator and model-comparison tool for LLM APIs"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit==1.58.0",
+    "pandas==3.0.3",
+    "plotly==6.8.0",
+    "requests==2.34.2",
+    "tiktoken==0.13.0",
+]
+
+# This repo is a single-file Streamlit app (app.py), not an installable package.
+# Tell uv to install only the dependencies above, never to build/install the
+# project itself — matches how Streamlit Community Cloud resolves pyproject.toml.
+[tool.uv]
+package = false

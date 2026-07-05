@@ -76,12 +76,11 @@ Assumptions: cache math counts reads only (write premiums are a one-time cost pe
 ## Run it locally
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv --python 3.11
-source .venv/bin/activate
-uv pip install -r requirements.txt
-streamlit run app.py
+curl -LsSf https://astral.sh/uv/install.sh | sh   # skip if you already have uv
+uv run streamlit run app.py
 ```
+
+`uv run` creates the environment from `pyproject.toml` + `uv.lock` on first launch. Dependencies live in `pyproject.toml` (locked in `uv.lock`, installed with [uv](https://docs.astral.sh/uv/)) — there is no `requirements.txt`.
 
 ### Optional API keys
 
