@@ -1,0 +1,9 @@
+{
+ "claude-haiku-4-5": "claude-4-5-haiku",
+ "groq/llama-3.3-70b-versatile": "llama-3-3-instruct-70b",
+ "groq/qwen/qwen3-32b": "qwen3-32b-instruct",
+ "mistral/ministral-8b-2512": "ministral-3-8b",
+ "mistral/mistral-large-2512": "mistral-large-3",
+ "openrouter/mistralai/ministral-14b-2512": "ministral-3-14b",
+ "openrouter/mistralai/ministral-3b-2512": "ministral-3-3b"
+}

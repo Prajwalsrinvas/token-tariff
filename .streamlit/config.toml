@@ -1,0 +1,27 @@
+[browser]
+gatherUsageStats = false
+
+# ── "Rate Card" theme: graphite ledger — neutral dark gray, blue only where it
+# means something, monospace throughout ──
+[theme]
+base = "dark"
+primaryColor = "#58A6FF"
+backgroundColor = "#0D1117"
+secondaryBackgroundColor = "#161C23"
+textColor = "#DCE3EA"
+borderColor = "#2D333B"
+linkColor = "#58A6FF"
+font = "JetBrains Mono, monospace"
+headingFont = "JetBrains Mono, monospace"
+codeFont = "JetBrains Mono, monospace"
+baseRadius = "none"
+buttonRadius = "none"
+dataframeHeaderBackgroundColor = "#1B222B"
+dataframeBorderColor = "#2D333B"
+showWidgetBorder = true
+chartCategoricalColors = ["#58A6FF", "#F0883E", "#56D4A0", "#E48FD0", "#BC9CFF", "#FF7B72", "#A8CC5C", "#76E3EA", "#E3C960", "#98A6B3"]
+
+[[theme.fontFaces]]
+family = "JetBrains Mono"
+url = "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2"
+weight = "100 800"
