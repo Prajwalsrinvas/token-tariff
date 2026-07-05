@@ -728,8 +728,15 @@ def guide_dialog():
         "plots score against cost on a log axis: the dotted line is the "
         "Pareto frontier, and anything below it is beaten on both price and "
         "score.\n\n"
-        "Benchmark scores are a screen, not a guarantee — they may not "
-        "reflect how a model behaves on your actual prompts, and no feed "
+        "**Cost is per-token, computed from the token counts you enter and "
+        "applied identically to every model.** Two models rarely spend the "
+        "same number of tokens on the same task — tokenizers differ and some "
+        "models are far more verbose (reasoning models at high effort "
+        "especially), so a lower per-token rate can still mean a *higher cost "
+        "per finished task*. Treat the ranking as a screen and confirm "
+        "cost-per-task on your own workload.\n\n"
+        "Benchmark scores are likewise a screen, not a guarantee — they may "
+        "not reflect how a model behaves on your actual prompts, and no feed "
         "here measures provider reliability or language coverage. Evaluate "
         "the shortlist on your own workload before switching models."
     )
@@ -1290,8 +1297,11 @@ def main():
 
     hero(df, f, p["currency"], fx)
     st.caption(
-        "BENCHMARK SCORES MAY NOT REFLECT YOUR ACTUAL USAGE — EVALUATE THE "
-        "SHORTLIST ON YOUR OWN PROMPTS BEFORE SWITCHING MODELS"
+        "COST IS PER-TOKEN AT THE COUNTS YOU ENTER, IDENTICAL FOR EVERY MODEL "
+        "— TOKENIZERS AND VERBOSITY DIFFER, SO A CHEAPER RATE CAN COST MORE "
+        "PER FINISHED TASK (ESPECIALLY REASONING MODELS AT HIGH EFFORT). "
+        "BENCHMARKS MAY NOT REFLECT YOUR USAGE — TEST ON YOUR OWN PROMPTS "
+        "BEFORE SWITCHING"
     )
     quick_chips(df, axis_col, p["currency"], fx)
     st.space()

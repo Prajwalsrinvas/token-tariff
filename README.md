@@ -71,7 +71,7 @@ Total cost per model = (input tokens × effective input price + output tokens ×
 - **Reasoning multiplier** — reasoning models bill thinking tokens as output; the multiplier applies to reasoning-capable models only.
 - **Batch API** — published batch prices replace live prices where available (typically ~50% off).
 
-Assumptions: cache math counts reads only (write premiums are a one-time cost per prompt prefix); tokenizers differ across providers, so `tiktoken` estimates are approximate for non-OpenAI models. **Benchmark scores are a screen, not a guarantee** — always evaluate a shortlist on your own prompts before switching models.
+Assumptions: cache math counts reads only (write premiums are a one-time cost per prompt prefix); tokenizers differ across providers, so `tiktoken` estimates are approximate for non-OpenAI models. **Cost is per-token at the token counts you enter, applied identically to every model** — but tokenizers and verbosity differ, so the same task can spend a different number of tokens on each model (reasoning models at high effort especially). A lower per-token rate can still mean a higher cost *per finished task*, so treat the ranking as a screen and confirm on your own workload. **Benchmark scores are likewise a screen, not a guarantee** — always evaluate a shortlist on your own prompts before switching models.
 
 ## Run it locally
 
