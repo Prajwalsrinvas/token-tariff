@@ -1,7 +1,7 @@
 [browser]
 gatherUsageStats = false
 
-# ── "Rate Card" theme: graphite ledger — neutral dark gray, blue only where it
+# ── Token Tariff theme: graphite ledger — neutral dark gray, blue only where it
 # means something, monospace throughout ──
 [theme]
 base = "dark"

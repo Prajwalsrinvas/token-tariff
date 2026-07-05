@@ -1,5 +1,5 @@
 """
-LLM API RATE CARD
+TOKEN TARIFF — a live LLM API cost calculator and model-comparison tool
 Author: Prajwal Srinivas
 Description: Compare what a workload actually costs across LLM APIs — and which
              model is the smartest buy. Prices come live from LiteLLM's pricing
@@ -29,7 +29,7 @@ import plotly.express as px
 import requests
 import streamlit as st
 
-st.set_page_config(page_title="LLM RATE CARD", page_icon="▮", layout="wide")
+st.set_page_config(page_title="TOKEN TARIFF", page_icon="▮", layout="wide")
 
 PRICES_URL = "https://raw.githubusercontent.com/BerriAI/litellm/refs/heads/main/model_prices_and_context_window.json"
 PRICES_FILE = "model_prices_and_context_window.json"
@@ -683,10 +683,11 @@ def estimate_dialog():
 def guide_dialog():
     """Walkthrough of every control, in the order a visitor meets them."""
     st.markdown(
-        "A live rate card: prices from LiteLLM's catalog, intelligence / "
-        "coding / agentic scores from Artificial Analysis, refreshed hourly. "
-        "It answers two questions — **what does your workload cost on every "
-        "model**, and **which model is the smartest buy for that money?**"
+        "**Token Tariff** is a live rate card: prices from LiteLLM's catalog, "
+        "intelligence / coding / agentic scores from Artificial Analysis, "
+        "refreshed hourly. It answers two questions — **what does your workload "
+        "cost on every model**, and **which model is the smartest buy for that "
+        "money?**"
     )
     st.markdown(
         "**1 · PICK A USE CASE** — the pills up top (CHATBOT, CODING AGENT, "
@@ -854,7 +855,7 @@ def top_strip() -> dict:
     """Top strip: title, search, workload editor, currency."""
     top = st.container(horizontal=True, vertical_alignment="bottom", gap="medium")
     with top:
-        st.markdown("### ▮ LLM RATE CARD")
+        st.markdown("### ▮ TOKEN TARIFF")
         query = st.text_input(
             "SEARCH", key="q", bind="query-params",
             placeholder="FIND A MODEL ...", label_visibility="collapsed",
