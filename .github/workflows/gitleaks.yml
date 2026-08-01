@@ -1,0 +1,24 @@
+---
+# Secret scan. This repo is public and its data spine is refreshed by hand from
+# API pulls, so the realistic risk is a credential arriving inside a pasted
+# snapshot rather than in code.
+name: gitleaks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # gitleaks scans history, not just the tip
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

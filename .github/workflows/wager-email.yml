@@ -1,0 +1,47 @@
+---
+# Delivers the two scheduled trickle-down-wager emails.
+#
+# The cron days are the day-of-month of the two due dates in wager.json —
+# 2026-10-21 for the midpoint check and 2027-01-10 for the letter — so a send
+# fires on its own date rather than up to a month later. The letter opens "The
+# date is today", and on a monthly tick that was a lie eleven times out of
+# twelve. Re-derive these day numbers whenever wager.json is re-frozen.
+#
+# Both days run every month: the job is a no-op until a send is due, the issue
+# marker makes a second run harmless, and firing more often than strictly
+# needed is the cheap direction to be wrong in.
+#
+# GitHub disables scheduled workflows after 60 days with no repository
+# activity. The quarterly data refresh is what keeps this alive; if the repo
+# goes quiet for two months, re-enable the workflow from the Actions tab.
+name: wager email
+
+on:
+  schedule:
+    - cron: "0 9 10,21 * *"   # 09:00 UTC on the 10th and the 21st
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write           # the issue is the send marker, not a stored flag
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      # `uv run` syncs the project's dependencies first, so requests is already
+      # there; wager.py and wager_check.py need nothing beyond it.
+      - name: Check whether a send is due
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          WAGER_EMAIL_TO: ${{ secrets.WAGER_EMAIL_TO }}
+          RESEND_FROM: ${{ secrets.RESEND_FROM }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: uv run python scripts/wager_check.py
