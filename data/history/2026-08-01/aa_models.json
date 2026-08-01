@@ -1,0 +1,3254 @@
+{
+ "gpt-oss-120b-low": {
+  "speed": 315.115,
+  "ttft": 0.509,
+  "intelligence": 17.7,
+  "coding": null
+ },
+ "gpt-oss-120b": {
+  "speed": 277.453,
+  "ttft": 0.513,
+  "intelligence": 23.8,
+  "coding": 30.4
+ },
+ "gpt-oss-20b": {
+  "speed": 264.883,
+  "ttft": 0.461,
+  "intelligence": 14.9,
+  "coding": 20.7
+ },
+ "gpt-oss-20b-low": {
+  "speed": 271.829,
+  "ttft": 0.503,
+  "intelligence": 14.3,
+  "coding": null
+ },
+ "o3": {
+  "speed": 136.117,
+  "ttft": 5.273,
+  "intelligence": 30.4,
+  "coding": null
+ },
+ "grok-1": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6,
+  "coding": null
+ },
+ "gpt-5-5": {
+  "speed": 91.869,
+  "ttft": 29.368,
+  "intelligence": 54.8,
+  "coding": 74.9
+ },
+ "gpt-5-5-high": {
+  "speed": 79.626,
+  "ttft": 9,
+  "intelligence": 53.1,
+  "coding": 71.6
+ },
+ "gpt-5-4-mini-medium": {
+  "speed": 164.126,
+  "ttft": 3.919,
+  "intelligence": 29.8,
+  "coding": null
+ },
+ "gpt-5-5-non-reasoning": {
+  "speed": 69.566,
+  "ttft": 0.915,
+  "intelligence": 35.4,
+  "coding": 56.5
+ },
+ "gpt-5-3-codex": {
+  "speed": 94.75,
+  "ttft": 53.464,
+  "intelligence": 44.3,
+  "coding": null
+ },
+ "gpt-5-5-medium": {
+  "speed": 70.437,
+  "ttft": 4.095,
+  "intelligence": 50.4,
+  "coding": 71.5
+ },
+ "gpt-5-4-mini": {
+  "speed": 164.771,
+  "ttft": 2.679,
+  "intelligence": 40,
+  "coding": 56.1
+ },
+ "gpt-5-4-nano": {
+  "speed": 140.493,
+  "ttft": 3.539,
+  "intelligence": 38.2,
+  "coding": 56.1
+ },
+ "gpt-5-5-low": {
+  "speed": 71.172,
+  "ttft": 1.331,
+  "intelligence": 43.5,
+  "coding": 60.9
+ },
+ "gpt-5-4-nano-medium": {
+  "speed": 139.595,
+  "ttft": 2.693,
+  "intelligence": 30.2,
+  "coding": null
+ },
+ "gpt-5-5-instant-06-26": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 28.9,
+  "coding": 39.4
+ },
+ "gpt-5-4-nano-non-reasoning": {
+  "speed": 146.283,
+  "ttft": 0.578,
+  "intelligence": 17.6,
+  "coding": null
+ },
+ "gpt-5-4-mini-non-reasoning": {
+  "speed": 170.286,
+  "ttft": 0.535,
+  "intelligence": 16.6,
+  "coding": null
+ },
+ "llama-3-3-instruct-70b": {
+  "speed": 94.528,
+  "ttft": 0.648,
+  "intelligence": 9.4,
+  "coding": 11.9
+ },
+ "llama-3-1-instruct-405b": {
+  "speed": 75.978,
+  "ttft": 0.675,
+  "intelligence": 8.5,
+  "coding": null
+ },
+ "llama-3-2-instruct-90b-vision": {
+  "speed": 61.072,
+  "ttft": 0.617,
+  "intelligence": 6.2,
+  "coding": null
+ },
+ "llama-3-2-instruct-11b-vision": {
+  "speed": 71.529,
+  "ttft": 0.498,
+  "intelligence": 3.3,
+  "coding": null
+ },
+ "llama-4-scout": {
+  "speed": 113.551,
+  "ttft": 0.581,
+  "intelligence": 10,
+  "coding": 8.2
+ },
+ "llama-4-maverick": {
+  "speed": 120.535,
+  "ttft": 0.61,
+  "intelligence": 14.3,
+  "coding": 16.3
+ },
+ "muse-spark": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 43.1,
+  "coding": 58.6
+ },
+ "gemma-4-31b-non-reasoning": {
+  "speed": 73.825,
+  "ttft": 0.616,
+  "intelligence": 24.8,
+  "coding": null
+ },
+ "gemma-4-31b": {
+  "speed": 35.199,
+  "ttft": 0.923,
+  "intelligence": 29.4,
+  "coding": 43.4
+ },
+ "gemma-4-26b-a4b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 25.7,
+  "coding": 39.3
+ },
+ "gemma-3-270m": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.4,
+  "coding": null
+ },
+ "gemma-4-26b-a4b-non-reasoning": {
+  "speed": 55.633,
+  "ttft": 0.666,
+  "intelligence": 20.1,
+  "coding": null
+ },
+ "gemma-4-e2b-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.4,
+  "coding": null
+ },
+ "gemma-4-e2b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.3,
+  "coding": null
+ },
+ "gemini-2-5-pro": {
+  "speed": 138.251,
+  "ttft": 21.801,
+  "intelligence": 25.8,
+  "coding": 33.3
+ },
+ "gemini-3-5-flash-medium": {
+  "speed": 198.036,
+  "ttft": 8.961,
+  "intelligence": 45.4,
+  "coding": null
+ },
+ "gemini-3-5-flash-minimal": {
+  "speed": 198.939,
+  "ttft": 0.685,
+  "intelligence": 34.9,
+  "coding": null
+ },
+ "gemini-3-5-flash": {
+  "speed": 210.488,
+  "ttft": 9.861,
+  "intelligence": 50.2,
+  "coding": 70.1
+ },
+ "gemma-4-12b": {
+  "speed": 153.504,
+  "ttft": 1.389,
+  "intelligence": 22,
+  "coding": null
+ },
+ "gemini-3-1-flash-lite-preview": {
+  "speed": 318.245,
+  "ttft": 4.572,
+  "intelligence": 25,
+  "coding": 34.7
+ },
+ "gemini-3-1-pro-preview": {
+  "speed": 138.239,
+  "ttft": 16.027,
+  "intelligence": 46.5,
+  "coding": 68.8
+ },
+ "diffusiongemma-26b-a4b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 13.5,
+  "coding": 19.7
+ },
+ "gemma-4-12b-non-reasoning": {
+  "speed": 157.321,
+  "ttft": 1.403,
+  "intelligence": 13.2,
+  "coding": null
+ },
+ "gemma-4-e4b-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.9,
+  "coding": null
+ },
+ "gemma-4-e4b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.5,
+  "coding": null
+ },
+ "claude-sonnet-5": {
+  "speed": 79.479,
+  "ttft": 137.329,
+  "intelligence": 53.4,
+  "coding": 71.5
+ },
+ "claude-4-5-haiku-reasoning": {
+  "speed": 138.276,
+  "ttft": 9.658,
+  "intelligence": 29.6,
+  "coding": 43.9
+ },
+ "claude-opus-4-7-non-reasoning": {
+  "speed": 43.923,
+  "ttft": 1.524,
+  "intelligence": 42.7,
+  "coding": null
+ },
+ "claude-opus-4-8": {
+  "speed": 57.203,
+  "ttft": 18.143,
+  "intelligence": 55.7,
+  "coding": 74.3
+ },
+ "claude-4-5-haiku": {
+  "speed": 96.783,
+  "ttft": 0.63,
+  "intelligence": 23.7,
+  "coding": null
+ },
+ "claude-fable-5": {
+  "speed": 62.262,
+  "ttft": 44.766,
+  "intelligence": 59.9,
+  "coding": 76.5
+ },
+ "claude-opus-4-7": {
+  "speed": 47.347,
+  "ttft": 12.462,
+  "intelligence": 53.5,
+  "coding": 73.6
+ },
+ "claude-sonnet-5-low": {
+  "speed": 59.912,
+  "ttft": 1.52,
+  "intelligence": null,
+  "coding": null
+ },
+ "claude-sonnet-4-6-non-reasoning-low-effort": {
+  "speed": 46.783,
+  "ttft": 1.072,
+  "intelligence": 34.3,
+  "coding": null
+ },
+ "claude-sonnet-5-medium": {
+  "speed": 56.17,
+  "ttft": 1.673,
+  "intelligence": null,
+  "coding": null
+ },
+ "claude-sonnet-5-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 41.7,
+  "coding": 66.4
+ },
+ "claude-sonnet-5-high": {
+  "speed": 61.337,
+  "ttft": 4.187,
+  "intelligence": null,
+  "coding": null
+ },
+ "claude-sonnet-5-xhigh": {
+  "speed": 63.406,
+  "ttft": 12.478,
+  "intelligence": null,
+  "coding": null
+ },
+ "devstral-small-2": {
+  "speed": 63.533,
+  "ttft": 0.744,
+  "intelligence": 17.4,
+  "coding": 29.3
+ },
+ "mistral-medium-3-5": {
+  "speed": 114.809,
+  "ttft": 0.667,
+  "intelligence": 29.9,
+  "coding": 46.9
+ },
+ "magistral-medium-2509": {
+  "speed": 41.94,
+  "ttft": 0.561,
+  "intelligence": 17.9,
+  "coding": 21.3
+ },
+ "mistral-small-4-non-reasoning": {
+  "speed": 154.169,
+  "ttft": 0.55,
+  "intelligence": 12.4,
+  "coding": null
+ },
+ "mistral-small-4": {
+  "speed": 181.778,
+  "ttft": 0.569,
+  "intelligence": 19.6,
+  "coding": 26.6
+ },
+ "magistral-small-2509": {
+  "speed": 82.682,
+  "ttft": 0.493,
+  "intelligence": 11.3,
+  "coding": 14.7
+ },
+ "mistral-large-3": {
+  "speed": 59.901,
+  "ttft": 0.656,
+  "intelligence": 15.9,
+  "coding": 20.1
+ },
+ "ministral-3-14b": {
+  "speed": 83.828,
+  "ttft": 0.483,
+  "intelligence": 11.1,
+  "coding": 14.4
+ },
+ "ministral-3-8b": {
+  "speed": 111.373,
+  "ttft": 0.453,
+  "intelligence": 9,
+  "coding": 9.7
+ },
+ "devstral-2": {
+  "speed": 69.262,
+  "ttft": 0.661,
+  "intelligence": 19.2,
+  "coding": 31.3
+ },
+ "ministral-3-3b": {
+  "speed": 166.759,
+  "ttft": 0.437,
+  "intelligence": 6.8,
+  "coding": 4.8
+ },
+ "deepseek-v4-pro-non-reasoning": {
+  "speed": 52.655,
+  "ttft": 1.024,
+  "intelligence": 31.2,
+  "coding": null
+ },
+ "deepseek-v4-pro": {
+  "speed": 57.025,
+  "ttft": 1.072,
+  "intelligence": 44.3,
+  "coding": 59.4
+ },
+ "deepseek-v4-pro-high": {
+  "speed": 53.202,
+  "ttft": 1.057,
+  "intelligence": 40.8,
+  "coding": null
+ },
+ "deepseek-v4-flash-high": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 37.4,
+  "coding": null
+ },
+ "deepseek-v4-flash": {
+  "speed": 94.308,
+  "ttft": 1.012,
+  "intelligence": 40.3,
+  "coding": 56.2
+ },
+ "deepseek-v4-flash-non-reasoning": {
+  "speed": 93.269,
+  "ttft": 0.817,
+  "intelligence": 28.7,
+  "coding": null
+ },
+ "r1-1776": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.3,
+  "coding": null
+ },
+ "falcon-h1r-7b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.8,
+  "coding": null
+ },
+ "grok-build-0-1-06-16": {
+  "speed": 63.789,
+  "ttft": 0.433,
+  "intelligence": 39.8,
+  "coding": 51.5
+ },
+ "grok-4-3-medium": {
+  "speed": 127.738,
+  "ttft": 10.695,
+  "intelligence": 36,
+  "coding": null
+ },
+ "grok-4-3-low": {
+  "speed": 126.302,
+  "ttft": 5.143,
+  "intelligence": 35.4,
+  "coding": null
+ },
+ "grok-4-3": {
+  "speed": 135.486,
+  "ttft": 22.772,
+  "intelligence": 37.6,
+  "coding": 42.2
+ },
+ "grok-4-3-non-reasoning": {
+  "speed": 112.708,
+  "ttft": 0.626,
+  "intelligence": 24.8,
+  "coding": 35.2
+ },
+ "nova-micro": {
+  "speed": 317.374,
+  "ttft": 0.6,
+  "intelligence": 4.7,
+  "coding": null
+ },
+ "nova-2-0-lite": {
+  "speed": 204.784,
+  "ttft": 0.833,
+  "intelligence": 11.8,
+  "coding": null
+ },
+ "nova-2-0-omni-reasoning-low": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 16.6,
+  "coding": null
+ },
+ "nova-2-0-lite-reasoning-medium": {
+  "speed": 173.484,
+  "ttft": 15.029,
+  "intelligence": 19,
+  "coding": null
+ },
+ "nova-2-0-pro-reasoning-low": {
+  "speed": 124.211,
+  "ttft": 4.248,
+  "intelligence": 19.6,
+  "coding": 25.9
+ },
+ "nova-2-0-omni-reasoning-medium": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 20.9,
+  "coding": null
+ },
+ "nova-2-0-omni": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10.5,
+  "coding": null
+ },
+ "nova-2-0-lite-reasoning": {
+  "speed": 150.991,
+  "ttft": 14.396,
+  "intelligence": 18.2,
+  "coding": 23
+ },
+ "nova-2-0-pro": {
+  "speed": 159.077,
+  "ttft": 0.732,
+  "intelligence": 14.4,
+  "coding": 20.9
+ },
+ "nova-2-0-lite-reasoning-low": {
+  "speed": 177.215,
+  "ttft": 3.947,
+  "intelligence": 17.8,
+  "coding": null
+ },
+ "nova-premier": {
+  "speed": 67.929,
+  "ttft": 1.186,
+  "intelligence": 12.7,
+  "coding": null
+ },
+ "nova-2-0-pro-reasoning-medium": {
+  "speed": 119.808,
+  "ttft": 14.474,
+  "intelligence": 21.8,
+  "coding": 34
+ },
+ "phi-4": {
+  "speed": 39.028,
+  "ttft": 0.519,
+  "intelligence": 4.9,
+  "coding": null
+ },
+ "phi-4-multimodal": {
+  "speed": 16.958,
+  "ttft": 0.394,
+  "intelligence": 4.5,
+  "coding": null
+ },
+ "phi-4-mini": {
+  "speed": 46.906,
+  "ttft": 0.814,
+  "intelligence": 3,
+  "coding": 3.8
+ },
+ "lfm2-5-vl-1-6b": {
+  "speed": 432.103,
+  "ttft": 1.12,
+  "intelligence": 1,
+  "coding": null
+ },
+ "lfm2-5-1-2b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.7,
+  "coding": null
+ },
+ "lfm2-24b-a2b": {
+  "speed": 117.409,
+  "ttft": 0.311,
+  "intelligence": 4.9,
+  "coding": null
+ },
+ "lfm2-2-6b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.7,
+  "coding": null
+ },
+ "lfm2-8b-a1b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1.8,
+  "coding": null
+ },
+ "lfm2-5-8b-a1b": {
+  "speed": 346.329,
+  "ttft": 10.013,
+  "intelligence": 8.3,
+  "coding": null
+ },
+ "lfm2-5-1-2b-thinking": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.7,
+  "coding": null
+ },
+ "solar-pro-3": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 14.1,
+  "coding": 16.2
+ },
+ "solar-open-100b-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 15.1,
+  "coding": null
+ },
+ "solar-pro-2-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9,
+  "coding": null
+ },
+ "solar-pro-2": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.8,
+  "coding": null
+ },
+ "minimax-m3": {
+  "speed": 105.273,
+  "ttft": 1.327,
+  "intelligence": 44.4,
+  "coding": 58.6
+ },
+ "minimax-m2-7": {
+  "speed": 43.41,
+  "ttft": 1.258,
+  "intelligence": 38.1,
+  "coding": 52.6
+ },
+ "llama-65b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.1,
+  "coding": null
+ },
+ "llama-3-1-nemotron-instruct-70b": {
+  "speed": 307.462,
+  "ttft": 3.608,
+  "intelligence": 7.6,
+  "coding": null
+ },
+ "nvidia-nemotron-3-nano-30b-a3b": {
+  "speed": 74.436,
+  "ttft": 0.263,
+  "intelligence": 7.4,
+  "coding": null
+ },
+ "nvidia-nemotron-nano-9b-v2-reasoning": {
+  "speed": 91.335,
+  "ttft": 7.764,
+  "intelligence": 8.8,
+  "coding": null
+ },
+ "nvidia-nemotron-3-ultra-550b-a55b": {
+  "speed": 212.27,
+  "ttft": 0.853,
+  "intelligence": 37.8,
+  "coding": 49.3
+ },
+ "nvidia-nemotron-3-super-120b-a12b": {
+  "speed": 240.741,
+  "ttft": 1.015,
+  "intelligence": 25.4,
+  "coding": 37.7
+ },
+ "nemotron-3-nano-omni-30b-a3b": {
+  "speed": 301.856,
+  "ttft": 0.572,
+  "intelligence": 14.9,
+  "coding": null
+ },
+ "nvidia-nemotron-nano-9b-v2": {
+  "speed": 135.923,
+  "ttft": 1.384,
+  "intelligence": 7.4,
+  "coding": null
+ },
+ "nemotron-cascade-2-30b-a3b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 21.3,
+  "coding": null
+ },
+ "nvidia-nemotron-3-nano-4b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.8,
+  "coding": null
+ },
+ "nvidia-nemotron-nano-12b-v2-vl-reasoning": {
+  "speed": 298.248,
+  "ttft": 0.226,
+  "intelligence": 9,
+  "coding": null
+ },
+ "nvidia-nemotron-3-nano-30b-a3b-reasoning": {
+  "speed": 83.123,
+  "ttft": 1.419,
+  "intelligence": 14.2,
+  "coding": 14.4
+ },
+ "llama-nemotron-super-49b-v1-5": {
+  "speed": 51.587,
+  "ttft": 0.263,
+  "intelligence": 8.7,
+  "coding": null
+ },
+ "llama-nemotron-super-49b-v1-5-reasoning": {
+  "speed": 52.358,
+  "ttft": 0.258,
+  "intelligence": 12.4,
+  "coding": null
+ },
+ "llama-3-1-nemotron-ultra-253b-v1-reasoning": {
+  "speed": 51.423,
+  "ttft": 0.702,
+  "intelligence": 9.1,
+  "coding": null
+ },
+ "nvidia-nemotron-nano-12b-v2-vl": {
+  "speed": 236.483,
+  "ttft": 0.698,
+  "intelligence": 4.6,
+  "coding": null
+ },
+ "kimi-k2-7-code": {
+  "speed": 44.634,
+  "ttft": 1.294,
+  "intelligence": 41.9,
+  "coding": 60.8
+ },
+ "kimi-k2-6": {
+  "speed": 46.48,
+  "ttft": 1.134,
+  "intelligence": 42.8,
+  "coding": 56
+ },
+ "kimi-k2-6-non-reasoning": {
+  "speed": 47.595,
+  "ttft": 1.097,
+  "intelligence": 34.6,
+  "coding": null
+ },
+ "qwen-chat-14b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.1,
+  "coding": null
+ },
+ "kimi-linear-48b-a3b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.5,
+  "coding": null
+ },
+ "step-3-vl-10b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.5,
+  "coding": null
+ },
+ "step-3-5-flash": {
+  "speed": 168.209,
+  "ttft": 0.903,
+  "intelligence": 26,
+  "coding": null
+ },
+ "step-3-7-flash": {
+  "speed": 387.611,
+  "ttft": 0.717,
+  "intelligence": 29.7,
+  "coding": 37.3
+ },
+ "olmo-3-1-32b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.5,
+  "coding": null
+ },
+ "olmo-3-1-32b-think": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.1,
+  "coding": null
+ },
+ "olmo-3-7b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.8,
+  "coding": null
+ },
+ "molmo2-8b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2,
+  "coding": null
+ },
+ "molmo-7b-d": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.8,
+  "coding": null
+ },
+ "olmo-3-7b-think": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4,
+  "coding": null
+ },
+ "granite-4-0-micro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.4,
+  "coding": null
+ },
+ "granite-4-1-3b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.2,
+  "coding": 4.7
+ },
+ "granite-4-0-h-nano-1b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.7,
+  "coding": null
+ },
+ "granite-4-0-h-350m": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1,
+  "coding": null
+ },
+ "granite-4-0-h-small": {
+  "speed": 439.317,
+  "ttft": 8.808,
+  "intelligence": 5.2,
+  "coding": null
+ },
+ "granite-4-1-30b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.9,
+  "coding": 10.4
+ },
+ "granite-4-0-nano-1b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.1,
+  "coding": null
+ },
+ "granite-4-0-350m": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1,
+  "coding": null
+ },
+ "granite-4-1-8b": {
+  "speed": 130.507,
+  "ttft": 0.482,
+  "intelligence": 6.7,
+  "coding": 9.5
+ },
+ "mercury-2": {
+  "speed": 820.484,
+  "ttft": 3.358,
+  "intelligence": 25.3,
+  "coding": null
+ },
+ "reka-flash-3": {
+  "speed": 91.698,
+  "ttft": 13.271,
+  "intelligence": 4.1,
+  "coding": null
+ },
+ "deephermes-3-llama-3-1-8b-preview": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.3,
+  "coding": null
+ },
+ "hermes-4-llama-3-1-70b": {
+  "speed": 93.272,
+  "ttft": 0.628,
+  "intelligence": 6.9,
+  "coding": null
+ },
+ "hermes-4-llama-3-1-405b-reasoning": {
+  "speed": 41.329,
+  "ttft": 0.81,
+  "intelligence": 9,
+  "coding": null
+ },
+ "hermes-4-llama-3-1-405b": {
+  "speed": 39.767,
+  "ttft": 0.774,
+  "intelligence": 8.8,
+  "coding": null
+ },
+ "hermes-4-llama-3-1-70b-reasoning": {
+  "speed": 96.625,
+  "ttft": 0.583,
+  "intelligence": 10,
+  "coding": null
+ },
+ "deephermes-3-mistral-24b-preview": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 5.3,
+  "coding": null
+ },
+ "exaone-4-0-1-2b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.8,
+  "coding": null
+ },
+ "exaone-4-0-32b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6,
+  "coding": null
+ },
+ "exaone-4-0-1-2b-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.9,
+  "coding": null
+ },
+ "exaone-4-0-32b-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10.6,
+  "coding": null
+ },
+ "k-exaone": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 24.7,
+  "coding": null
+ },
+ "k-exaone-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 16.7,
+  "coding": null
+ },
+ "exaone-4-5-33b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 23,
+  "coding": null
+ },
+ "mimo-v2-5-pro": {
+  "speed": 47.91,
+  "ttft": 1.817,
+  "intelligence": 42.2,
+  "coding": 60.2
+ },
+ "mimo-v2-0206": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 33.2,
+  "coding": null
+ },
+ "mimo-v2-omni-0327": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 36.4,
+  "coding": null
+ },
+ "mimo-v2-flash": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 24.7,
+  "coding": 49.8
+ },
+ "mimo-v2-omni": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 35,
+  "coding": null
+ },
+ "mimo-v2-5-0424": {
+  "speed": 85.061,
+  "ttft": 1.534,
+  "intelligence": 40.1,
+  "coding": null
+ },
+ "mimo-v2-5-pro-non-reasoning": {
+  "speed": 55.733,
+  "ttft": 1.443,
+  "intelligence": 27.9,
+  "coding": null
+ },
+ "ernie-4-5-300b-a47b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9,
+  "coding": null
+ },
+ "ernie-5-0-thinking-preview": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 21.9,
+  "coding": null
+ },
+ "sarvam-30b": {
+  "speed": 241.753,
+  "ttft": 1.179,
+  "intelligence": 6.6,
+  "coding": null
+ },
+ "sarvam-105b": {
+  "speed": 159.354,
+  "ttft": 1.182,
+  "intelligence": 11.9,
+  "coding": null
+ },
+ "hypernova-60b": {
+  "speed": 367.677,
+  "ttft": 0.539,
+  "intelligence": 22.1,
+  "coding": null
+ },
+ "cogito-v2-1-reasoning": {
+  "speed": 94.39,
+  "ttft": 0.404,
+  "intelligence": null,
+  "coding": null
+ },
+ "hy3": {
+  "speed": 148.61,
+  "ttft": 1.86,
+  "intelligence": 33.6,
+  "coding": null
+ },
+ "hy3-non-reasoning": {
+  "speed": 165.876,
+  "ttft": 1.828,
+  "intelligence": 26.1,
+  "coding": null
+ },
+ "kat-coder-pro-v2": {
+  "speed": 107.993,
+  "ttft": 0.914,
+  "intelligence": 35.4,
+  "coding": null
+ },
+ "kat-coder-pro-v1": {
+  "speed": 109.968,
+  "ttft": 1.219,
+  "intelligence": 34.6,
+  "coding": 58.9
+ },
+ "intellect-3": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 15.6,
+  "coding": null
+ },
+ "motif-2-12-7b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.8,
+  "coding": null
+ },
+ "k2-v2": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 14.2,
+  "coding": null
+ },
+ "k2-v2-medium": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.4,
+  "coding": null
+ },
+ "k2-v2-low": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.6,
+  "coding": null
+ },
+ "k2-think-v2": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 17.3,
+  "coding": 21
+ },
+ "mi-dm-k-2-5-pro-dec28": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 16.4,
+  "coding": null
+ },
+ "hyperclova-x-seed-think-32b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 17,
+  "coding": null
+ },
+ "longcat-flash-lite": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 17.2,
+  "coding": null
+ },
+ "tri-21b-think-v0-5": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.4,
+  "coding": null
+ },
+ "tri-21b-think-preview": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 13.6,
+  "coding": null
+ },
+ "nanbeige4-1-3b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10.1,
+  "coding": null
+ },
+ "apertus-70b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.4,
+  "coding": null
+ },
+ "apertus-8b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1,
+  "coding": null
+ },
+ "minicpm5-1b-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 11.7,
+  "coding": null
+ },
+ "minicpm-v4-6-1-3b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.2,
+  "coding": 0.7
+ },
+ "minicpm5-1b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12,
+  "coding": null
+ },
+ "trinity-large-thinking": {
+  "speed": 205.982,
+  "ttft": 0.657,
+  "intelligence": 24.5,
+  "coding": null
+ },
+ "jt-35b-flash": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 28.4,
+  "coding": null
+ },
+ "jt-mini": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 18.5,
+  "coding": null
+ },
+ "nex-n2-pro": {
+  "speed": 124.435,
+  "ttft": 0.971,
+  "intelligence": 41,
+  "coding": 59.1
+ },
+ "glm-5-1-non-reasoning": {
+  "speed": 50.985,
+  "ttft": 0.851,
+  "intelligence": 35.4,
+  "coding": null
+ },
+ "glm-5-2": {
+  "speed": 174.908,
+  "ttft": 0.838,
+  "intelligence": 51.1,
+  "coding": 68.8
+ },
+ "glm-5-1": {
+  "speed": 70.445,
+  "ttft": 0.864,
+  "intelligence": 40.2,
+  "coding": 55.8
+ },
+ "glm-5v-turbo": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 34.5,
+  "coding": null
+ },
+ "glm-5-turbo": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 38.1,
+  "coding": null
+ },
+ "north-mini-code": {
+  "speed": 77.405,
+  "ttft": 0.216,
+  "intelligence": 20.6,
+  "coding": null
+ },
+ "tiny-aya-global": {
+  "speed": 135.216,
+  "ttft": 0.235,
+  "intelligence": 1,
+  "coding": null
+ },
+ "command-a": {
+  "speed": 56.511,
+  "ttft": 0.364,
+  "intelligence": 7.7,
+  "coding": null
+ },
+ "command-a-plus": {
+  "speed": 148.159,
+  "ttft": 0.196,
+  "intelligence": 22.5,
+  "coding": 27.8
+ },
+ "apriel-v1-6-15b-thinker": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 20.5,
+  "coding": null
+ },
+ "jamba-1-7-large": {
+  "speed": 59.329,
+  "ttft": 0.901,
+  "intelligence": 5.3,
+  "coding": null
+ },
+ "jamba-reasoning-3b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.1,
+  "coding": null
+ },
+ "jamba-1-7-mini": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.7,
+  "coding": null
+ },
+ "qwen3-6-27b": {
+  "speed": 61.422,
+  "ttft": 1.472,
+  "intelligence": 37.1,
+  "coding": 53.7
+ },
+ "qwen3-6-35b-a3b": {
+  "speed": 142.428,
+  "ttft": 1.336,
+  "intelligence": 31.6,
+  "coding": 41.9
+ },
+ "qwen3-5-397b-a17b": {
+  "speed": 51.877,
+  "ttft": 1.731,
+  "intelligence": 33.7,
+  "coding": 48.2
+ },
+ "qwen3-6-27b-non-reasoning": {
+  "speed": 60.214,
+  "ttft": 1.474,
+  "intelligence": 29.3,
+  "coding": 46.6
+ },
+ "qwen3-5-9b": {
+  "speed": 44.897,
+  "ttft": 1.288,
+  "intelligence": 21.4,
+  "coding": 28.7
+ },
+ "qwen3-5-4b-non-reasoning": {
+  "speed": 19.874,
+  "ttft": 0.806,
+  "intelligence": 16,
+  "coding": 20.3
+ },
+ "qwen3-5-397b-a17b-non-reasoning": {
+  "speed": 52.291,
+  "ttft": 1.7,
+  "intelligence": 32,
+  "coding": null
+ },
+ "qwen3-6-35b-a3b-non-reasoning": {
+  "speed": 155.646,
+  "ttft": 1.16,
+  "intelligence": 24.2,
+  "coding": null
+ },
+ "qwen3-next-80b-a3b-reasoning": {
+  "speed": 168.291,
+  "ttft": 1.105,
+  "intelligence": 16.7,
+  "coding": 17.4
+ },
+ "qwen3-7-max": {
+  "speed": 199.658,
+  "ttft": 1.69,
+  "intelligence": 46,
+  "coding": 66
+ },
+ "qwen3-5-9b-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 20.3,
+  "coding": 23.5
+ },
+ "qwen3-5-omni-flash": {
+  "speed": 232.831,
+  "ttft": 1.078,
+  "intelligence": 19,
+  "coding": null
+ },
+ "qwen3-coder-next": {
+  "speed": 94.561,
+  "ttft": 0.933,
+  "intelligence": 21.2,
+  "coding": null
+ },
+ "qwen3-next-80b-a3b-instruct": {
+  "speed": 188.051,
+  "ttft": 1.058,
+  "intelligence": 13.7,
+  "coding": null
+ },
+ "qwen3-5-2b-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.8,
+  "coding": 17.4
+ },
+ "qwen3-5-122b-a10b": {
+  "speed": 143.69,
+  "ttft": 1.042,
+  "intelligence": 32.3,
+  "coding": 45.7
+ },
+ "qwen3-5-0-8b-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.4,
+  "coding": 21.9
+ },
+ "qwen3-6-plus": {
+  "speed": 51.506,
+  "ttft": 1.685,
+  "intelligence": 39.6,
+  "coding": 54.5
+ },
+ "qwen3-5-2b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10.2,
+  "coding": null
+ },
+ "qwen3-5-4b": {
+  "speed": 19.951,
+  "ttft": 0.634,
+  "intelligence": 20.1,
+  "coding": 22.6
+ },
+ "qwen3-7-plus": {
+  "speed": 51.654,
+  "ttft": 2.042,
+  "intelligence": 39,
+  "coding": 55.9
+ },
+ "qwen3-5-0-8b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 5,
+  "coding": null
+ },
+ "qwen3-omni-30b-a3b-reasoning": {
+  "speed": 99.826,
+  "ttft": 1.079,
+  "intelligence": 9.6,
+  "coding": null
+ },
+ "qwen3-5-35b-a3b-non-reasoning": {
+  "speed": 196.966,
+  "ttft": 1.197,
+  "intelligence": 23.4,
+  "coding": null
+ },
+ "qwen3-5-omni-plus": {
+  "speed": 55.842,
+  "ttft": 1.255,
+  "intelligence": 30.6,
+  "coding": null
+ },
+ "qwen3-5-122b-a10b-non-reasoning": {
+  "speed": 166.88,
+  "ttft": 1.043,
+  "intelligence": 28.1,
+  "coding": null
+ },
+ "qwen3-omni-30b-a3b-instruct": {
+  "speed": 106.494,
+  "ttft": 0.874,
+  "intelligence": 5.1,
+  "coding": null
+ },
+ "ling-2-6-flash": {
+  "speed": 185.503,
+  "ttft": 1.019,
+  "intelligence": 19.3,
+  "coding": null
+ },
+ "ring-2-6-1t": {
+  "speed": 124,
+  "ttft": 1.968,
+  "intelligence": 30.6,
+  "coding": 42.8
+ },
+ "ling-2-6-1t": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 26.1,
+  "coding": null
+ },
+ "ling-mini-2-0": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.8,
+  "coding": null
+ },
+ "ring-flash-2-0": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.2,
+  "coding": null
+ },
+ "doubao-seed-code": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 26,
+  "coding": null
+ },
+ "o1": {
+  "speed": 122.195,
+  "ttft": 13.346,
+  "intelligence": 23.4,
+  "coding": 39.7
+ },
+ "o1-preview": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 17,
+  "coding": 34
+ },
+ "o1-mini": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 14,
+  "coding": null
+ },
+ "gpt-4o-2024-08-06": {
+  "speed": 107.816,
+  "ttft": 0.57,
+  "intelligence": 9.6,
+  "coding": null
+ },
+ "gpt-4o-2024-05-13": {
+  "speed": 116.777,
+  "ttft": 0.552,
+  "intelligence": 8.6,
+  "coding": 24.2
+ },
+ "gpt-4-turbo": {
+  "speed": 38.313,
+  "ttft": 1.284,
+  "intelligence": 7.9,
+  "coding": 21.5
+ },
+ "gpt-4o": {
+  "speed": 208.501,
+  "ttft": 0.451,
+  "intelligence": 11.2,
+  "coding": null
+ },
+ "gpt-4o-mini": {
+  "speed": 74.178,
+  "ttft": 0.602,
+  "intelligence": 6.9,
+  "coding": 11.4
+ },
+ "gpt-35-turbo": {
+  "speed": 146.196,
+  "ttft": 0.613,
+  "intelligence": 3.6,
+  "coding": 10.7
+ },
+ "o4-mini": {
+  "speed": 155.597,
+  "ttft": 15.94,
+  "intelligence": 25.6,
+  "coding": null
+ },
+ "gpt-5-nano-minimal": {
+  "speed": 149.766,
+  "ttft": 0.709,
+  "intelligence": 8,
+  "coding": null
+ },
+ "gpt-5-mini": {
+  "speed": 106.049,
+  "ttft": 94.962,
+  "intelligence": 25.3,
+  "coding": 15.6
+ },
+ "gpt-4-1": {
+  "speed": 130.599,
+  "ttft": 0.595,
+  "intelligence": 19.4,
+  "coding": null
+ },
+ "gpt-5": {
+  "speed": 91.663,
+  "ttft": 87.588,
+  "intelligence": 34.7,
+  "coding": 37.8
+ },
+ "gpt-5-2": {
+  "speed": 74.203,
+  "ttft": 95.945,
+  "intelligence": 42.2,
+  "coding": null
+ },
+ "gpt-5-1": {
+  "speed": 102.489,
+  "ttft": 26.754,
+  "intelligence": 36.9,
+  "coding": 49.4
+ },
+ "gpt-4-1-nano": {
+  "speed": 184.507,
+  "ttft": 0.521,
+  "intelligence": 9.6,
+  "coding": 11.1
+ },
+ "gpt-5-low": {
+  "speed": 81.069,
+  "ttft": 9.023,
+  "intelligence": 31.2,
+  "coding": null
+ },
+ "gpt-5-2-medium": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 38,
+  "coding": null
+ },
+ "gpt-5-nano-medium": {
+  "speed": 140.473,
+  "ttft": 45.485,
+  "intelligence": 19,
+  "coding": null
+ },
+ "gpt-4-1-mini": {
+  "speed": 87.093,
+  "ttft": 0.63,
+  "intelligence": 14.8,
+  "coding": 20.2
+ },
+ "gpt-5-4": {
+  "speed": 154.81,
+  "ttft": 93.323,
+  "intelligence": 51.4,
+  "coding": 71.1
+ },
+ "gpt-5-mini-minimal": {
+  "speed": 99.86,
+  "ttft": 0.777,
+  "intelligence": 14.3,
+  "coding": null
+ },
+ "gpt-5-minimal": {
+  "speed": 70.618,
+  "ttft": 0.925,
+  "intelligence": 17.2,
+  "coding": null
+ },
+ "gpt-5-nano": {
+  "speed": 138.788,
+  "ttft": 93.608,
+  "intelligence": 19.9,
+  "coding": null
+ },
+ "gpt-5-2-codex": {
+  "speed": 121.873,
+  "ttft": 1.222,
+  "intelligence": 40.1,
+  "coding": null
+ },
+ "gpt-5-1-codex": {
+  "speed": 169.183,
+  "ttft": 2.409,
+  "intelligence": 34.7,
+  "coding": null
+ },
+ "gpt-5-1-codex-mini": {
+  "speed": 210.021,
+  "ttft": 2.96,
+  "intelligence": 30.6,
+  "coding": null
+ },
+ "gpt-5-chatgpt": {
+  "speed": 180.992,
+  "ttft": 0.508,
+  "intelligence": 15.3,
+  "coding": null
+ },
+ "o3-mini-high": {
+  "speed": 246.387,
+  "ttft": 13.879,
+  "intelligence": 15.6,
+  "coding": 16.3
+ },
+ "o3-mini": {
+  "speed": 227.019,
+  "ttft": 3.96,
+  "intelligence": 19,
+  "coding": null
+ },
+ "o1-pro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 18.9,
+  "coding": null
+ },
+ "gpt-5-5-instant-05-26": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 33.5,
+  "coding": null
+ },
+ "gpt-5-1-non-reasoning": {
+  "speed": 93.757,
+  "ttft": 0.777,
+  "intelligence": 20.4,
+  "coding": null
+ },
+ "o3-pro": {
+  "speed": 31.511,
+  "ttft": 62.962,
+  "intelligence": 32.5,
+  "coding": null
+ },
+ "gpt-5-4-non-reasoning": {
+  "speed": 100.479,
+  "ttft": 0.656,
+  "intelligence": 27.7,
+  "coding": null
+ },
+ "gpt-5-4-low": {
+  "speed": 113.118,
+  "ttft": 1.132,
+  "intelligence": 39.1,
+  "coding": null
+ },
+ "gpt-4o-chatgpt-03-25": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.3,
+  "coding": null
+ },
+ "gpt-5-mini-medium": {
+  "speed": 97.505,
+  "ttft": 18.819,
+  "intelligence": 30.9,
+  "coding": null
+ },
+ "gpt-4-5": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 13.6,
+  "coding": null
+ },
+ "gpt-5-codex": {
+  "speed": 165.921,
+  "ttft": 3.798,
+  "intelligence": 36.1,
+  "coding": null
+ },
+ "gpt-5-medium": {
+  "speed": 78.596,
+  "ttft": 38.488,
+  "intelligence": 33.7,
+  "coding": null
+ },
+ "gpt-4": {
+  "speed": 43.723,
+  "ttft": 0.879,
+  "intelligence": 7,
+  "coding": 13.1
+ },
+ "gpt-4o-chatgpt": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.2,
+  "coding": null
+ },
+ "gpt-5-2-non-reasoning": {
+  "speed": 65.995,
+  "ttft": 0.745,
+  "intelligence": 26,
+  "coding": null
+ },
+ "llama-3-1-instruct-70b": {
+  "speed": 33.006,
+  "ttft": 0.594,
+  "intelligence": 6.8,
+  "coding": null
+ },
+ "llama-3-1-instruct-8b": {
+  "speed": 162.552,
+  "ttft": 0.533,
+  "intelligence": 7.6,
+  "coding": 5.4
+ },
+ "llama-3-2-instruct-3b": {
+  "speed": 52.296,
+  "ttft": 0.625,
+  "intelligence": 4.2,
+  "coding": null
+ },
+ "llama-3-instruct-70b": {
+  "speed": 46.717,
+  "ttft": 0.65,
+  "intelligence": 3.5,
+  "coding": null
+ },
+ "llama-3-instruct-8b": {
+  "speed": 81.3,
+  "ttft": 0.484,
+  "intelligence": 1.2,
+  "coding": null
+ },
+ "llama-3-2-instruct-1b": {
+  "speed": 85.621,
+  "ttft": 0.581,
+  "intelligence": 1.1,
+  "coding": null
+ },
+ "llama-2-chat-13b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3,
+  "coding": null
+ },
+ "llama-2-chat-70b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3,
+  "coding": null
+ },
+ "llama-2-chat-7b": {
+  "speed": 120.453,
+  "ttft": 1.139,
+  "intelligence": 4.3,
+  "coding": null
+ },
+ "gemini-2-0-pro-experimental-02-05": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 11.8,
+  "coding": 25.5
+ },
+ "gemini-2-0-flash-experimental": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10.7,
+  "coding": null
+ },
+ "gemini-1-5-pro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10,
+  "coding": 23.6
+ },
+ "gemini-2-0-flash-lite-preview": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.6,
+  "coding": null
+ },
+ "gemini-2-0-flash": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.3,
+  "coding": null
+ },
+ "gemini-1-5-flash": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8,
+  "coding": null
+ },
+ "gemini-1-5-flash-8b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 5.5,
+  "coding": null
+ },
+ "gemma-3-1b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1,
+  "coding": null
+ },
+ "gemma-3n-e2b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1,
+  "coding": null
+ },
+ "gemma-3-27b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.4,
+  "coding": 10.1
+ },
+ "gemma-3-12b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.4,
+  "coding": 5.8
+ },
+ "gemini-2-5-flash-lite-reasoning": {
+  "speed": 251.665,
+  "ttft": 20.609,
+  "intelligence": 11.4,
+  "coding": null
+ },
+ "gemma-3-4b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1.1,
+  "coding": 2.7
+ },
+ "gemini-2-0-flash-thinking-exp-1219": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.6,
+  "coding": null
+ },
+ "gemini-3-pro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 39.6,
+  "coding": null
+ },
+ "gemini-2-5-flash-preview-09-2025-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 23.8,
+  "coding": null
+ },
+ "gemma-3n-e4b": {
+  "speed": 51.523,
+  "ttft": 0.388,
+  "intelligence": 1.2,
+  "coding": 3.2
+ },
+ "gemma-3n-e4b-preview-0520": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.6,
+  "coding": null
+ },
+ "gemini-3-pro-low": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 33.1,
+  "coding": null
+ },
+ "gemini-1-5-flash-may-2024": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.9,
+  "coding": null
+ },
+ "gemini-1-0-pro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.1,
+  "coding": null
+ },
+ "gemini-2-5-flash-preview-09-2025": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 18.8,
+  "coding": null
+ },
+ "gemini-2-5-flash-lite-preview-09-2025-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 15.1,
+  "coding": null
+ },
+ "gemini-2-5-flash-04-2025": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 11.7,
+  "coding": null
+ },
+ "gemini-3-flash-reasoning": {
+  "speed": 178.297,
+  "ttft": 5.598,
+  "intelligence": 37.8,
+  "coding": null
+ },
+ "gemini-2-0-flash-lite-001": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.8,
+  "coding": null
+ },
+ "gemini-3-flash": {
+  "speed": 192.107,
+  "ttft": 0.725,
+  "intelligence": 27.4,
+  "coding": null
+ },
+ "gemini-2-5-flash-lite-preview-09-2025": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 13.1,
+  "coding": null
+ },
+ "gemini-2-5-flash": {
+  "speed": 198.199,
+  "ttft": 0.433,
+  "intelligence": 14.1,
+  "coding": null
+ },
+ "gemini-2-5-flash-reasoning-04-2025": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 17.5,
+  "coding": null
+ },
+ "gemini-2-5-pro-03-25": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 23,
+  "coding": 46.7
+ },
+ "palm-2": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.2,
+  "coding": 4.6
+ },
+ "gemini-1-0-ultra": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.6,
+  "coding": 17.6
+ },
+ "gemini-2-5-flash-reasoning": {
+  "speed": 225.391,
+  "ttft": 10.817,
+  "intelligence": 20.1,
+  "coding": null
+ },
+ "gemini-2-5-flash-lite": {
+  "speed": 210.01,
+  "ttft": 0.297,
+  "intelligence": 6.9,
+  "coding": null
+ },
+ "gemini-1-5-pro-may-2024": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.3,
+  "coding": 19.8
+ },
+ "gemini-2-5-pro-05-06": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 22.3,
+  "coding": null
+ },
+ "gemini-2-0-flash-thinking-exp-0121": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 13.3,
+  "coding": 24.1
+ },
+ "claude-35-sonnet": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.9,
+  "coding": 30.2
+ },
+ "claude-35-sonnet-june-24": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.3,
+  "coding": 26
+ },
+ "claude-3-opus": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 11.8,
+  "coding": 19.5
+ },
+ "claude-3-5-haiku": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.3,
+  "coding": 15.9
+ },
+ "claude-3-sonnet": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.7,
+  "coding": null
+ },
+ "claude-3-haiku": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.9,
+  "coding": null
+ },
+ "claude-instant": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.1,
+  "coding": 7.8
+ },
+ "claude-4-1-opus": {
+  "speed": 34.779,
+  "ttft": 1.977,
+  "intelligence": 28.2,
+  "coding": null
+ },
+ "claude-opus-4-6": {
+  "speed": 43.407,
+  "ttft": 1.769,
+  "intelligence": 37.8,
+  "coding": null
+ },
+ "claude-opus-4-5": {
+  "speed": 47.781,
+  "ttft": 1.31,
+  "intelligence": 34.7,
+  "coding": null
+ },
+ "claude-3-7-sonnet": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 23.5,
+  "coding": null
+ },
+ "claude-4-5-sonnet": {
+  "speed": 45.828,
+  "ttft": 1.261,
+  "intelligence": 29.3,
+  "coding": null
+ },
+ "claude-sonnet-4-6-adaptive": {
+  "speed": 60.146,
+  "ttft": 51.714,
+  "intelligence": 47.2,
+  "coding": 63
+ },
+ "claude-2": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.6,
+  "coding": 12.9
+ },
+ "claude-4-sonnet": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 25.5,
+  "coding": null
+ },
+ "claude-4-opus": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 25.5,
+  "coding": null
+ },
+ "claude-4-1-opus-thinking": {
+  "speed": 35.271,
+  "ttft": 8.871,
+  "intelligence": 33.7,
+  "coding": null
+ },
+ "claude-opus-4-6-adaptive": {
+  "speed": 46.882,
+  "ttft": 10.249,
+  "intelligence": 43.7,
+  "coding": null
+ },
+ "claude-sonnet-4-6": {
+  "speed": 46.569,
+  "ttft": 0.988,
+  "intelligence": 35.9,
+  "coding": null
+ },
+ "claude-4-sonnet-thinking": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 28.9,
+  "coding": 37.6
+ },
+ "claude-3-7-sonnet-thinking": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 27.1,
+  "coding": 36.4
+ },
+ "claude-4-5-sonnet-thinking": {
+  "speed": 52.936,
+  "ttft": 8.304,
+  "intelligence": 36.4,
+  "coding": 52.1
+ },
+ "claude-4-opus-thinking": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 31,
+  "coding": null
+ },
+ "claude-opus-4-5-thinking": {
+  "speed": 55.956,
+  "ttft": 7.887,
+  "intelligence": 40.8,
+  "coding": null
+ },
+ "claude-21": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.9,
+  "coding": 14
+ },
+ "mistral-large-2": {
+  "speed": 62.053,
+  "ttft": 0.788,
+  "intelligence": 9.1,
+  "coding": null
+ },
+ "mistral-large-2407": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.3,
+  "coding": null
+ },
+ "pixtral-large-2411": {
+  "speed": 57.926,
+  "ttft": 0.701,
+  "intelligence": 8.1,
+  "coding": null
+ },
+ "mistral-small-3": {
+  "speed": 158.525,
+  "ttft": 0.539,
+  "intelligence": 6.9,
+  "coding": null
+ },
+ "mistral-small": {
+  "speed": 157.986,
+  "ttft": 0.542,
+  "intelligence": 4.7,
+  "coding": null
+ },
+ "mistral-8x22b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.4,
+  "coding": null
+ },
+ "mistral-small-2402": {
+  "speed": 157.566,
+  "ttft": 0.556,
+  "intelligence": 3.6,
+  "coding": null
+ },
+ "mistral-large": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.4,
+  "coding": null
+ },
+ "mixtral-8x7b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.4,
+  "coding": null
+ },
+ "mistral-7b-instruct": {
+  "speed": 98.556,
+  "ttft": 0.484,
+  "intelligence": 2.1,
+  "coding": null
+ },
+ "devstral-small-2505": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 11.8,
+  "coding": null
+ },
+ "mistral-medium": {
+  "speed": 88.483,
+  "ttft": 0.582,
+  "intelligence": 3.6,
+  "coding": null
+ },
+ "mistral-small-3-1": {
+  "speed": 159.04,
+  "ttft": 0.55,
+  "intelligence": 14.7,
+  "coding": 26.3
+ },
+ "mistral-small-3-2": {
+  "speed": 149.865,
+  "ttft": 0.449,
+  "intelligence": 10.6,
+  "coding": 12.5
+ },
+ "magistral-medium": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.5,
+  "coding": null
+ },
+ "mistral-medium-3": {
+  "speed": 45.682,
+  "ttft": 0.597,
+  "intelligence": 12.5,
+  "coding": null
+ },
+ "magistral-small": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10.7,
+  "coding": null
+ },
+ "mistral-saba": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.4,
+  "coding": null
+ },
+ "mistral-medium-3-1": {
+  "speed": 84.541,
+  "ttft": 0.559,
+  "intelligence": 14.7,
+  "coding": 20.5
+ },
+ "devstral-small": {
+  "speed": 72.528,
+  "ttft": 0.56,
+  "intelligence": 9.3,
+  "coding": null
+ },
+ "devstral-medium": {
+  "speed": 62.533,
+  "ttft": 0.571,
+  "intelligence": 12.4,
+  "coding": null
+ },
+ "deepseek-r1-distill-llama-70b": {
+  "speed": 30.61,
+  "ttft": 0.45,
+  "intelligence": 9.9,
+  "coding": null
+ },
+ "deepseek-r1-distill-qwen-32b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 11,
+  "coding": null
+ },
+ "deepseek-v3": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 14.2,
+  "coding": 23
+ },
+ "deepseek-r1-distill-qwen-14b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.8,
+  "coding": null
+ },
+ "deepseek-v2-5": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.8,
+  "coding": null
+ },
+ "deepseek-coder-v2": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 5.1,
+  "coding": null
+ },
+ "deepseek-r1-distill-llama-8b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.4,
+  "coding": null
+ },
+ "deepseek-llm-67b-chat": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3,
+  "coding": null
+ },
+ "deepseek-r1-distill-qwen-1-5b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.7,
+  "coding": null
+ },
+ "deepseek-v3-2": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 24.7,
+  "coding": null
+ },
+ "deepseek-v3-0324": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 15.4,
+  "coding": 21.2
+ },
+ "deepseek-r1-0120": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 18.5,
+  "coding": 24.6
+ },
+ "deepseek-v3-1": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 21,
+  "coding": null
+ },
+ "deepseek-v3-1-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 20.7,
+  "coding": null
+ },
+ "deepseek-r1": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 20.1,
+  "coding": null
+ },
+ "deepseek-v2-5-sep-2024": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.6,
+  "coding": null
+ },
+ "deepseek-v3-1-terminus": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 21.4,
+  "coding": null
+ },
+ "deepseek-v2": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.6,
+  "coding": null
+ },
+ "deepseek-v3-1-terminus-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 26.3,
+  "coding": null
+ },
+ "deepseek-v3-2-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 33.4,
+  "coding": null
+ },
+ "deepseek-v3-2-0925": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 21.3,
+  "coding": null
+ },
+ "deepseek-coder-v2-lite": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.1,
+  "coding": null
+ },
+ "deepseek-v3-2-reasoning-0925": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 25.4,
+  "coding": null
+ },
+ "deepseek-v3-2-speciale": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 22.2,
+  "coding": null
+ },
+ "deepseek-r1-qwen3-8b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10.4,
+  "coding": null
+ },
+ "sonar": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.5,
+  "coding": null
+ },
+ "sonar-reasoning-pro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 17.8,
+  "coding": null
+ },
+ "sonar-pro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.3,
+  "coding": null
+ },
+ "sonar-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 11.7,
+  "coding": null
+ },
+ "grok-beta": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.5,
+  "coding": null
+ },
+ "grok-code-fast-1": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 21.6,
+  "coding": null
+ },
+ "grok-4-20-non-reasoning": {
+  "speed": 215.882,
+  "ttft": 0.392,
+  "intelligence": 21.8,
+  "coding": null
+ },
+ "grok-4": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 33.3,
+  "coding": null
+ },
+ "grok-4-20-0309-non-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 22.5,
+  "coding": null
+ },
+ "grok-4-1-fast": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 16.9,
+  "coding": null
+ },
+ "grok-2-1212": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8,
+  "coding": null
+ },
+ "grok-3": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 18.4,
+  "coding": null
+ },
+ "grok-4-1-fast-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 30.6,
+  "coding": null
+ },
+ "grok-4-20-0309": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 36.5,
+  "coding": null
+ },
+ "grok-4-fast": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 16.5,
+  "coding": null
+ },
+ "grok-4-fast-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 27.4,
+  "coding": null
+ },
+ "grok-3-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 15.1,
+  "coding": null
+ },
+ "grok-3-mini-reasoning": {
+  "speed": 58.97,
+  "ttft": 0.606,
+  "intelligence": 22.5,
+  "coding": null
+ },
+ "grok-4-20": {
+  "speed": 213.725,
+  "ttft": 11.897,
+  "intelligence": 37,
+  "coding": null
+ },
+ "openchat-35": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3,
+  "coding": null
+ },
+ "nova-pro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.7,
+  "coding": null
+ },
+ "nova-lite": {
+  "speed": 173.158,
+  "ttft": 0.686,
+  "intelligence": 6.9,
+  "coding": null
+ },
+ "phi-3-mini": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.6,
+  "coding": null
+ },
+ "lfm-40b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.4,
+  "coding": null
+ },
+ "lfm2-1-2b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1.1,
+  "coding": null
+ },
+ "solar-mini": {
+  "speed": 79.338,
+  "ttft": 0.757,
+  "intelligence": 6.2,
+  "coding": null
+ },
+ "solar-pro-2-preview-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.5,
+  "coding": null
+ },
+ "solar-pro-2-preview": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10,
+  "coding": null
+ },
+ "dbrx": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3,
+  "coding": null
+ },
+ "minimax-m1-80k": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 17.7,
+  "coding": null
+ },
+ "minimax-m2-5": {
+  "speed": 72.741,
+  "ttft": 1.208,
+  "intelligence": 33.7,
+  "coding": null
+ },
+ "minimax-m1-40k": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 14.4,
+  "coding": null
+ },
+ "minimax-m2-1": {
+  "speed": 72.38,
+  "ttft": 1.415,
+  "intelligence": 31.4,
+  "coding": null
+ },
+ "minimax-m2": {
+  "speed": 72.051,
+  "ttft": 1.259,
+  "intelligence": 28.3,
+  "coding": null
+ },
+ "llama-3-1-nemotron-nano-4b-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.5,
+  "coding": null
+ },
+ "llama-3-3-nemotron-super-49b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.5,
+  "coding": null
+ },
+ "llama-3-3-nemotron-super-49b-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.2,
+  "coding": null
+ },
+ "kimi-k2-thinking": {
+  "speed": 163.264,
+  "ttft": 0.759,
+  "intelligence": 32.7,
+  "coding": null
+ },
+ "kimi-k2-0905": {
+  "speed": 37.26,
+  "ttft": 1.002,
+  "intelligence": 23.5,
+  "coding": null
+ },
+ "kimi-k2": {
+  "speed": 37.408,
+  "ttft": 1.135,
+  "intelligence": 19.4,
+  "coding": null
+ },
+ "kimi-k2-5": {
+  "speed": 32.231,
+  "ttft": 1.208,
+  "intelligence": 38.1,
+  "coding": null
+ },
+ "kimi-k2-5-non-reasoning": {
+  "speed": 33.505,
+  "ttft": 1.301,
+  "intelligence": 29.4,
+  "coding": null
+ },
+ "step-3-5-flash-0202": {
+  "speed": 160.825,
+  "ttft": 0.971,
+  "intelligence": 25.5,
+  "coding": null
+ },
+ "tulu3-405b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.3,
+  "coding": null
+ },
+ "olmo-3-32b-think": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.4,
+  "coding": null
+ },
+ "olmo-2-32b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 5,
+  "coding": null
+ },
+ "olmo-2-7b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.9,
+  "coding": null
+ },
+ "granite-3-3-8b-instruct": {
+  "speed": 374.909,
+  "ttft": 20.542,
+  "intelligence": 1.8,
+  "coding": null
+ },
+ "reka-flash": {
+  "speed": 85.937,
+  "ttft": 1.757,
+  "intelligence": 6.3,
+  "coding": null
+ },
+ "hermes-3-llama-3-1-70b": {
+  "speed": 35.815,
+  "ttft": 0.453,
+  "intelligence": 5.1,
+  "coding": null
+ },
+ "mimo-v2-pro": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 40.3,
+  "coding": null
+ },
+ "mimo-v2-flash-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 31.2,
+  "coding": null
+ },
+ "sarvam-m-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3,
+  "coding": null
+ },
+ "glm-5-non-reasoning": {
+  "speed": 60.474,
+  "ttft": 0.976,
+  "intelligence": 32.4,
+  "coding": null
+ },
+ "glm-4.5": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 19.5,
+  "coding": null
+ },
+ "glm-5": {
+  "speed": 50.961,
+  "ttft": 0.786,
+  "intelligence": 39.5,
+  "coding": null
+ },
+ "glm-4-7-non-reasoning": {
+  "speed": 113.807,
+  "ttft": 0.58,
+  "intelligence": 26.6,
+  "coding": null
+ },
+ "glm-4-6v-reasoning": {
+  "speed": 54.575,
+  "ttft": 1.191,
+  "intelligence": 16.8,
+  "coding": null
+ },
+ "glm-4-7-flash": {
+  "speed": 73.623,
+  "ttft": 0.93,
+  "intelligence": 22.9,
+  "coding": null
+ },
+ "glm-4-7": {
+  "speed": 136.156,
+  "ttft": 0.534,
+  "intelligence": 33.7,
+  "coding": 45.3
+ },
+ "glm-4-6-reasoning": {
+  "speed": 47.699,
+  "ttft": 1.056,
+  "intelligence": 25.1,
+  "coding": null
+ },
+ "glm-4-6v": {
+  "speed": 54.397,
+  "ttft": 1.08,
+  "intelligence": 11,
+  "coding": null
+ },
+ "glm-4-5v": {
+  "speed": 45.765,
+  "ttft": 10.618,
+  "intelligence": 7,
+  "coding": null
+ },
+ "glm-4-6": {
+  "speed": 46.981,
+  "ttft": 1.859,
+  "intelligence": 23,
+  "coding": null
+ },
+ "glm-4-7-flash-non-reasoning": {
+  "speed": 217.687,
+  "ttft": 0.963,
+  "intelligence": 15.5,
+  "coding": null
+ },
+ "glm-4-5-air": {
+  "speed": 71.832,
+  "ttft": 1.506,
+  "intelligence": 16.5,
+  "coding": null
+ },
+ "glm-4-5v-reasoning": {
+  "speed": 59.573,
+  "ttft": 1.166,
+  "intelligence": 9.1,
+  "coding": null
+ },
+ "command-r-plus-04-2024": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3,
+  "coding": null
+ },
+ "command-r-03-2024": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.1,
+  "coding": null
+ },
+ "apriel-v1-5-15b-thinker": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 21.2,
+  "coding": null
+ },
+ "jamba-1-5-large": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 5.1,
+  "coding": null
+ },
+ "jamba-1-6-mini": {
+  "speed": 187.37,
+  "ttft": 0.777,
+  "intelligence": 2.6,
+  "coding": null
+ },
+ "jamba-1-6-large": {
+  "speed": 59.62,
+  "ttft": 0.96,
+  "intelligence": 5,
+  "coding": null
+ },
+ "jamba-1-5-mini": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.7,
+  "coding": null
+ },
+ "arctic-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.4,
+  "coding": null
+ },
+ "qwen-2-5-max": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 10.2,
+  "coding": null
+ },
+ "qwen2-5-72b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.6,
+  "coding": null
+ },
+ "qwen2-5-coder-32b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.1,
+  "coding": null
+ },
+ "qwen-turbo": {
+  "speed": 113.977,
+  "ttft": 1.087,
+  "intelligence": 6.3,
+  "coding": null
+ },
+ "qwen2-72b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6,
+  "coding": null
+ },
+ "qwen3-32b-instruct-reasoning": {
+  "speed": 100.215,
+  "ttft": 1.158,
+  "intelligence": 11.5,
+  "coding": 15.3
+ },
+ "qwen2.5-32b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.5,
+  "coding": null
+ },
+ "qwen3-30b-a3b-instruct-reasoning": {
+  "speed": 111.145,
+  "ttft": 1.012,
+  "intelligence": 9.3,
+  "coding": null
+ },
+ "qwen3-235b-a22b-instruct": {
+  "speed": 63.948,
+  "ttft": 1.16,
+  "intelligence": 10.9,
+  "coding": null
+ },
+ "qwen3-235b-a22b-instruct-2507": {
+  "speed": 63.919,
+  "ttft": 1.242,
+  "intelligence": 18.2,
+  "coding": null
+ },
+ "qwen3-32b-instruct": {
+  "speed": 102.378,
+  "ttft": 1.038,
+  "intelligence": 8.6,
+  "coding": null
+ },
+ "qwq-32b": {
+  "speed": 31.353,
+  "ttft": 0.506,
+  "intelligence": 13.4,
+  "coding": null
+ },
+ "qwen3-30b-a3b-2507": {
+  "speed": 168.308,
+  "ttft": 0.963,
+  "intelligence": 9.1,
+  "coding": null
+ },
+ "qwen3-235b-a22b-instruct-2507-reasoning": {
+  "speed": 58.523,
+  "ttft": 1.422,
+  "intelligence": 19.6,
+  "coding": 22.1
+ },
+ "qwen3-vl-235b-a22b-instruct": {
+  "speed": 49.947,
+  "ttft": 1.344,
+  "intelligence": 14.3,
+  "coding": null
+ },
+ "qwen3-235b-a22b-instruct-reasoning": {
+  "speed": 62.424,
+  "ttft": 1.254,
+  "intelligence": 13.4,
+  "coding": null
+ },
+ "QwQ-32B-Preview": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 9.2,
+  "coding": null
+ },
+ "qwen3-coder-480b-a35b-instruct": {
+  "speed": 54.98,
+  "ttft": 1.646,
+  "intelligence": 18,
+  "coding": null
+ },
+ "qwen2-5-coder-7b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.5,
+  "coding": null
+ },
+ "qwen3-4b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 6.8,
+  "coding": null
+ },
+ "qwen3-8b-instruct": {
+  "speed": 67.361,
+  "ttft": 1.397,
+  "intelligence": 5.1,
+  "coding": null
+ },
+ "qwen3-8b-instruct-reasoning": {
+  "speed": 65.1,
+  "ttft": 1.359,
+  "intelligence": 8.3,
+  "coding": 9
+ },
+ "qwen3-5-35b-a3b": {
+  "speed": 165.409,
+  "ttft": 1.067,
+  "intelligence": 29.3,
+  "coding": null
+ },
+ "qwen3-14b-instruct-reasoning": {
+  "speed": 62.814,
+  "ttft": 1.039,
+  "intelligence": 10.4,
+  "coding": 13.8
+ },
+ "qwen3-5-27b": {
+  "speed": 85.076,
+  "ttft": 1.34,
+  "intelligence": 33.8,
+  "coding": null
+ },
+ "qwen3-coder-30b-a3b-instruct": {
+  "speed": 108.989,
+  "ttft": 1.411,
+  "intelligence": 13.6,
+  "coding": null
+ },
+ "qwen3-vl-30b-a3b-reasoning": {
+  "speed": 122.585,
+  "ttft": 1.181,
+  "intelligence": 13.3,
+  "coding": null
+ },
+ "qwen3-vl-235b-a22b-reasoning": {
+  "speed": 59.639,
+  "ttft": 1.219,
+  "intelligence": 20.6,
+  "coding": null
+ },
+ "qwen3-vl-30b-a3b-instruct": {
+  "speed": 108.61,
+  "ttft": 0.979,
+  "intelligence": 10,
+  "coding": null
+ },
+ "qwen3-5-27b-non-reasoning": {
+  "speed": 92.11,
+  "ttft": 1.351,
+  "intelligence": 29.3,
+  "coding": null
+ },
+ "qwen3-vl-8b-instruct": {
+  "speed": 142.297,
+  "ttft": 0.968,
+  "intelligence": 8.4,
+  "coding": null
+ },
+ "qwen3-4b-instruct-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 8.4,
+  "coding": null
+ },
+ "qwen3-0.6b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1,
+  "coding": null
+ },
+ "qwen3-4b-2507-instruct-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12,
+  "coding": null
+ },
+ "qwen3-1.7b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1.5,
+  "coding": null
+ },
+ "qwen3-30b-a3b-2507-reasoning": {
+  "speed": 141.823,
+  "ttft": 1.137,
+  "intelligence": 14.4,
+  "coding": 12.1
+ },
+ "qwen3-vl-32b-instruct": {
+  "speed": 71.565,
+  "ttft": 1.248,
+  "intelligence": 11.1,
+  "coding": null
+ },
+ "qwen3-0.6b-instruct-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 1.3,
+  "coding": null
+ },
+ "qwen3-1.7b-instruct-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 2.6,
+  "coding": null
+ },
+ "qwen3-4b-2507-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.1,
+  "coding": null
+ },
+ "qwen3-30b-a3b-instruct": {
+  "speed": 111.882,
+  "ttft": 1.1,
+  "intelligence": 6.8,
+  "coding": null
+ },
+ "qwen3-vl-4b-instruct": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.1,
+  "coding": null
+ },
+ "qwen3-vl-4b-reasoning": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 7.9,
+  "coding": null
+ },
+ "qwen3-14b-instruct": {
+  "speed": 63.778,
+  "ttft": 0.996,
+  "intelligence": 7,
+  "coding": null
+ },
+ "qwen3-vl-8b-reasoning": {
+  "speed": 136.965,
+  "ttft": 1.221,
+  "intelligence": 10.6,
+  "coding": null
+ },
+ "qwen3-vl-32b-reasoning": {
+  "speed": 96.941,
+  "ttft": 1.182,
+  "intelligence": 17.9,
+  "coding": null
+ },
+ "qwen1.5-110b-chat": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 4.1,
+  "coding": null
+ },
+ "qwen-chat-72b": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 3.4,
+  "coding": null
+ },
+ "qwen3-max-preview": {
+  "speed": 58.645,
+  "ttft": 1.745,
+  "intelligence": 19.2,
+  "coding": null
+ },
+ "qwen3-6-max": {
+  "speed": 45.406,
+  "ttft": 2.154,
+  "intelligence": 40,
+  "coding": null
+ },
+ "qwen3-max": {
+  "speed": 53.594,
+  "ttft": 1.788,
+  "intelligence": 24,
+  "coding": null
+ },
+ "qwen3-max-thinking": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 31.7,
+  "coding": null
+ },
+ "qwen3-max-thinking-preview": {
+  "speed": 50.148,
+  "ttft": 1.8,
+  "intelligence": 25,
+  "coding": null
+ },
+ "ling-flash-2-0": {
+  "speed": 68.062,
+  "ttft": 0.971,
+  "intelligence": 9.7,
+  "coding": null
+ },
+ "ring-1t": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 16.2,
+  "coding": null
+ },
+ "ling-1t": {
+  "speed": 0,
+  "ttft": 0,
+  "intelligence": 12.8,
+  "coding": null
+ },
+ "seed-oss-36b-instruct": {
+  "speed": 39.87,
+  "ttft": 1.525,
+  "intelligence": 18.3,
+  "coding": null
+ }
+}
