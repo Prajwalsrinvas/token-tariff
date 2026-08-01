@@ -121,6 +121,106 @@ Every control is bound to the URL, so any view is a shareable link.
 | `ccy` | Display currency | `?ccy=INR` |
 | `need_r` / `need_v` / `need_t` | Require reasoning / vision / tools | `?need_v=true` |
 
+## The WAGER page
+
+A second page, **WAGER**, asks a different question from the calculator: not what a
+model costs today, but how long the frontier stays the frontier. Frontier
+intelligence keeps arriving at the bottom of every vendor's lineup a few months
+later at a fraction of the price — the page shows that history from sourced data
+and then stakes a falsifiable claim on the next repetition.
+
+**The claim.** A lineup-bottom model — the cheapest model its vendor ships — will
+match Claude Fable 5, the frontier as of June 2026, on one of two yardsticks:
+METR's 50% time horizon, or the Artificial Analysis intelligence index at no more
+than a tenth of Fable 5's price.
+
+**Resolves YES** on the earlier of two conditions:
+
+- **METR** measures any lineup-bottom model at or above Fable 5's 50% time horizon; or
+- a lineup-bottom model reaches Fable 5's launch **Artificial Analysis** index of 59.9, compared inside a single AA snapshot, at no more than one tenth of Fable 5's cost per token.
+
+*Lineup bottom* means the cheapest model a vendor ships in its current lineup —
+Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini Flash-Lite. Membership is
+lineup position; price is data, not the qualification.
+
+| Scenario | Date | Method |
+|---|---|---|
+| **Method B** — price decline | 2027-01-10 | Epoch AI's median 50×/year fall in the price of a fixed capability, counted from Fable 5's release. The wager's price term is a ratio, so this is just the time for a tenfold fall — independent of either sticker price. |
+| **Method A** — historical lag | 2027-03-08 | Median 8.9-month lag over 10 matched pairs, from a frontier model setting a new index high to the first bottom-tier model reaching it. |
+| Slowest historical trend | 2027-06-27 | Method B at the slowest decline Epoch fitted, 9×/year. Not a confidence bound. |
+
+**These are two illustrative scenarios, not a calibrated forecast.** They land
+two months apart, which is not corroboration: capability diffusion and price
+decline are two views of the same underlying trend, so both dates ride on it
+together. Neither is good to better than a season.
+
+Three caveats do most of the work.
+
+- **METR's 50% threshold is not its 80%** — the Mythos preview measures 1,044.8 min at 50% but 185.9 min at 80%.
+- **METR has measured no bottom-tier model at all**, in either suite version, which is why the wager resolves on the AA index in practice.
+- **The index arm is a joint event** — the index *and* a tenth of the price, together. Method A tracks only capability and Method B only price, and 3 of the 9 historical matches with a known price cleared the index at less than a tenfold price gap, so they would have failed this wager's own price term.
+
+The 10 matched pairs behind Method A come from only **5 catch-up releases** — one
+cheap model can clear three standing frontier highs at once — so treat the
+effective sample as 5.
+
+### Data and refresh
+
+| Data | Source |
+|---|---|
+| **50% / 80% time horizons** | [METR](https://metr.org/time-horizons/), from the published `benchmark_results_1_1.yaml` behind their chart |
+| **Intelligence index** | [Artificial Analysis](https://artificialanalysis.ai/), via OpenRouter's listing (read 2026-08-01) and this repo's committed AA API payload (vintage ≤2026-07-05). Each row's `aa_version` says which. Where a model publishes several configurations, the highest-scoring one is recorded, for every row. |
+| **Price-decline rate** | [Epoch AI](https://epoch.ai/data-insights/llm-inference-price-trends) — 9× to 900× per year, median 50× |
+| **Prices and release dates** | Vendor announcements and pricing docs, archived where the vendor blocks fetches |
+
+Unlike the calculator, this page is **curated, not computed**. `timeline.csv` holds
+one row per tracked model, every row carrying a source URL, and a fact that could
+not be sourced is left blank rather than estimated. `wager.py` derives everything
+else — milestones, lags, both predictions, resolution status — so the page moves
+when the data does. `data/history/<date>/` keeps the raw payloads each row was read
+from, append-only, because Artificial Analysis re-scores older models when its
+index changes and tags no version in either feed.
+
+```bash
+uv run python scripts/timeline_fetch.py     # new snapshot + diff vs the last one
+```
+
+Then run the `/timeline-refresh` skill, which turns that diff into sourced
+`timeline.csv` edits. Roughly quarterly.
+
+`wager.json` is the **frozen** prediction the scheduled emails were built around.
+It is deliberately not kept in sync — the page shows a badge when live data has
+moved away from it, and that divergence is the point.
+
+### The scheduled letter
+
+`.github/workflows/wager-email.yml` sends two emails through Resend: a midpoint
+check on 2026-10-21, and the wager letter on 2027-01-10. Its cron fires on the
+10th and the 21st of each month — the day numbers of those two dates, so each
+letter arrives on its own date rather than up to a month late. Re-derive them if
+`wager.json` is ever re-frozen. A send counts as done when a labelled GitHub
+issue with its title exists, which is read from the API each run — a committed
+flag can disagree with reality whenever the write-back commit fails.
+
+**GitHub disables scheduled workflows after 60 days without repository activity.**
+The quarterly refresh commit is what keeps this one alive; if the repo goes quiet
+for two months, re-enable it from the Actions tab.
+
+```bash
+uv run python scripts/wager_check.py --dry-run --as-of 2027-01-10   # render the letter
+uv run pytest -q                                                    # the frozen numbers still recompute
+```
+
+**Security.** The recipient address and the Resend key exist only as Actions
+secrets (`WAGER_EMAIL_TO`, `RESEND_API_KEY`) and appear nowhere in this repo.
+With Resend's default test sender, `WAGER_EMAIL_TO` must be the Resend account's
+own address; to mail anywhere else, verify a domain and set a `RESEND_FROM`
+secret. The
+letter template is impersonal, and the issues the workflow opens carry status
+only — no address, no letter body. A `gitleaks` workflow scans every push and pull
+request, and the refresh skill requires a scan of the staged diff before any
+commit, because that step pulls raw API payloads into a public repo.
+
 ## Design
 
 The interface is a dark graphite ledger — neutral dark gray, blue used only where it means something, JetBrains Mono throughout, square corners. The entire look lives in `.streamlit/config.toml`: theme colors, webfont, dataframe styling, and the categorical palette that colors the charts. There is no custom CSS.
