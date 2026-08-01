@@ -338,14 +338,17 @@ def lag_table(ms: list):
     def _num(v):
         return "—" if v is None or v != v else f"{float(v):.1f}"
 
-    view["matched"] = view["matched"].map(lambda v: v or "—")
+    # isoformat, not the raw date object: mixing dates and "—" strings in one
+    # object column breaks Arrow serialization (a logged traceback per render).
+    view["matched"] = view["matched"].map(lambda v: v.isoformat() if v else "—")
     for col in ("aa", "matched_aa", "lag", "ratio"):
         view[col] = view[col].map(_num)
 
     st.dataframe(
         view, hide_index=True, height=35 * (len(view) + 1) + 3,
         column_config={
-            "frontier": st.column_config.TextColumn("FRONTIER", width="medium"),
+            "frontier": st.column_config.TextColumn("FRONTIER", width="medium",
+                                                    pinned=True),
             "released": st.column_config.DateColumn("RELEASED", width="small"),
             "aa": st.column_config.TextColumn("AA", width="small", alignment="right"),
             "matched_by": st.column_config.TextColumn(
@@ -574,7 +577,8 @@ def main():
                 "source_url"]],
             hide_index=True, height=320,
             column_config={
-                "model": st.column_config.TextColumn("MODEL", width="medium"),
+                "model": st.column_config.TextColumn("MODEL", width="medium",
+                                                     pinned=True),
                 "vendor": st.column_config.TextColumn("VENDOR", width="small"),
                 "tier": st.column_config.TextColumn("TIER", width="small"),
                 "release_date": st.column_config.DateColumn("RELEASED",
