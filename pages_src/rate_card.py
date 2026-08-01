@@ -1156,7 +1156,8 @@ def ledger(df: pd.DataFrame, axis_col: str, currency: str, fx: float) -> Optiona
         on_select="rerun",
         selection_mode="single-row",
         column_config={
-            "model": st.column_config.TextColumn("MODEL", width="medium"),
+            "model": st.column_config.TextColumn("MODEL", width="medium",
+                                                 pinned=True),
             "tier": st.column_config.TextColumn("TIER", width="small"),
             axis_col: st.column_config.NumberColumn(
                 axis_label[axis_col], format="%.1f", width="small"),
