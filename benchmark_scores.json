@@ -1,8 +1,73 @@
 {
+ "deepseek/deepseek-v4-flash-0731": {
+  "intelligence": 49.9,
+  "coding": 69.1,
+  "agentic": 45.7
+ },
+ "thinkingmachines/inkling-small": {
+  "intelligence": 40.2,
+  "coding": 52.9,
+  "agentic": 30.8
+ },
+ "anthropic/claude-opus-5": {
+  "intelligence": 60.7,
+  "coding": 78,
+  "agentic": 55.3
+ },
+ "google/gemini-3.6-flash": {
+  "intelligence": 50.1,
+  "coding": 69.2,
+  "agentic": 38.7
+ },
+ "google/gemini-3.5-flash-lite": {
+  "intelligence": 36.5,
+  "coding": 49.3,
+  "agentic": 26.8
+ },
+ "thinkingmachines/inkling": {
+  "intelligence": 40.7,
+  "coding": 52.1,
+  "agentic": 32.3
+ },
+ "moonshotai/kimi-k3": {
+  "intelligence": 57.1,
+  "coding": 76.2,
+  "agentic": 50.1
+ },
+ "meta/muse-spark-1.1": {
+  "intelligence": 50.6,
+  "coding": 71.3,
+  "agentic": 37.5
+ },
+ "openai/gpt-5.6-luna": {
+  "intelligence": 51.2,
+  "coding": 71.4,
+  "agentic": 45.6
+ },
+ "openai/gpt-5.6-terra": {
+  "intelligence": 55,
+  "coding": 76.7,
+  "agentic": 47.4
+ },
+ "openai/gpt-5.6-sol": {
+  "intelligence": 58.9,
+  "coding": 77.4,
+  "agentic": 54
+ },
+ "x-ai/grok-4.5": {
+  "intelligence": 53.8,
+  "coding": 72.4,
+  "agentic": 45.7
+ },
  "anthropic/claude-sonnet-5": {
   "intelligence": 53.4,
   "coding": 71.5,
   "agentic": 46.7
+ },
+ "cohere/north-mini-code:free": {
+  "intelligence": 19.8,
+  "coding": 36.5,
+  "agentic": 3.1
  },
  "z-ai/glm-5.2": {
   "intelligence": 51.1,
@@ -19,12 +84,17 @@
   "coding": 76.5,
   "agentic": 52.8
  },
- "nvidia/nemotron-3-ultra-550b-a55b:free": {
+ "nex-agi/nex-n2-pro": {
+  "intelligence": 41,
+  "coding": 59.1,
+  "agentic": 31
+ },
+ "nvidia/nemotron-3-ultra-550b-a55b": {
   "intelligence": 37.8,
   "coding": 49.3,
   "agentic": 27.4
  },
- "nvidia/nemotron-3-ultra-550b-a55b": {
+ "nvidia/nemotron-3-ultra-550b-a55b:free": {
   "intelligence": 37.8,
   "coding": 49.3,
   "agentic": 27.4
@@ -40,8 +110,8 @@
   "agentic": 35.4
  },
  "stepfun/step-3.7-flash": {
-  "intelligence": 29.7,
-  "coding": 37.3,
+  "intelligence": 30.3,
+  "coding": 39.6,
   "agentic": 21.5
  },
  "anthropic/claude-opus-4.8": {
@@ -53,6 +123,11 @@
   "intelligence": 46,
   "coding": 66,
   "agentic": 30.6
+ },
+ "x-ai/grok-build-0.1": {
+  "intelligence": 39.8,
+  "coding": 51.5,
+  "agentic": 28
  },
  "google/gemini-3.5-flash": {
   "intelligence": 50.2,
@@ -94,19 +169,29 @@
   "coding": 59.4,
   "agentic": 36.4
  },
- "deepseek/deepseek-v4-flash": {
-  "intelligence": 40.3,
-  "coding": 56.2,
-  "agentic": 31.1
+ "tencent/hy3-preview": {
+  "intelligence": 41.2,
+  "coding": 58.8,
+  "agentic": 30.7
  },
  "xiaomi/mimo-v2.5-pro": {
   "intelligence": 42.2,
   "coding": 60.2,
   "agentic": 29.1
  },
+ "xiaomi/mimo-v2.5": {
+  "intelligence": 37.2,
+  "coding": 56.8,
+  "agentic": 23.7
+ },
+ "inclusionai/ling-2.6-flash": {
+  "intelligence": 14.1,
+  "coding": 25.3,
+  "agentic": 2.3
+ },
  "moonshotai/kimi-k2.6": {
-  "intelligence": 42.8,
-  "coding": 56,
+  "intelligence": 44.2,
+  "coding": 61.8,
   "agentic": 30.3
  },
  "anthropic/claude-opus-4.7": {
@@ -119,22 +204,22 @@
   "coding": 55.8,
   "agentic": 29.9
  },
- "google/gemma-4-26b-a4b-it:free": {
-  "intelligence": 25.7,
-  "coding": 39.3,
-  "agentic": 11
- },
  "google/gemma-4-26b-a4b-it": {
   "intelligence": 25.7,
   "coding": 39.3,
   "agentic": 11
  },
- "google/gemma-4-31b-it:free": {
+ "google/gemma-4-26b-a4b-it:free": {
+  "intelligence": 25.7,
+  "coding": 39.3,
+  "agentic": 11
+ },
+ "google/gemma-4-31b-it": {
   "intelligence": 29.4,
   "coding": 43.4,
   "agentic": 14.4
  },
- "google/gemma-4-31b-it": {
+ "google/gemma-4-31b-it:free": {
   "intelligence": 29.4,
   "coding": 43.4,
   "agentic": 14.4
@@ -143,6 +228,16 @@
   "intelligence": 39.6,
   "coding": 54.5,
   "agentic": 27.6
+ },
+ "arcee-ai/trinity-large-thinking": {
+  "intelligence": 18.2,
+  "coding": 25.8,
+  "agentic": 3.7
+ },
+ "kwaipilot/kat-coder-pro-v2": {
+  "intelligence": 33.7,
+  "coding": 59.5,
+  "agentic": 15.5
  },
  "minimax/minimax-m2.7": {
   "intelligence": 38.1,
@@ -164,12 +259,12 @@
   "coding": 26.6,
   "agentic": 4.7
  },
- "nvidia/nemotron-3-super-120b-a12b:free": {
+ "nvidia/nemotron-3-super-120b-a12b": {
   "intelligence": 25.4,
   "coding": 37.7,
   "agentic": 8.7
  },
- "nvidia/nemotron-3-super-120b-a12b": {
+ "nvidia/nemotron-3-super-120b-a12b:free": {
   "intelligence": 25.4,
   "coding": 37.7,
   "agentic": 8.7
@@ -184,10 +279,20 @@
   "coding": 71.1,
   "agentic": 41.1
  },
+ "inception/mercury-2": {
+  "intelligence": 21.4,
+  "coding": 31.1,
+  "agentic": 9.6
+ },
  "google/gemini-3.1-flash-lite-preview": {
   "intelligence": 25,
   "coding": 34.7,
   "agentic": 6.2
+ },
+ "qwen/qwen3.5-35b-a3b": {
+  "intelligence": 24,
+  "coding": 37,
+  "agentic": 11.8
  },
  "qwen/qwen3.5-122b-a10b": {
   "intelligence": 32.3,
@@ -209,6 +314,16 @@
   "coding": 48.2,
   "agentic": 19.8
  },
+ "qwen/qwen3-coder-next": {
+  "intelligence": 21.1,
+  "coding": 36.2,
+  "agentic": 8.8
+ },
+ "moonshotai/kimi-k2.5": {
+  "intelligence": 35.4,
+  "coding": 46.8,
+  "agentic": 21.7
+ },
  "upstage/solar-pro-3": {
   "intelligence": 14.1,
   "coding": 16.2,
@@ -219,20 +334,15 @@
   "coding": 45.3,
   "agentic": 25.4
  },
- "nvidia/nemotron-3-nano-30b-a3b:free": {
-  "intelligence": 14.2,
-  "coding": 14.4,
-  "agentic": 2
- },
  "nvidia/nemotron-3-nano-30b-a3b": {
   "intelligence": 14.2,
   "coding": 14.4,
   "agentic": 2
  },
- "mistralai/devstral-2512": {
-  "intelligence": 19.2,
-  "coding": 31.3,
-  "agentic": 10.6
+ "nvidia/nemotron-3-nano-30b-a3b:free": {
+  "intelligence": 14.2,
+  "coding": 14.4,
+  "agentic": 2
  },
  "amazon/nova-2-lite-v1": {
   "intelligence": 18.2,
@@ -259,6 +369,11 @@
   "coding": 20.1,
   "agentic": 5.5
  },
+ "deepseek/deepseek-v3.2": {
+  "intelligence": 32,
+  "coding": 44.2,
+  "agentic": 18.3
+ },
  "openai/gpt-5.1": {
   "intelligence": 36.9,
   "coding": 49.4,
@@ -274,10 +389,20 @@
   "coding": 43.9,
   "agentic": 16.4
  },
+ "z-ai/glm-4.6": {
+  "intelligence": 28.7,
+  "coding": 45.8,
+  "agentic": 17.7
+ },
  "anthropic/claude-sonnet-4.5": {
   "intelligence": 36.4,
   "coding": 52.1,
   "agentic": 24.6
+ },
+ "deepseek/deepseek-v3.1-terminus": {
+  "intelligence": 30.4,
+  "coding": 43.5,
+  "agentic": 18.1
  },
  "qwen/qwen3-next-80b-a3b-thinking": {
   "intelligence": 16.7,
@@ -304,22 +429,17 @@
   "coding": 15.6,
   "agentic": 19.4
  },
- "openai/gpt-oss-120b:free": {
-  "intelligence": 23.8,
-  "coding": 30.4,
-  "agentic": 13.2
- },
  "openai/gpt-oss-120b": {
   "intelligence": 23.8,
   "coding": 30.4,
   "agentic": 13.2
  },
- "openai/gpt-oss-20b:free": {
+ "openai/gpt-oss-20b": {
   "intelligence": 14.9,
   "coding": 20.7,
   "agentic": 3.1
  },
- "openai/gpt-oss-20b": {
+ "openai/gpt-oss-20b:free": {
   "intelligence": 14.9,
   "coding": 20.7,
   "agentic": 3.1
@@ -379,6 +499,11 @@
   "coding": 21.2,
   "agentic": 1.5
  },
+ "google/gemma-3-12b-it": {
+  "intelligence": 5.5,
+  "coding": 5.8,
+  "agentic": 0.3
+ },
  "cohere/command-a": {
   "intelligence": 22.5,
   "coding": 27.8,
@@ -398,11 +523,6 @@
   "intelligence": 18.5,
   "coding": 24.6,
   "agentic": 3.1
- },
- "meta-llama/llama-3.3-70b-instruct:free": {
-  "intelligence": 9.4,
-  "coding": 11.9,
-  "agentic": 0.3
  },
  "meta-llama/llama-3.3-70b-instruct": {
   "intelligence": 9.4,
