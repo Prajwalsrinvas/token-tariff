@@ -4,18 +4,18 @@
 
 **▸ [Live app — token-tariff.streamlit.app](https://token-tariff.streamlit.app/)**
 
-Pick a use-case preset (chatbot, coding agent, summarization, …) or dial in your own workload — tokens per call, number of calls, cache-hit rate, reasoning overhead, batch pricing. A **verdict** at the top names one model and why; below it, a ranked ledger with scores, speed, and real usage, an efficient-frontier chart, and quick cuts (cheapest / best value / smartest / fastest). Every control lives in the URL, so any comparison is a shareable link. Prices and scores refresh hourly from live feeds — nothing is hand-maintained.
+Three modes, one per question. **RECOMMEND** — *what should I use?* Pick a use-case preset (chatbot, coding agent, summarization, …), shape the workload (tokens per call, number of calls, cache-hit rate, reasoning overhead, batch pricing), say what to optimize for, and a **verdict** names one model and why, with a cheaper option and a more capable one beside it. **MATCH** — *the same for less:* name the model you run today and see who holds its score for a smaller bill. **LOOK UP** — *what does X cost?* the whole catalog, searchable, unscored models included. Under every mode: a ranked ledger with scores, speed and real usage, and an efficient-frontier chart. Every control lives in the URL, mode included, so any comparison is a shareable link. Prices and scores refresh hourly from live feeds — nothing is hand-maintained.
 
 <table>
 <tr>
 <td width="50%" valign="top">
-<b>① Verdict-led picking</b><br/>
-<sub>One recommended model with its reasons, four single-metric cuts, a cost-ranked ledger, and the efficient frontier.</sub><br/>
+<b>① RECOMMEND — verdict-led picking</b><br/>
+<sub>One recommended model with its reasons, the alternatives worth a second look, a cost-ranked ledger, and the efficient frontier.</sub><br/>
 <a href="screenshots/01-verdict.png"><img src="screenshots/01-verdict.png" alt="Verdict, quick cuts, ranked ledger, and efficient-frontier chart"/></a>
 </td>
 <td width="50%" valign="top">
-<b>② Anchor — same smarts, less money</b><br/>
-<sub>Pick a reference model; the view keeps only models that match or beat it and names the cheapest. Here: claude-opus-4-8's intelligence for 2.5× less.</sub><br/>
+<b>② MATCH — same smarts, less money</b><br/>
+<sub>Name the model you run today; the view keeps only models that match or beat it and names the cheapest. Here: claude-opus-4-8's intelligence for 3.3× less.</sub><br/>
 <a href="screenshots/02-anchor.png"><img src="screenshots/02-anchor.png" alt="Anchor mode: cheapest model matching claude-opus-4-8 within tolerance"/></a>
 </td>
 </tr>
@@ -35,11 +35,12 @@ Pick a use-case preset (chatbot, coding agent, summarization, …) or dial in yo
 
 ## How it helps you decide
 
-- **Use-case presets** — CHATBOT / CODING AGENT / AGENT / SUMMARIZE / EXTRACTION each set a typical workload shape, the matching score axis (intelligence, coding, or agentic), a sensible tier range, the tools filter, and the priority weights in one click — with a plain-language note on what they model. Everything stays editable, and an in-app **GUIDE** walks through every control.
-- **Priorities → verdict** — SMART / CHEAP / FAST sliders produce a **FIT** score (0–100) per model, and the verdict names the best fit and its reasons. FIT is a weighted blend of *percentile ranks* within the current view — score rank, cheapness rank, speed rank — so one extreme outlier can't dominate.
-- **Anchor query** — pick a reference model and the field narrows to models that match or beat its score (within your tolerance), ranked by workload cost: *"who matches this model's intelligence for less?"*
+- **Use-case presets** — CHATBOT / CODING AGENT / AGENT / SUMMARIZE / EXTRACTION each set a typical workload shape, the matching score axis (intelligence, coding, or agentic), a sensible tier range, the required capabilities, and the priority weights in one click — with a plain-language note on what they model. Everything stays editable; edit anything and a PRESET MODIFIED chip offers the way back. An in-app **GUIDE** walks through every mode.
+- **Optimize for → verdict** — BALANCED / SMARTEST / CHEAPEST / FASTEST sets the SMART / CHEAP / FAST weights behind a **FIT** score (0–100) per model, and the verdict names the best fit and its reasons; the individual sliders sit under ADVANCED, and weights outside the four read as CUSTOM. FIT is a weighted blend of *percentile ranks* within the current view — score rank, cheapness rank, speed rank — so one extreme outlier can't dominate. It stays a table column: the number moves with the filtered set, the reasons don't.
+- **One verdict, two alternatives** — a CHEAPER OPTION (costs less, gives up at most 5 index points) and a MORE CAPABLE OPTION (at least 3 points better, at the lowest cost that buys them), each stating its tradeoff. Neither appears unless something qualifies.
+- **MATCH** — name the model you run today and the field narrows to models that match or beat its score (within your tolerance), ranked by workload cost: *"who matches this model's intelligence for less?"*
+- **LOOK UP** — find any model by name, maker, or LiteLLM key across the full catalog, unscored models included; an empty box lists everything.
 - **Efficient frontier** — score vs. workload cost on a log axis with the Pareto frontier drawn; everything below the line is beaten on both price and score.
-- **Search** — look up any model by name, maker, or LiteLLM key across the full catalog, bypassing the filters.
 - **Axis toggle** — general intelligence, coding, or agentic index; specialized models rank very differently.
 
 ## Where the data comes from
@@ -58,7 +59,7 @@ Every fetch is cached for an hour and written to a local JSON snapshot (`model_p
 **The catalog is computed, not curated:**
 
 - **Default view** — every model with both a price and a score (~110 across all major makers).
-- **ALL MODELS** — adds the unscored remainder of the pricing catalog (~250 more).
+- **LOOK UP** — adds the unscored remainder of the pricing catalog (~120 more).
 - Duplicate routes (direct API vs. OpenRouter vs. Groq) and spelling/word-order aliases collapse to one row per model — the maker's own API wins, else the cheapest route.
 - Dated snapshots collapse onto their base model; deprecated and zero-priced entries are dropped.
 - **Tiers** (FRONTIER / ADVANCED / CAPABLE / BUDGET) are live quartiles of the intelligence index across scored models, so they track the field as it moves.
@@ -92,7 +93,7 @@ AA_API_KEY = "your-key"          # https://artificialanalysis.ai/ — free, 1,00
 OPENROUTER_API_KEY = "your-key"  # https://openrouter.ai/ — datasets API
 ```
 
-- `AA_API_KEY` keeps speed (TOK/S, FASTEST cut, TTFT, the FAST priority) and the expanded score coverage live.
+- `AA_API_KEY` keeps speed (TOK/S, TTFT, the FAST priority) and the expanded score coverage live.
 - `OPENROUTER_API_KEY` keeps usage (USE B/D, tokens/day on the rate card) live.
 
 Without a key, each feed serves its committed snapshot — everything still renders, it just ages until the next keyed refresh; elements with no data hide gracefully.
@@ -103,8 +104,9 @@ Every control is bound to the URL, so any view is a shareable link.
 
 | Parameter | Meaning | Example |
 |---|---|---|
-| `preset` | Use-case preset | `?preset=CODING+AGENT` |
-| `q` | Model search (bypasses filters) | `?q=kimi` |
+| `mode` | RECOMMEND, MATCH, or LOOK UP | `?mode=MATCH` |
+| `preset` | Use-case preset (RECOMMEND) | `?preset=CODING+AGENT` |
+| `q` | Model search (LOOK UP) | `?q=kimi` |
 | `prov` | Provider filter (repeatable) | `?prov=Anthropic&prov=Google` |
 | `tiers` | Tier filter (repeatable) | `?tiers=FRONTIER` |
 | `input_tokens` | Input tokens per call | `?input_tokens=50000` |
@@ -113,62 +115,71 @@ Every control is bound to the URL, so any view is a shareable link.
 | `cache` | Prompt-cache hit rate (%) | `?cache=80` |
 | `rmult` | Reasoning output multiplier | `?rmult=3.0` |
 | `batch` | Batch API pricing | `?batch=true` |
-| `w_smart` / `w_cheap` / `w_fast` | Priority weights (0–5) | `?w_fast=5` |
-| `anchor` | Anchor model (its catalog name) | `?anchor=claude-opus-4-8` |
-| `tol` | Anchor tolerance (points) | `?tol=3` |
+| `opt` | Optimize for (weights outside the four read as CUSTOM) | `?opt=CHEAPEST` |
+| `w_smart` / `w_cheap` / `w_fast` | Priority weights (0–5), and what `opt` writes | `?w_fast=5` |
+| `anchor` | Reference model, by catalog name (MATCH) | `?anchor=claude-opus-4-8` |
+| `tol` | Match tolerance (points) | `?tol=3` |
 | `axis` | Score axis | `?axis=CODE` |
-| `all` | Include unscored models | `?all=true` |
+| `caps` | Required capabilities (repeatable) | `?caps=VISION&caps=TOOLS` |
 | `ccy` | Display currency | `?ccy=INR` |
-| `need_r` / `need_v` / `need_t` | Require reasoning / vision / tools | `?need_v=true` |
 
 ## The WAGER page
 
 A second page, **WAGER**, asks a different question from the calculator: not what a
 model costs today, but how long the frontier stays the frontier. Frontier
-intelligence keeps arriving at the bottom of every vendor's lineup a few months
-later at a fraction of the price — the page shows that history from sourced data
-and then stakes a falsifiable claim on the next repetition.
+intelligence keeps arriving at the cheapest slot in every vendor's lineup a few
+months later at a fraction of the price — the page shows that history from sourced
+data and then stakes a falsifiable claim on the next repetition.
 
-**The claim.** A lineup-bottom model — the cheapest model its vendor ships — will
-match Claude Fable 5, the frontier as of June 2026, on one of two yardsticks:
-METR's 50% time horizon, or the Artificial Analysis intelligence index at no more
-than a tenth of Fable 5's price.
+**The claim.** By **June 27, 2027**, an entry-level model will match Claude Fable
+5 — the frontier as of June 2026 — on the Artificial Analysis intelligence index
+at no more than a tenth of Fable 5's price.
 
-**Resolves YES** on the earlier of two conditions:
+**Resolves YES** when one entry-level model from Anthropic, OpenAI or Google
+reaches Fable 5's launch **Artificial Analysis** index of 59.9, compared inside a
+single AA snapshot, at **$2.00 per MTok or less** on a fixed 3:1 input:output
+blend. Both terms, one model, at one time. That single arm is the whole rule —
+nothing else settles it.
 
-- **METR** measures any lineup-bottom model at or above Fable 5's 50% time horizon; or
-- a lineup-bottom model reaches Fable 5's launch **Artificial Analysis** index of 59.9, compared inside a single AA snapshot, at no more than one tenth of Fable 5's cost per token.
+**Resolves NO** when none does by 23:59 UTC on 2027-06-27. The evidence has to be
+public by that instant; the AA snapshot and vendor price page proving it may be
+captured up to 14 days later.
 
-*Lineup bottom* means the cheapest model a vendor ships in its current lineup —
-Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini Flash-Lite. Membership is
-lineup position; price is data, not the qualification.
+*Entry-level model* means the slot a vendor designates as its cheapest in its
+current lineup — Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini
+Flash-Lite. It is the slot, not the price tag: an older, cheaper model still on
+sale does not disqualify the current one, and a renamed or replaced slot inherits
+eligibility.
 
-| Scenario | Date | Method |
+| Lens | Date | How it gets there |
 |---|---|---|
-| **Method B** — price decline | 2027-01-10 | Epoch AI's median 50×/year fall in the price of a fixed capability, counted from Fable 5's release. The wager's price term is a ratio, so this is just the time for a tenfold fall — independent of either sticker price. |
-| **Method A** — historical lag | 2027-03-08 | Median 8.9-month lag over 10 matched pairs, from a frontier model setting a new index high to the first bottom-tier model reaching it. |
-| Slowest historical trend | 2027-06-27 | Method B at the slowest decline Epoch fitted, 9×/year. Not a confidence bound. |
+| **Price decline** | 2027-01-10 | Epoch AI's median 50×/year fall in the price of a fixed capability, counted from Fable 5's release. The wager's price term is a ratio, so this is just the time for a tenfold fall — independent of either sticker price. |
+| **Historical lag** | 2027-03-08 | Median 8.9-month lag over 10 matched pairs, from a frontier model setting a new index high to the first entry-level model reaching it. |
+| Slowest fitted trend | 2027-06-27 | The price-decline lens at the slowest decline Epoch fitted, 9×/year. The deadline is set here: a trend slower than anything measured would still have landed by this date. Not a confidence bound. |
 
 **These are two illustrative scenarios, not a calibrated forecast.** They land
 two months apart, which is not corroboration: capability diffusion and price
 decline are two views of the same underlying trend, so both dates ride on it
-together. Neither is good to better than a season.
+together. Neither is good to better than a season. January 10 and March 8 are the
+forecast; June 27 is the resolution bound — missing the window is not a NO,
+missing the deadline is.
 
-Three caveats do most of the work.
+Four caveats do most of the work.
 
+- **Matching the index is not general equivalence.** The AA index is an exam-style composite: long-context behaviour and agentic reliability are not in it, and a verbose entry-level model can cost more per finished task than a frontier model at ten times the per-token rate.
+- **The arm is a joint event** — the index *and* a tenth of the price, together. The historical-lag lens tracks only capability and the price-decline lens only price, and 3 of the 9 historical matches with a known price cleared the index at less than a tenfold price gap, so they would have failed this wager's own price term.
+- **METR is a secondary check, and non-binding.** It has measured no entry-level model in either suite version, and none of Fable 5 either, so it cannot be read today. If both ends are ever measured on one suite version before the deadline, an entry-level model at or above the proxy's p50 is corroboration and nothing more.
 - **METR's 50% threshold is not its 80%** — the Mythos preview measures 1,044.8 min at 50% but 185.9 min at 80%.
-- **METR has measured no bottom-tier model at all**, in either suite version, which is why the wager resolves on the AA index in practice.
-- **The index arm is a joint event** — the index *and* a tenth of the price, together. Method A tracks only capability and Method B only price, and 3 of the 9 historical matches with a known price cleared the index at less than a tenfold price gap, so they would have failed this wager's own price term.
 
-The 10 matched pairs behind Method A come from only **5 catch-up releases** — one
-cheap model can clear three standing frontier highs at once — so treat the
-effective sample as 5.
+The 10 matched pairs behind the historical-lag lens come from only **5 catch-up
+releases** — one cheap model can clear three standing frontier highs at once — so
+treat the effective sample as 5.
 
 ### Data and refresh
 
 | Data | Source |
 |---|---|
-| **50% / 80% time horizons** | [METR](https://metr.org/time-horizons/), from the published `benchmark_results_1_1.yaml` behind their chart |
+| **50% / 80% time horizons** — the non-binding secondary check | [METR](https://metr.org/time-horizons/), from the published `benchmark_results_1_1.yaml` behind their chart |
 | **Intelligence index** | [Artificial Analysis](https://artificialanalysis.ai/), via OpenRouter's listing (read 2026-08-01) and this repo's committed AA API payload (vintage ≤2026-07-05). Each row's `aa_version` says which. Where a model publishes several configurations, the highest-scoring one is recorded, for every row. |
 | **Price-decline rate** | [Epoch AI](https://epoch.ai/data-insights/llm-inference-price-trends) — 9× to 900× per year, median 50× |
 | **Prices and release dates** | Vendor announcements and pricing docs, archived where the vendor blocks fetches |
@@ -190,17 +201,23 @@ Then run the `/timeline-refresh` skill, which turns that diff into sourced
 
 `wager.json` is the **frozen** prediction the scheduled emails were built around.
 It is deliberately not kept in sync — the page shows a badge when live data has
-moved away from it, and that divergence is the point.
+moved away from it, and that divergence is the point. It is at version 2: a dated
+amendment record states what the 2026-08-03 clarification changed (the deadline,
+METR demoted to a secondary check, the entry-level definition written as a slot,
+the price ceiling stated as a number) and why, and v1 stays in git history. What
+must happen is unchanged.
 
 ### The scheduled letter
 
-`.github/workflows/wager-email.yml` sends two emails through Resend: a midpoint
-check on 2026-10-21, and the wager letter on 2027-01-10. Its cron fires on the
-10th and the 21st of each month — the day numbers of those two dates, so each
-letter arrives on its own date rather than up to a month late. Re-derive them if
-`wager.json` is ever re-frozen. A send counts as done when a labelled GitHub
-issue with its title exists, which is read from the API each run — a committed
-flag can disagree with reality whenever the write-back commit fails.
+`.github/workflows/wager-email.yml` sends three emails through Resend: a midpoint
+check on 2026-10-21, the wager letter on 2027-01-10, and the deadline reading on
+2027-06-28 — the morning after the cutoff, so the result is read against a closed
+question. Its cron fires on the 10th, 21st and 28th of each month — the day
+numbers of those three dates, so each letter arrives on its own date rather than
+up to a month late. Re-derive them if `wager.json` is ever re-frozen. A send
+counts as done when a labelled GitHub issue with its title exists, which is read
+from the API each run — a committed flag can disagree with reality whenever the
+write-back commit fails.
 
 **GitHub disables scheduled workflows after 60 days without repository activity.**
 The quarterly refresh commit is what keeps this one alive; if the repo goes quiet

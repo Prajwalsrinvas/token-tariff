@@ -42,17 +42,18 @@ skipped and only the models OpenRouter routes carry AA scores.
 The feeds show prices and scores. They do not show announcements. Search the
 web for, since the previous snapshot's date:
 
-- **New lineup-bottom models.** The cheapest model in any major vendor's current
-  lineup — Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini Flash-Lite. A
-  vendor renaming its bottom slot counts; a vendor adding a tier below the old
-  bottom counts, and the old bottom stops being the bottom.
+- **New entry-level models.** The slot a major vendor designates as its cheapest
+  in its current lineup — Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini
+  Flash-Lite. A vendor renaming the slot counts, and the new name inherits it; a
+  vendor adding a tier below the old slot counts, and the old slot stops being
+  the entry level. An older, cheaper model still on sale does not take the slot.
 - **New frontier models**, and whether each set a new high on the AA index.
 - **Price events** — cuts, rises, promotional rates ending, intro pricing
   expiring.
 - **METR publications.** A new blog post, a new suite version, or new models in
   `benchmark_results_1_1.yaml`. Watch specifically for METR measuring any
-  bottom-tier model, which would make arm 1 of the wager resolvable for the
-  first time.
+  entry-level model, which would make the wager's secondary check readable for
+  the first time. It is non-binding: the index arm is what resolves the wager.
 - **Artificial Analysis index version changes.** AA re-scores older models when
   the index changes and tags no version in either feed. If the whole column has
   shifted, say so loudly — every lag pair and the wager's 59.9 threshold are
@@ -92,8 +93,9 @@ apply the accepted ones to `timeline.csv`.
 
 Column notes:
 
-- `tier` — `frontier` or `bottom`. Lineup position, not price. A cheap frontier
-  model is still frontier.
+- `tier` — `frontier` or `bottom`. The slot, not the price. A cheap frontier
+  model is still frontier. `bottom` is the entry-level slot: the value is data
+  and stays, but nothing a reader sees says "lineup bottom".
 - `metr_key` — the model's key in METR's YAML, or blank. The p50 and p80 cells
   must match that key exactly; `timeline_fetch.py` checks both.
 - `metr_source` — always the v1.1 URL. Never mix suite versions in one column:
@@ -120,16 +122,13 @@ has moved away from it, and that divergence is information. Only rewrite
 
 If it is re-frozen, three things must move with it: `tests/test_wager.py`, which
 pins every number; the `cron` in `.github/workflows/wager-email.yml`, whose
-day-of-month values are the day numbers of the two new due dates; and the README
+day-of-month values are the day numbers of the new due dates; and the README
 table. `uv run pytest -q` fails until they agree.
 
-One block nothing recomputes or tests: the prose in `narrative()` in
-`pages_src/wager_page.py` hardcodes the closest bottom model's score and the
-points-short gap ("scores 51.2 … 8.7 points short" at the 2026-08-01 freeze).
-After any refresh that changes either, update that sentence by hand or it
-silently goes stale.
+The page's prose recomputes from `timeline.csv` — the contender, the gap and the
+price ceiling are f-strings over the derivation, not sentences to hand-edit.
 
-If a bottom-tier model has reached the baseline's index at or under a tenth of
+If an entry-level model has reached the baseline's index at or under a tenth of
 its cost, the wager has resolved early. Say so plainly and check it is not an
 artefact of an AA index version change before treating it as real.
 
