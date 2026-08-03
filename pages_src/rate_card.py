@@ -8,11 +8,11 @@ Description: Compare what a workload actually costs across LLM APIs — and whic
              Analysis indices, from OpenRouter's public model listing plus the
              AA API itself (which scores far more models) when a key is set;
              speed comes from the AA API; real usage (tokens/day routed) from
-             OpenRouter's rankings dataset when a key is set. Pick a use-case
-             preset to configure the workload in one click, weight
-             SMART/CHEAP/FAST priorities for a ranked verdict, or anchor on a
-             model to find cheaper equals. Every control is URL-bound, so any
-             comparison is a shareable link.
+             OpenRouter's rankings dataset when a key is set. One mode per
+             visitor intent: RECOMMEND names a model for a use case, MATCH
+             finds cheaper equals of a model you already run, LOOK UP searches
+             the whole catalog. Every control is URL-bound, so any comparison
+             is a shareable link.
 """
 
 # =============================================================================
@@ -46,6 +46,32 @@ CACHE_TTL = 60 * 60  # seconds
 
 DEFAULT_MAKERS = ["Anthropic", "Google", "OpenAI"]
 
+# One mode per visitor intent. A control belongs to exactly one of them: the
+# presets and priorities to RECOMMEND, the anchor to MATCH, the search box to
+# LOOK UP — so no mode ever asks a question its answer does not use.
+MODES = ["RECOMMEND", "MATCH", "LOOK UP"]
+
+# OPTIMIZE FOR stands in for the three priority weights: one decision instead
+# of three sliders. The sliders survive under ADVANCED, and any weights that
+# spell none of these four read as CUSTOM.
+OPTIMIZE_FOR = {
+    "BALANCED": (3, 3, 1),
+    "SMARTEST": (5, 2, 1),
+    "CHEAPEST": (2, 5, 1),
+    "FASTEST": (2, 2, 5),
+}
+CUSTOM = "CUSTOM"
+WEIGHT_KEYS = ("w_smart", "w_cheap", "w_fast")
+
+# Capability requirements, keyed by the label a visitor picks from.
+CAPABILITIES = {"REASONING": "reasoning", "VISION": "vision", "TOOLS": "tools"}
+
+# How far an alternative may sit from the recommendation and still be worth
+# naming: a cheaper option may give up 5 index points, a more capable one has
+# to gain 3. Both are index points, so they read the same on any axis.
+CHEAPER_DROP = 5
+CAPABLE_GAIN = 3
+
 # Score, performance, and usage lookups are by normalized model name. A few
 # litellm keys need an explicit OpenRouter id (scores) or Artificial Analysis
 # slug (speed/scores) because their names diverge — Groq's route-specific
@@ -77,7 +103,7 @@ PRESETS = {
              "prompts, brief replies, high volume. Priorities: cheap and "
              "fast, smart enough to hold a conversation.",
         values=dict(input_tokens=2_000, output_tokens=300, api_calls=1_000,
-                    cache=30, rmult=1.0, axis="INT", need_t=False,
+                    cache=30, rmult=1.0, axis="INT", caps=[],
                     tiers=["FRONTIER", "ADVANCED", "CAPABLE"],
                     w_smart=3, w_cheap=4, w_fast=3)),
     "CODING AGENT": dict(
@@ -86,7 +112,7 @@ PRESETS = {
              "and burns thinking tokens. Priorities: coding skill first, "
              "cost second.",
         values=dict(input_tokens=40_000, output_tokens=4_000, api_calls=200,
-                    cache=80, rmult=3.0, axis="CODE", need_t=True,
+                    cache=80, rmult=3.0, axis="CODE", caps=["TOOLS"],
                     tiers=["FRONTIER"],
                     w_smart=5, w_cheap=2, w_fast=1)),
     "AGENT": dict(
@@ -95,7 +121,7 @@ PRESETS = {
              "on the agentic index rather than raw chat quality. Priorities: "
              "capability first.",
         values=dict(input_tokens=25_000, output_tokens=3_000, api_calls=300,
-                    cache=75, rmult=2.0, axis="AGENT", need_t=True,
+                    cache=75, rmult=2.0, axis="AGENT", caps=["TOOLS"],
                     tiers=["FRONTIER"],
                     w_smart=4, w_cheap=2, w_fast=1)),
     "SUMMARIZE": dict(
@@ -103,7 +129,7 @@ PRESETS = {
              "big one-shot prompts with nothing worth caching. Priorities: "
              "the cheapest model that reliably reads long inputs.",
         values=dict(input_tokens=30_000, output_tokens=800, api_calls=100,
-                    cache=0, rmult=1.0, axis="INT", need_t=False,
+                    cache=0, rmult=1.0, axis="INT", caps=[],
                     tiers=list(TIER_LABELS),
                     w_smart=2, w_cheap=5, w_fast=1)),
     "EXTRACTION": dict(
@@ -111,7 +137,7 @@ PRESETS = {
              "texts at volume — needs tool/schema support and consistency "
              "more than brilliance. Priorities: cheap, accurate, quick.",
         values=dict(input_tokens=4_000, output_tokens=400, api_calls=1_000,
-                    cache=40, rmult=1.0, axis="INT", need_t=True,
+                    cache=40, rmult=1.0, axis="INT", caps=["TOOLS"],
                     tiers=list(TIER_LABELS),
                     w_smart=3, w_cheap=4, w_fast=2)),
 }
@@ -155,8 +181,8 @@ DATE_SUFFIX_RE = re.compile(
 # a widget with both a default and a session-state write logs a policy
 # warning on every preset click.
 WIDGET_DEFAULTS = dict(
-    axis="INT", input_tokens=10_000, output_tokens=3_000, api_calls=100,
-    cache=0, rmult=1.0, batch=False, need_r=False, need_v=False, need_t=False,
+    mode="RECOMMEND", axis="INT", input_tokens=10_000, output_tokens=3_000,
+    api_calls=100, cache=0, rmult=1.0, batch=False, caps=[],
     w_smart=3, w_cheap=3, w_fast=0, tol=3, ccy="USD",
 )
 
@@ -170,7 +196,8 @@ def seed_defaults():
         st.session_state.setdefault("preset", "CHATBOT")
     for k, v in WIDGET_DEFAULTS.items():
         if k not in st.query_params:
-            st.session_state.setdefault(k, v)
+            # copy list values — session state must never alias the defaults
+            st.session_state.setdefault(k, list(v) if isinstance(v, list) else v)
 
 
 # =============================================================================
@@ -691,34 +718,38 @@ def guide_dialog():
         "money?**"
     )
     st.markdown(
-        "**1 · PICK A USE CASE** — the pills up top (CHATBOT, CODING AGENT, "
-        "…) set a typical workload shape, the right score axis, a sensible "
-        "tier range, and the priority weights in one click. Each shows a "
-        "description of what it models. Everything a preset sets stays "
-        "editable.\n\n"
-        "**2 · READ THE VERDICT** — the **▸ model** line is the "
-        "recommendation. Its FIT score (0–100) blends how each model ranks "
-        "in the current view on SMART (benchmark score), CHEAP (your "
-        "workload's cost), and FAST (measured speed), weighted by the "
-        "sidebar PRIORITIES sliders. The four cuts below — CHEAPEST, BEST "
-        "VALUE, SMARTEST, FASTEST — are single-dimension pointers.\n\n"
-        "**3 · SHAPE THE WORKLOAD** — the WORKLOAD popover holds tokens per "
-        "call, number of calls, prompt-cache hit rate (cache math counts "
-        "reads only — write premiums are a one-time cost), reasoning output "
-        "multiplier, and Batch API pricing; the chips under the presets show "
-        "what is currently applied. ESTIMATE FROM TEXT counts tokens from "
-        "pasted samples.\n\n"
-        "**4 · NARROW THE FIELD** — sidebar: providers, tiers (quartiles of "
-        "the scored field — FRONTIER is the current top quarter), required "
-        "capabilities, and the AXIS the scores use (general intelligence, "
-        "coding, or agentic). ALL MODELS adds unscored models.\n\n"
-        "**5 · ANCHOR** — pick a reference model and the view keeps only "
-        "models scoring within MATCH WITHIN points of it, ranked by your "
-        "workload's cost: *who matches this model's intelligence for "
-        "less?*\n\n"
-        "**6 · SEARCH & SHARE** — the search box finds any model across the "
-        "full catalog, ignoring filters. Every control lives in the URL — "
-        "copy it and the exact same comparison opens for anyone."
+        "**THREE MODES, ONE PER QUESTION.** The control up top picks which "
+        "question the page answers; the WORKLOAD, currency and everything "
+        "else you set carry across all three.\n\n"
+        "**RECOMMEND — *what should I use?*** Three decisions. **① USE CASE**: "
+        "the pills (CHATBOT, CODING AGENT, …) set a typical workload shape, "
+        "the right score axis, a sensible tier range and the priorities in "
+        "one click; change anything and a PRESET MODIFIED chip offers a "
+        "reset. **② WORKLOAD**: tokens per call, number of calls, "
+        "prompt-cache hit rate (cache math counts reads only — write "
+        "premiums are a one-time cost), reasoning output multiplier, Batch "
+        "API pricing; ESTIMATE FROM TEXT counts tokens from pasted samples. "
+        "**③ OPTIMIZE FOR**: BALANCED, SMARTEST, CHEAPEST or FASTEST — the "
+        "SMART/CHEAP/FAST weights behind the ranking, with the individual "
+        "sliders under ADVANCED (weights outside the four read as CUSTOM). "
+        "REFINE in the sidebar holds providers, tiers, required capabilities "
+        "and the score axis.\n\n"
+        "**MATCH — *the same for less.*** Pick the model you run today; the "
+        "view keeps only models scoring within MATCH WITHIN points of it, "
+        "ranked by your workload's cost, and the verdict names the cheapest "
+        "and by how much.\n\n"
+        "**LOOK UP — *what does X cost?*** Search the whole catalog by model, "
+        "maker, or litellm key, including models with no benchmark score. An "
+        "empty box lists everything.\n\n"
+        "**READ THE VERDICT** — the **▸ model** line is the recommendation, "
+        "followed by its tier, score, speed and workload cost. CHEAPER "
+        "OPTION and MORE CAPABLE OPTION name the two models worth a second "
+        "look, each with what it trades; either is absent when nothing "
+        "qualifies. The table's FIT column (0–100) blends how each model "
+        "ranks *within the current view* on score, cost and speed — it moves "
+        "when the filters do, so the reasons matter more than the number.\n\n"
+        "**SHARE** — every control lives in the URL, mode included. Copy it "
+        "and the exact same view opens for anyone."
     )
     st.markdown(
         "**READING THE RESULTS** — the table ranks by cost; select a row for "
@@ -744,15 +775,63 @@ def guide_dialog():
 
 
 # =============================================================================
-# Section 6: UI — presets, sidebar filters, top strip
+# Section 6: UI — modes, presets, filters, top strip
 # =============================================================================
+
+
+def mode_control() -> str:
+    """The one decision above every other: which question the page answers."""
+    return st.segmented_control(
+        "MODE", MODES, key="mode", bind="query-params",
+        label_visibility="collapsed",
+        help="RECOMMEND names a model for a use case · MATCH finds cheaper "
+             "equals of a model you already run · LOOK UP searches the whole "
+             "catalog, scored or not.",
+    ) or "RECOMMEND"
+
+
+def _apply_preset(name: str):
+    for k, v in PRESETS[name]["values"].items():
+        # copy list values — session state must never alias preset config
+        st.session_state[k] = list(v) if isinstance(v, list) else v
+
+
+def _preset_diverges(name: str) -> bool:
+    """True when a control holds something its preset did not set. A pill that
+    still reads as selected after the workload or the filters move would claim
+    assumptions the page has stopped using."""
+    for k, v in PRESETS[name]["values"].items():
+        active = st.session_state.get(k)
+        if isinstance(v, list):
+            if sorted(active or []) != sorted(v):
+                return True
+        elif active != v:
+            return True
+    return False
+
+
+def preset_weights(name: Optional[str]) -> Optional[Tuple[int, int, int]]:
+    """The three priority weights a use case sets, or None when none is
+    selected."""
+    if name not in PRESETS:
+        return None
+    values = PRESETS[name]["values"]
+    return tuple(values[k] for k in WEIGHT_KEYS)
 
 
 def preset_row():
     """Use-case pills. Selecting one writes the preset's values into the bound
     widgets' session state — which is why this must run before the sidebar and
     workload widgets are instantiated. On a first load, values already pinned
-    in the URL win over the preset so shared links reproduce exactly."""
+    in the URL win over the preset so shared links reproduce exactly.
+
+    The reset button restores through a callback, which runs before the script
+    does: by the time the widgets are built the preset's values are already in
+    place, so no second pass is needed.
+
+    Returns the slot the modified indicator renders into. Whether a preset has
+    been edited cannot be answered here: OPTIMIZE FOR and the REFINE filters
+    write preset-owned values, and both run after this does."""
     tooltip = "One click configures the workload, score axis, model tiers, " \
               "and priorities. Everything stays editable.\n\n" + "\n".join(
                   f"- **{name}** — {p['desc']}" for name, p in PRESETS.items())
@@ -763,31 +842,122 @@ def preset_row():
         for k, v in PRESETS[sel]["values"].items():
             if first_load and k in st.query_params:
                 continue
-            # copy list values — session state must never alias preset config
             st.session_state[k] = list(v) if isinstance(v, list) else v
     st.session_state["_preset_applied"] = sel
     if sel:
         st.caption(PRESETS[sel]["desc"])
+    return st.empty()
 
 
-def sidebar_filters() -> Tuple[pd.DataFrame, dict]:
-    """Sidebar: catalog scope, provider/tier/capability filters, axis,
-    priorities, anchor.
+def preset_notice(slot, name: Optional[str]):
+    """The modified indicator, once every control that can move a preset value
+    has written. Read any earlier and the run in which OPTIMIZE FOR or a REFINE
+    filter is what moved renders the state before it moved — the chip then
+    arrives one interaction late, describing the previous click."""
+    if not name or name not in PRESETS or not _preset_diverges(name):
+        return
+    with slot.container(horizontal=True, vertical_alignment="center",
+                        gap="small"):
+        st.badge("PRESET MODIFIED", color="orange")
+        st.button("RESET TO PRESET", on_click=_apply_preset, args=(name,),
+                  help=f"Restore every value {name} sets.")
 
-    The catalog is loaded right after the scope toggle, so the provider pills
-    and anchor options always reflect the active catalog.
-    """
-    with st.sidebar:
-        full = st.toggle("ALL MODELS", key="all", bind="query-params",
-                         help="Include models without benchmark scores. The default view shows only models that have both a price and an Artificial Analysis score.")
-        df_catalog = load_catalog(full=full)
-        if df_catalog.empty:
-            return df_catalog, {}
 
+def carried(key: str) -> object:
+    """A URL-bound value in a mode that renders no widget for it: session
+    state once a widget has run, else the URL, else the default. Query params
+    arrive as strings, so the default's type does the parsing."""
+    if key in st.session_state:
+        return st.session_state[key]
+    default = WIDGET_DEFAULTS[key]
+    raw = st.query_params.get(key)
+    if raw is None:
+        return default
+    try:
+        return type(default)(raw)
+    except (TypeError, ValueError):
+        return default
+
+
+def weights_label() -> str:
+    """The OPTIMIZE FOR label the active weights spell, or CUSTOM."""
+    active = tuple(carried(k) for k in WEIGHT_KEYS)
+    for label, weights in OPTIMIZE_FOR.items():
+        if weights == active:
+            return label
+    return CUSTOM
+
+
+def optimize_row() -> Tuple[int, int, int]:
+    """The priority decision, and the sliders it stands for.
+
+    The control and the sliders are two views of one state, so each run starts
+    by deciding which of them moved: an untouched control re-reads the weights
+    (a preset or a slider drag changed them), a touched one writes its mapping
+    into them. The re-read runs on every untouched pass, so neither a preset
+    nor a slider drag can leave the control claiming a priority the numbers do
+    not spell. A link that pins the weights themselves keeps them; the label
+    it carries only fills in weights the link left out.
+
+    A use case brings priorities of its own, and most of them spell none of the
+    four named options. While the weights are still the ones it set, the
+    control is the preset's to describe: it renders unselected under a line
+    naming the owner, rather than reading CUSTOM at a visitor who has
+    customised nothing."""
+    first_load = "_opt_applied" not in st.session_state
+    label = weights_label()
+    owned = (preset_weights(st.session_state.get("preset"))
+             == tuple(carried(k) for k in WEIGHT_KEYS))
+    touched = (not first_load
+               and st.session_state.get("opt") != st.session_state["_opt_applied"])
+    pinned = (first_load and "opt" in st.query_params
+              and not any(k in st.query_params for k in WEIGHT_KEYS))
+    if not touched and not pinned:
+        st.session_state.opt = None if owned else label
+    # CUSTOM is a description of the sliders, not a choice: it is offered only
+    # while it is what the weights say and no preset is still standing behind
+    # them.
+    options = list(OPTIMIZE_FOR)
+    if not owned and CUSTOM in (label, st.session_state.get("opt")):
+        options.append(CUSTOM)
+    sel = st.segmented_control(
+        "OPTIMIZE FOR", options, key="opt", bind="query-params",
+        help="Weights the ranking behind the verdict. ADVANCED holds the "
+             "individual SMART / CHEAP / FAST weights; anything outside these "
+             "four combinations reads as CUSTOM, and a use case's own "
+             "priorities read as the use case.",
+    )
+    owner_note = st.empty()
+    if sel in OPTIMIZE_FOR and sel != label:
+        if not (first_load and any(k in st.query_params for k in WEIGHT_KEYS)):
+            for key, value in zip(WEIGHT_KEYS, OPTIMIZE_FOR[sel]):
+                st.session_state[key] = value
+    st.session_state["_opt_applied"] = sel
+
+    with st.expander("ADVANCED"):
+        st.caption("PRIORITIES",
+                   help="Weights for the FIT score behind the verdict: how much "
+                        "the recommendation should care about the score axis, "
+                        "the workload cost, and output speed.")
+        w_smart = st.slider("SMART", 0, 5, key="w_smart", bind="query-params")
+        w_cheap = st.slider("CHEAP", 0, 5, key="w_cheap", bind="query-params")
+        w_fast = st.slider("FAST", 0, 5, key="w_fast", bind="query-params")
+    # The sliders are the last thing that can write a weight, so who owns them
+    # is settled here and rendered back into the line above them.
+    owner = st.session_state.get("preset")
+    if sel is None and preset_weights(owner) == (w_smart, w_cheap, w_fast):
+        owner_note.caption(f"AS SET BY {owner}")
+    return w_smart, w_cheap, w_fast
+
+
+def refine_sidebar(df_catalog: pd.DataFrame) -> dict:
+    """REFINE: the filters a recommendation usually does not need. Collapsed,
+    because every one of them narrows a field the presets already shaped."""
+    with st.sidebar, st.expander("REFINE"):
         makers = sorted(df_catalog["maker"].unique(), key=str.lower)
         # Seed the selection unless the URL carries one; URL-restored values
-        # may reference makers absent from the active catalog scope — drop
-        # those before the widget renders.
+        # may reference makers absent from the catalog — drop those before the
+        # widget renders.
         if "prov" not in st.query_params:
             st.session_state.setdefault(
                 "prov", [m for m in DEFAULT_MAKERS if m in makers] or makers)
@@ -797,6 +967,8 @@ def sidebar_filters() -> Tuple[pd.DataFrame, dict]:
         sel_makers = st.pills(
             "PROVIDERS", makers, selection_mode="multi",
             key="prov", bind="query-params",
+            help="The default view is the three major labs. Add the rest to "
+                 "compare the whole scored field.",
         )
 
         if "tiers" not in st.query_params:
@@ -808,68 +980,99 @@ def sidebar_filters() -> Tuple[pd.DataFrame, dict]:
             "TIER", TIER_LABELS, selection_mode="multi",
             key="tiers", bind="query-params",
             help="Quartiles of the intelligence index across scored models: "
-                 "FRONTIER is the top quarter of the current field. "
-                 "Narrowing tiers hides unscored models.",
+                 "FRONTIER is the top quarter of the current field.",
+        )
+
+        caps = st.multiselect(
+            "CAPABILITIES", list(CAPABILITIES), key="caps",
+            bind="query-params", placeholder="ANY",
+            help="Keep only models that support every capability picked here.",
         )
 
         axis = st.segmented_control(
             "AXIS", list(AXES),
             key="axis", bind="query-params",
-            help="Which score drives the verdict, anchor, chart, and score "
-                 "column: general intelligence, coding, or agentic.",
+            help="Which score drives the verdict, chart, and score column: "
+                 "general intelligence, coding, or agentic.",
         )
 
-        st.caption("PRIORITIES",
-                   help="Weights for the FIT score behind the verdict: how much "
-                        "the recommendation should care about the score axis, "
-                        "the workload cost, and output speed.")
-        w_smart = st.slider("SMART", 0, 5, key="w_smart", bind="query-params")
-        w_cheap = st.slider("CHEAP", 0, 5, key="w_cheap", bind="query-params")
-        w_fast = st.slider("FAST", 0, 5, key="w_fast", bind="query-params")
+    return {
+        "sel_makers": sel_makers,
+        "sel_tiers": sel_tiers,
+        "n_makers": len(makers),
+        "caps": caps,
+        "axis": axis or "INT",
+        "anchor": None,
+        "tolerance": 0,
+    }
 
-        scored_models = sorted(df_catalog.dropna(subset=["intelligence"])["model"])
+
+def match_row(df_catalog: pd.DataFrame) -> dict:
+    """MATCH: one reference model, and how far below its score still counts as
+    equal. The tolerance appears only once there is something to be within.
+
+    No provider, tier or capability filter — "who matches this for less" is a
+    question about the whole field, and a filter would answer a smaller one.
+
+    The options are the models scored on the axis in force, read from state
+    before the axis control is instantiated: a rerun already carries the new
+    axis, and asking to match a model that has no score on the axis being
+    matched on is a question with no answer. An anchor arriving from a link is
+    kept in the list whatever it scores, so the widget and the URL survive long
+    enough for the verdict to explain itself."""
+    axis_col = AXES.get(carried("axis"), "intelligence")
+    scored_models = sorted(df_catalog.dropna(subset=[axis_col])["model"])
+    restored = st.session_state.get("anchor") or st.query_params.get("anchor")
+    if restored and restored not in scored_models and \
+            (df_catalog["model"] == restored).any():
+        scored_models = sorted(scored_models + [restored])
+    row = st.container(horizontal=True, vertical_alignment="bottom", gap="medium")
+    with row:
         anchor = st.selectbox(
-            "ANCHOR MODEL", scored_models, index=None,
-            placeholder="MATCH INTELLIGENCE OF ...",
+            "MATCH THIS MODEL", scored_models, index=None,
+            placeholder="THE MODEL YOU RUN TODAY ...",
             key="anchor", bind="query-params",
             help="Keep only models scoring at least as high as this one "
                  "(minus the tolerance), ranked by your workload's cost.",
+        )
+        axis = st.segmented_control(
+            "AXIS", list(AXES), key="axis", bind="query-params",
+            help="Which index the match is judged on.",
         )
         tolerance = st.slider(
             "MATCH WITHIN", 0, 10, format="%d pts",
             key="tol", bind="query-params",
             help="How many points below the anchor's score still count as equal.",
         ) if anchor else 0
-
-        st.caption("CAPABILITIES")
-        need_reasoning = st.toggle("REASONING", key="need_r", bind="query-params")
-        need_vision = st.toggle("VISION", key="need_v", bind="query-params")
-        need_tools = st.toggle("TOOLS", key="need_t", bind="query-params")
-
-    return df_catalog, {
-        "sel_makers": sel_makers,
-        "sel_tiers": sel_tiers,
+    return {
+        "sel_makers": None,
+        "sel_tiers": None,
+        "n_makers": 0,
+        "caps": [],
         "axis": axis or "INT",
-        "weights": (w_smart, w_cheap, w_fast),
         "anchor": anchor,
         "tolerance": tolerance,
-        "need_reasoning": need_reasoning,
-        "need_vision": need_vision,
-        "need_tools": need_tools,
     }
 
 
-def top_strip() -> dict:
-    """Top strip: title, search, workload editor, currency."""
-    top = st.container(horizontal=True, vertical_alignment="bottom", gap="medium")
-    with top:
-        st.markdown("### ▮ TOKEN TARIFF")
-        query = st.text_input(
-            "SEARCH", key="q", bind="query-params",
-            placeholder="FIND A MODEL ...", label_visibility="collapsed",
-            help="Searches the whole catalog by model, maker, or litellm key — "
-                 "sidebar filters are bypassed while a search is active.",
-        )
+def lookup_row() -> str:
+    """LOOK UP: a search box over the whole catalog and nothing else. An empty
+    box is the whole catalog, which is the honest answer to "what is in here"."""
+    query = st.text_input(
+        "SEARCH", key="q", bind="query-params",
+        placeholder="FIND A MODEL BY NAME, MAKER, OR LITELLM KEY ...",
+        label_visibility="collapsed",
+        help="Searches the full catalog, including models with no benchmark "
+             "score. An empty box lists everything.",
+    )
+    return (query or "").strip()
+
+
+def workload_strip() -> dict:
+    """The settings every mode shares: the workload the costs are computed on,
+    the display currency, and the guide."""
+    with st.container(horizontal=True, vertical_alignment="bottom",
+                      gap="medium"):
         with st.popover("WORKLOAD"):
             input_tokens = st.number_input(
                 "INPUT TOKENS / CALL", 1, None, step=1000,
@@ -908,7 +1111,6 @@ def top_strip() -> dict:
         if st.button("GUIDE", help="How to use this app"):
             guide_dialog()
     return {
-        "query": (query or "").strip(),
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
         "api_calls": api_calls,
@@ -920,17 +1122,18 @@ def top_strip() -> dict:
 
 
 def apply_filters(df: pd.DataFrame, f: dict) -> pd.DataFrame:
+    """Narrow the catalog to the current view. A None filter is a mode that
+    does not offer it, which is not the same as one with nothing selected."""
     # The anchor's score is resolved against the whole catalog, before any
     # narrowing — "match the intelligence of X" must keep working when X's
     # own provider or tier is filtered out of view.
     anchor_rows = df[df["model"] == f["anchor"]] if f["anchor"] else df.iloc[:0]
-    df = df[df["maker"].isin(f["sel_makers"])]
-    if set(f["sel_tiers"]) != set(TIER_LABELS):
+    if f["sel_makers"] is not None:
+        df = df[df["maker"].isin(f["sel_makers"])]
+    if f["sel_tiers"] is not None and set(f["sel_tiers"]) != set(TIER_LABELS):
         df = df[df["tier"].isin(f["sel_tiers"])]
-    for flag, col in [("need_reasoning", "reasoning"), ("need_vision", "vision"),
-                      ("need_tools", "tools")]:
-        if f[flag]:
-            df = df[df[col]]
+    for cap in f["caps"]:
+        df = df[df[CAPABILITIES[cap]]]
     if not anchor_rows.empty:
         axis_col = AXES[f["axis"]]
         if pd.notna(anchor_rows.iloc[0][axis_col]):
@@ -939,10 +1142,9 @@ def apply_filters(df: pd.DataFrame, f: dict) -> pd.DataFrame:
     return df
 
 
-def search_catalog(query: str) -> pd.DataFrame:
-    """Name/maker/key lookup across the full catalog, ignoring filters — the
-    'is model X in here and what does it cost' path."""
-    base = load_catalog(full=True)
+def search_catalog(base: pd.DataFrame, query: str) -> pd.DataFrame:
+    """Name/maker/key lookup across the full catalog — the 'is model X in here
+    and what does it cost' path."""
     q = query.lower()
     mask = (base["model"].str.lower().str.contains(q, regex=False)
             | base["maker"].str.lower().str.contains(q, regex=False)
@@ -955,59 +1157,80 @@ def search_catalog(query: str) -> pd.DataFrame:
 # =============================================================================
 
 
-def hero(df: pd.DataFrame, f: dict, currency: str, fx: float):
-    """The verdict: one recommended model and the reason, as the page's lead."""
+def match_verdict(df: pd.DataFrame, f: dict, currency: str, fx: float):
+    """MATCH's verdict: the cheapest model that holds the anchor's level."""
     axis_col = AXES[f["axis"]]
     scored = df.dropna(subset=[axis_col])
-
-    if f["anchor"]:
-        if scored.empty:
-            return
-        winner = scored.iloc[0]  # cheapest at/above the anchor floor
-        st.markdown(f"## ▸ {winner['model']}")
-        anchor_rows = df[df["model"] == f["anchor"]]
-        if anchor_rows.empty:
-            # The anchor set the score floor but is itself filtered out of
-            # view, so there is no anchor cost to compare against.
-            st.markdown(
-                f"**VERDICT** · Matches **{f['anchor']}** within "
-                f"{f['tolerance']} pts on {f['axis']} at "
-                f"**{md_money(winner['total_usd'], currency, fx)}** — "
-                f"{f['anchor']} itself is outside the current filters."
-            )
-        elif winner["model"] != f["anchor"]:
-            anchor_cost = anchor_rows.iloc[0]["total_usd"]
-            ratio = (anchor_cost / winner["total_usd"]
-                     if winner["total_usd"] else float("nan"))
-            st.markdown(
-                f"**VERDICT** · Matches **{f['anchor']}** within "
-                f"{f['tolerance']} pts on {f['axis']} at "
-                f"**{md_money(winner['total_usd'], currency, fx)}** — "
-                f"**{ratio:,.1f}× cheaper**."
-            )
-        else:
-            st.markdown(
-                f"**VERDICT** · Nothing beats **{f['anchor']}** on price at "
-                f"this level — it is the cheapest model within "
-                f"{f['tolerance']} pts."
-            )
+    if not f["anchor"] or scored.empty:
         return
 
+    anchor_rows = df[df["model"] == f["anchor"]]
+    # An anchor carried in from a link may hold no score on the axis now in
+    # force. Nothing is within three points of a blank, so no floor was
+    # applied — the field below is the whole catalog, and naming its cheapest
+    # model would present an unfiltered ranking as a match.
+    if not anchor_rows.empty and pd.isna(anchor_rows.iloc[0][axis_col]):
+        st.info(f"{f['anchor']} has no {f['axis']} score, so there is nothing "
+                f"to match on this axis — switch axis, or pick another model.")
+        return
+
+    winner = scored.iloc[0]  # cheapest at/above the anchor floor
+    st.markdown(f"## ▸ {winner['model']}")
+    if anchor_rows.empty:
+        # The anchor set the score floor but is itself outside the tolerance
+        # band, so there is no anchor cost to compare against.
+        st.markdown(
+            f"**VERDICT** · Matches **{f['anchor']}** within "
+            f"{f['tolerance']} pts on {f['axis']} at "
+            f"**{md_money(winner['total_usd'], currency, fx)}** — "
+            f"{f['anchor']} itself is outside the current view."
+        )
+    elif winner["model"] != f["anchor"]:
+        anchor_cost = anchor_rows.iloc[0]["total_usd"]
+        ratio = (anchor_cost / winner["total_usd"]
+                 if winner["total_usd"] else float("nan"))
+        st.markdown(
+            f"**VERDICT** · Matches **{f['anchor']}** within "
+            f"{f['tolerance']} pts on {f['axis']} at "
+            f"**{md_money(winner['total_usd'], currency, fx)}** — "
+            f"**{ratio:,.1f}× cheaper**."
+        )
+    else:
+        st.markdown(
+            f"**VERDICT** · Nothing beats **{f['anchor']}** on price at "
+            f"this level — it is the cheapest model within "
+            f"{f['tolerance']} pts."
+        )
+
+
+def pick_model(df: pd.DataFrame) -> Optional[pd.Series]:
+    """The recommendation: best FIT, or the best value in view when every
+    priority weight is zero and FIT has nothing to say."""
     if df["fit"].notna().any():
-        pick = df.loc[df["fit"].idxmax()]
-        w_smart, w_cheap, w_fast = f["weights"]
-        why = f"Best fit for SMART {w_smart} · CHEAP {w_cheap} · FAST {w_fast}"
-    else:  # all priority weights at zero
-        pick = best_value(df)
-        why = "Best value in view (set PRIORITIES for a weighted pick)"
-    if pick is None:
-        return
+        return df.loc[df["fit"].idxmax()]
+    return best_value(df)
 
+
+def verdict(pick: pd.Series, df: pd.DataFrame, f: dict, opt_label: str,
+            currency: str, fx: float):
+    """The recommendation and the reasons for it.
+
+    FIT ranks the field but stays out of this sentence and in the table: it is
+    a percentile blend over whatever is in view, so the number moves when the
+    filters do while the reasons under it hold."""
+    axis_col = AXES[f["axis"]]
     st.markdown(f"## ▸ {pick['model']}")
-    bits = [why]
-    if pd.notna(pick["fit"]):
-        bits[0] += f" — FIT {pick['fit']:.0f}/100"
-    bits.append(pick["tier"] if pick["tier"] != "—" else "UNSCORED")
+    if pd.isna(pick["fit"]):
+        lead = "Best value in view — every priority weight is zero"
+    elif opt_label == CUSTOM:
+        lead = ("Best fit for SMART {} · CHEAP {} · FAST {} across "
+                "{:,} models in view".format(*f["weights"], len(df)))
+    elif opt_label.startswith("AS "):
+        lead = (f"Best fit for {opt_label[3:]}'s priorities across "
+                f"{len(df):,} models in view")
+    else:
+        lead = f"Best {opt_label} fit across {len(df):,} models in view"
+    bits = [lead, pick["tier"] if pick["tier"] != "—" else "UNSCORED"]
     if pd.notna(pick[axis_col]):
         bits.append(f"{f['axis']} {pick[axis_col]:.1f}")
     if pd.notna(pick["speed"]):
@@ -1020,35 +1243,104 @@ def hero(df: pd.DataFrame, f: dict, currency: str, fx: float):
         bits.append(f"⚠ DEPRECATES {pick['deprecates']}")
     st.markdown(f"**VERDICT** · {' · '.join(bits)}.")
 
+    w_fast = f["weights"][2]
+    beaten = speed_penalized(df, pick, axis_col, w_fast)
+    if beaten is not None:
+        st.caption(
+            f"{beaten['model']} SCORES HIGHER ON {f['axis']} AND COSTS LESS, "
+            f"AND STILL RANKS BELOW: NOBODY HAS PUBLISHED ITS SPEED, WHICH FIT "
+            f"SCORES AS ZERO AGAINST A FAST WEIGHT OF {w_fast}".upper())
 
-def quick_chips(df: pd.DataFrame, axis_col: str, currency: str, fx: float):
-    """Secondary strip of named cuts under the hero — pointers, not the lead."""
-    cheapest = df.iloc[0]
-    bv = best_value(df)
+
+def alternatives(df: pd.DataFrame, pick: pd.Series,
+                 axis_col: str) -> Tuple[Optional[pd.Series], Optional[pd.Series]]:
+    """The two models worth a second look: the cheapest near-equal that costs
+    less, and the cheapest clear upgrade. Either is None when nothing
+    qualifies — an alternative that is not one is noise."""
+    if pd.isna(pick[axis_col]):
+        return None, None
     scored = df.dropna(subset=[axis_col])
-    fast = df.dropna(subset=["speed"])
-    chips = [
-        ("CHEAPEST", md_money(cheapest["total_usd"], currency, fx),
-         cheapest["model"], None),
-        ("BEST VALUE",
-         md_money(bv["total_usd"], currency, fx) if bv is not None else "—",
-         f"{bv['model']} · {bv['tier']}" if bv is not None else "NO SCORED MODELS",
-         "Cheapest model in the highest tier present in the current view."),
-        ("SMARTEST",
-         f"{scored[axis_col].max():.1f}" if not scored.empty else "—",
-         scored.loc[scored[axis_col].idxmax(), "model"] if not scored.empty else "—",
-         None),
-        ("FASTEST",
-         f"{fast['speed'].max():.0f} TOK/S" if not fast.empty else "—",
-         fast.loc[fast["speed"].idxmax(), "model"] if not fast.empty
-         else "SET AA_API_KEY FOR SPEED DATA",
-         "Median output tokens per second, measured by Artificial Analysis."),
+    scored = scored[scored["key"] != pick["key"]]
+    score, cost = pick[axis_col], pick["total_usd"]
+    # The cheaper option gives ground on score: a model that costs less AND
+    # scores higher is an upgrade, and belongs in the other card.
+    cheaper = scored[scored[axis_col].between(score - CHEAPER_DROP, score)
+                     & (scored["total_usd"] < cost)]
+    capable = scored[scored[axis_col] >= score + CAPABLE_GAIN]
+    # df arrives sorted by cost, so the first surviving row is the cheapest.
+    return (cheaper.iloc[0] if not cheaper.empty else None,
+            capable.iloc[0] if not capable.empty else None)
+
+
+def speed_penalized(df: pd.DataFrame, pick: pd.Series, axis_col: str,
+                    w_fast: int) -> Optional[pd.Series]:
+    """The cheapest model that beats the pick on both the score axis and cost
+    and still ranks below it, losing only where it was never measured.
+
+    A model with no speed figure scores zero on that dimension — the policy is
+    deliberate, since being unmeasured is not a selling point, but it can seat
+    a dominated model above one that beats it twice over. Naming that model is
+    the alternative to letting the ranking assert something the data does not.
+    """
+    if not w_fast or df.empty or pd.isna(pick[axis_col]):
+        return None
+    beaten = df[(df["key"] != pick["key"]) & df["speed"].isna()
+                & (df[axis_col] > pick[axis_col])
+                & (df["total_usd"] < pick["total_usd"])]
+    return beaten.iloc[0] if not beaten.empty else None  # df is cost-sorted
+
+
+def _tradeoff(row: pd.Series, pick: pd.Series, axis_col: str, axis: str,
+              w_fast: int) -> str:
+    """What the alternative costs and what it costs you, in that order —
+    including the FAST weight it is being scored as zero on when nobody has
+    measured its speed."""
+    delta = row[axis_col] - pick[axis_col]
+    if abs(delta) < 0.05:
+        score_bit = f"SAME {axis} SCORE"
+    else:
+        score_bit = (f"{abs(delta):.1f} PTS "
+                     f"{'ABOVE' if delta > 0 else 'BELOW'} ON {axis}")
+    ratio = (pick["total_usd"] / row["total_usd"]
+             if row["total_usd"] else float("nan"))
+    if pd.isna(ratio) or 0.95 <= ratio <= 1.05:
+        cost_bit = "ABOUT THE SAME COST"
+    elif ratio > 1:
+        cost_bit = f"{ratio:,.1f}× CHEAPER"
+    else:
+        cost_bit = f"{1 / ratio:,.1f}× THE COST"
+    bits = [score_bit, cost_bit]
+    if w_fast and pd.isna(row["speed"]):
+        bits.append("SPEED UNMEASURED")
+    return " · ".join(bits)
+
+
+def alternative_cards(df: pd.DataFrame, pick: pd.Series, f: dict,
+                      currency: str, fx: float):
+    """Two tradeoffs against the recommendation, or nothing. Naming a cut for
+    every dimension would put four winners under a one-winner verdict."""
+    axis_col = AXES[f["axis"]]
+    cheaper, capable = alternatives(df, pick, axis_col)
+    cards = [
+        ("CHEAPER OPTION", cheaper,
+         f"Cheapest model that costs less than the pick and gives up at most "
+         f"{CHEAPER_DROP} index points."),
+        ("MORE CAPABLE OPTION", capable,
+         f"Lowest-cost model scoring at least {CAPABLE_GAIN} points above "
+         f"the pick."),
     ]
-    for col, (label, value, sub, tip) in zip(st.columns(4), chips):
-        with col:
+    cards = [c for c in cards if c[1] is not None]
+    if not cards:
+        return
+    # Two columns even for one card — a lone alternative stretched across the
+    # page would read as a second verdict.
+    for col, (label, row, tip) in zip(st.columns(2), cards):
+        with col, st.container(border=True):
             st.caption(label, help=tip)
-            st.markdown(f"#### {value}")
-            st.caption(sub)
+            st.markdown(
+                f"**{row['model']}** · {md_money(row['total_usd'], currency, fx)}")
+            st.caption(_tradeoff(row, pick, axis_col, f["axis"],
+                                 f["weights"][2]))
 
 
 def frontier_chart(df: pd.DataFrame, f: dict, currency: str, fx: float,
@@ -1149,6 +1441,17 @@ def ledger(df: pd.DataFrame, axis_col: str, currency: str, fx: float) -> Optiona
     for col, src in (("speed", "speed"), ("usage_b", "usage")):
         if view[src].isna().all():
             columns.remove(col)  # feed absent — don't show a dead column
+
+    # A float NaN reaches the data grid as the literal word "None". Not every
+    # model is scored on every axis, and AA has measured the speed of only some
+    # of them, so the display frame formats those cells itself and the grid
+    # never sees a blank. Ranking, FIT and the charts read the numeric columns
+    # on df, which this copy does not touch.
+    for col, fmt in ((axis_col, "{:.1f}"), ("speed", "{:.0f}"),
+                     ("usage_b", "{:.0f}")):
+        if col in columns:
+            view[col] = view[col].map(
+                lambda v, fmt=fmt: fmt.format(v) if pd.notna(v) else "—")
     event = st.dataframe(
         view[columns],
         hide_index=True,
@@ -1159,13 +1462,13 @@ def ledger(df: pd.DataFrame, axis_col: str, currency: str, fx: float) -> Optiona
             "model": st.column_config.TextColumn("MODEL", width="medium",
                                                  pinned=True),
             "tier": st.column_config.TextColumn("TIER", width="small"),
-            axis_col: st.column_config.NumberColumn(
-                axis_label[axis_col], format="%.1f", width="small"),
-            "speed": st.column_config.NumberColumn(
-                "TOK/S", format="%.0f", width="small",
+            axis_col: st.column_config.TextColumn(
+                axis_label[axis_col], width="small", alignment="right"),
+            "speed": st.column_config.TextColumn(
+                "TOK/S", width="small", alignment="right",
                 help="Median output tokens/sec (Artificial Analysis)"),
-            "usage_b": st.column_config.NumberColumn(
-                "USE B/D", format="%.0f", width="small",
+            "usage_b": st.column_config.TextColumn(
+                "USE B/D", width="small", alignment="right",
                 help="Billions of tokens/day routed through OpenRouter, "
                      "7-day average — real traffic, i.e. popularity, "
                      "not quality. Blank = outside OpenRouter's daily "
@@ -1232,26 +1535,107 @@ def detail_card(row: pd.Series, currency: str, fx: float):
 # =============================================================================
 
 
+def applied_chips(p: dict, f: dict, mode: str, opt_label: str, query: str,
+                  n_models: int, fx: float):
+    """What is currently shaping every number on the page, as chips. Blue =
+    the workload, violet = the mode's own question, gray = modifiers."""
+    # The workload chip reads as a sentence: how many calls, then what one call
+    # looks like. The token counts are per call, and an "×" between two figures
+    # invites reading them as a total.
+    chips = [("blue", f"{p['api_calls']:,} CALLS · ~{p['input_tokens']:,} IN / "
+                      f"{p['output_tokens']:,} OUT TOKENS EACH")]
+    if p["cache_hit_pct"]:
+        chips.append(("gray", f"CACHE HIT {p['cache_hit_pct']}%"))
+    if p["reasoning_mult"] > 1:
+        chips.append(("gray", f"REASONING OUT ×{p['reasoning_mult']:g}"))
+    if p["batch"]:
+        chips.append(("gray", "BATCH"))
+    if mode == "RECOMMEND":
+        chips.append(("gray", f"OPTIMIZE {opt_label}"))
+        # Catalog scope is part of the verdict's claim, so it is stated
+        # whenever the field the ranking sees is not the whole scored one.
+        if len(f["sel_makers"]) < f["n_makers"]:
+            chips.append(("gray", f"{len(f['sel_makers'])} OF "
+                                  f"{f['n_makers']} PROVIDERS"))
+        if f["caps"]:
+            chips.append(("gray", " + ".join(f["caps"])))
+    elif mode == "MATCH" and f["anchor"]:
+        chips.append(("violet",
+                      f"ANCHOR {f['anchor']} −{f['tolerance']} PTS ({f['axis']})"))
+    elif mode == "LOOK UP" and query:
+        chips.append(("violet", f"SEARCH \"{query}\""))
+    if p["currency"] == "INR":
+        chips.append(("gray", f"FX USD→INR {fx:.2f}"))
+    chips.append(("gray", f"{n_models} MODELS"))
+    st.markdown(" ".join(f":{color}-badge[{text}]" for color, text in chips))
+
+
+def empty_view(mode: str, f: dict, query: str):
+    """Why the view is empty, in the vocabulary of the mode that emptied it."""
+    if mode == "LOOK UP":
+        st.info(f"No model, maker, or key matches \"{query}\" — the search "
+                "covers the full catalog, including unscored models.")
+    elif mode == "MATCH":
+        st.info(f"Nothing scores within {f['tolerance']} pts of "
+                f"{f['anchor']} — widen MATCH WITHIN.")
+    elif not f["sel_makers"]:
+        st.info("No providers selected — pick at least one PROVIDERS pill "
+                "under REFINE.")
+    elif not f["sel_tiers"]:
+        st.info("No tiers selected — pick at least one TIER pill under REFINE.")
+    else:
+        st.info("No models match the current filters — widen the tiers, "
+                "providers, or capabilities under REFINE.")
+
+
 def main():
     seed_defaults()
     fx = get_exchange_rate()
-    head = st.container()  # rendered above the preset row, filled after it —
-    # the preset pills must EXECUTE first so their session-state writes land
-    # before the sidebar and workload widgets they configure are instantiated.
-    preset_row()
-    df_catalog, f = sidebar_filters()
+    strip = st.container(horizontal=True, vertical_alignment="bottom",
+                         gap="medium")
+    with strip:
+        st.markdown("### ▮ TOKEN TARIFF")
+        mode = mode_control()
+    # Unscored models are LOOK UP's business alone; every other mode ranks,
+    # and a model with no score cannot be ranked.
+    df_catalog = load_catalog(full=mode == "LOOK UP")
     if df_catalog.empty:
         st.error("No pricing data available (fetch failed and no local fallback).")
         return
-    with head:
-        p = top_strip()
 
-    searching = bool(p["query"])
-    if searching:
-        pool = search_catalog(p["query"])
-        f = {**f, "anchor": None}  # a lookup, not a comparison — no anchor
+    # The mode's own controls EXECUTE here, above the shared workload strip:
+    # the preset pills write their values into session state, and everything
+    # they configure has to be instantiated after that lands. The strip is
+    # re-entered below, so it still renders at the top of the page.
+    query, opt_label = "", CUSTOM
+    if mode == "RECOMMEND":
+        preset_slot = preset_row()
+        weights = optimize_row()
+        # Preset-owned weights read as the use case, not as CUSTOM — the chip
+        # has to agree with the unselected control above it.
+        owner = st.session_state.get("preset")
+        opt_label = (f"AS {owner}" if preset_weights(owner) == weights
+                     else weights_label())
+        f = refine_sidebar(df_catalog)
+    elif mode == "MATCH":
+        weights = tuple(carried(k) for k in WEIGHT_KEYS)
+        f = match_row(df_catalog)
     else:
-        pool = apply_filters(df_catalog, f)
+        weights = tuple(carried(k) for k in WEIGHT_KEYS)
+        query = lookup_row()
+        f = {"sel_makers": None, "sel_tiers": None, "n_makers": 0, "caps": [],
+             "axis": carried("axis"), "anchor": None, "tolerance": 0}
+    f["weights"] = weights
+    with strip:
+        p = workload_strip()
+    # The workload widgets are the last controls that can move a preset value,
+    # so the modified indicator is read only after they hydrate — a shared URL
+    # whose workload matches the preset must not flash PRESET MODIFIED.
+    if mode == "RECOMMEND":
+        preset_notice(preset_slot, st.session_state.get("preset"))
+
+    pool = (search_catalog(df_catalog, query) if query
+            else apply_filters(df_catalog, f))
     axis_col = AXES[f["axis"]]
 
     df = compute_costs(
@@ -1262,64 +1646,48 @@ def main():
     df = add_fit(df, axis_col, f["weights"])
 
     if df.empty:
-        if searching:
-            st.info(f"No model, maker, or key matches \"{p['query']}\" — "
-                    "the search covers the full catalog, including unscored models.")
-        elif not f["sel_makers"]:
-            st.info("No providers selected — pick at least one PROVIDERS pill "
-                    "in the sidebar.")
-        elif not f["sel_tiers"]:
-            st.info("No tiers selected — pick at least one TIER pill in the sidebar.")
-        else:
-            st.info("No models match the current filters — widen the tiers, "
-                    "providers, or capabilities, or clear the anchor.")
+        empty_view(mode, f, query)
         return
 
-    # The applied-settings strip: what is currently shaping every number on
-    # the page, as chips. Blue = the workload, violet = a view rewrite
-    # (search/anchor), gray = modifiers. Edit them in WORKLOAD / the sidebar.
-    chips = [("blue", f"{p['input_tokens']:,} IN / {p['output_tokens']:,} OUT "
-                      f"× {p['api_calls']:,} CALLS")]
-    if p["cache_hit_pct"]:
-        chips.append(("gray", f"CACHE HIT {p['cache_hit_pct']}%"))
-    if p["reasoning_mult"] > 1:
-        chips.append(("gray", f"REASONING OUT ×{p['reasoning_mult']:g}"))
-    if p["batch"]:
-        chips.append(("gray", "BATCH"))
-    if searching:
-        chips.append(("violet", f"SEARCH \"{p['query']}\" — FILTERS BYPASSED"))
-    elif f["anchor"]:
-        chips.append(("violet",
-                      f"ANCHOR {f['anchor']} −{f['tolerance']} PTS ({f['axis']})"))
-    if p["currency"] == "INR":
-        chips.append(("gray", f"FX USD→INR {fx:.2f}"))
-    chips.append(("gray", f"{len(df)} MODELS"))
-    st.markdown(" ".join(f":{color}-badge[{text}]" for color, text in chips))
+    applied_chips(p, f, mode, opt_label, query, len(df), fx)
     st.divider()
 
-    hero(df, f, p["currency"], fx)
-    st.caption(
-        "COST IS PER-TOKEN AT THE COUNTS YOU ENTER, IDENTICAL FOR EVERY MODEL "
-        "— TOKENIZERS AND VERBOSITY DIFFER, SO A CHEAPER RATE CAN COST MORE "
-        "PER FINISHED TASK (ESPECIALLY REASONING MODELS AT HIGH EFFORT). "
-        "BENCHMARKS MAY NOT REFLECT YOUR USAGE — TEST ON YOUR OWN PROMPTS "
-        "BEFORE SWITCHING"
-    )
-    quick_chips(df, axis_col, p["currency"], fx)
+    if mode == "RECOMMEND":
+        pick = pick_model(df)
+        if pick is not None:
+            verdict(pick, df, f, opt_label, p["currency"], fx)
+            alternative_cards(df, pick, f, p["currency"], fx)
+    elif mode == "MATCH":
+        match_verdict(df, f, p["currency"], fx)
+    if mode != "LOOK UP":
+        st.caption(
+            "COST IS PER-TOKEN AT THE COUNTS YOU ENTER, IDENTICAL FOR EVERY MODEL "
+            "— TOKENIZERS AND VERBOSITY DIFFER, SO A CHEAPER RATE CAN COST MORE "
+            "PER FINISHED TASK (ESPECIALLY REASONING MODELS AT HIGH EFFORT). "
+            "BENCHMARKS MAY NOT REFLECT YOUR USAGE — TEST ON YOUR OWN PROMPTS "
+            "BEFORE SWITCHING"
+        )
     st.space()
 
-    colors = maker_colors()
-    left, right = st.columns([11, 9], gap="large")
-    with left:
+    if mode == "LOOK UP":
+        # A lookup is a question about one model, so the table gets the full
+        # width and the charts — which compare a field — sit this one out.
         selected = ledger(df, axis_col, p["currency"], fx)
         if selected is not None:
             detail_card(df.iloc[selected], p["currency"], fx)
-    with right:
-        frontier_tab, totals_tab = st.tabs(["FRONTIER", "TOTALS"])
-        with frontier_tab:
-            frontier_chart(df, f, p["currency"], fx, colors)
-        with totals_tab:
-            totals_chart(df, p["currency"], fx, colors)
+    else:
+        colors = maker_colors()
+        left, right = st.columns([11, 9], gap="large")
+        with left:
+            selected = ledger(df, axis_col, p["currency"], fx)
+            if selected is not None:
+                detail_card(df.iloc[selected], p["currency"], fx)
+        with right:
+            frontier_tab, totals_tab = st.tabs(["FRONTIER", "TOTALS"])
+            with frontier_tab:
+                frontier_chart(df, f, p["currency"], fx, colors)
+            with totals_tab:
+                totals_chart(df, p["currency"], fx, colors)
 
     st.caption(
         "SCORES & SPEED: [ARTIFICIAL ANALYSIS](https://artificialanalysis.ai/) "
