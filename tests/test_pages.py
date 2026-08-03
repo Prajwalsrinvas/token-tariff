@@ -98,6 +98,18 @@ def captions_of(render) -> list:
     return captured
 
 
+def markdowns_of(render) -> list:
+    """Every markdown string a page function emits, with no Streamlit runtime
+    under it — the same trick as captions_of, pointed at the other channel."""
+    captured = []
+    original, st.markdown = st.markdown, lambda text, **kw: captured.append(text)
+    try:
+        render()
+    finally:
+        st.markdown = original
+    return captured
+
+
 def text_of(app: AppTest) -> str:
     """Every string the page rendered, in one blob."""
     parts = [el.value for el in app.markdown]
@@ -580,6 +592,90 @@ def test_the_workload_chip_reads_as_a_sentence():
     assert (f"{values['api_calls']:,} CALLS · ~{values['input_tokens']:,} IN / "
             f"{values['output_tokens']:,} OUT TOKENS EACH") in text_of(
         run(RATE_CARD))
+
+
+def test_a_model_that_cannot_hold_the_input_leaves_the_ranking():
+    """A ranking is a plan to run the workload, and a model whose context
+    window is smaller than one call's input cannot run it at any price. An
+    unknown window keeps its model in view — absence of data is not
+    disqualification, which is the rule every other blank follows."""
+    df = pd.DataFrame([("small", 8_192), ("big", 200_000), ("unknown", None)],
+                      columns=["key", "ctx_tokens"])
+    kept, excluded = RATE.fits_context(df, 50_000)
+    assert list(kept["key"]) == ["big", "unknown"]
+    assert excluded == 1
+    assert RATE.fits_context(df, 4_000)[1] == 0
+    assert list(RATE.fits_context(df, 4_000)[0]["key"]) == list(df["key"])
+    assert "1 MODEL OUT OF VIEW" in RATE.context_note(1, 50_000)
+    assert "2 MODELS OUT OF VIEW" in RATE.context_note(2, 50_000)
+
+
+def test_the_context_window_constrains_a_plan_and_not_a_lookup():
+    """RECOMMEND and MATCH rank models to run the workload on; a lookup is a
+    catalog question and answers for every model. GPT-4's 8K window cannot hold
+    a 50,000-token call, so it leaves the ranking and stays in the lookup."""
+    ranked = run(RATE_CARD, mode="MATCH", input_tokens="50000")
+    assert "CONTEXT WINDOW SMALLER THAN 50,000 INPUT TOKENS PER CALL" in \
+        text_of(ranked)
+    assert "gpt-4" not in list(ranked.dataframe[0].value["model"])
+
+    lookup = run(RATE_CARD, mode="LOOK UP", input_tokens="50000", q="gpt-4")
+    assert "gpt-4" in list(lookup.dataframe[0].value["model"])
+    assert "CONTEXT WINDOW SMALLER THAN" not in text_of(lookup)
+
+
+def batch_frame(rows: list) -> pd.DataFrame:
+    """The columns compute_costs reads, for rows written to isolate one rule."""
+    df = pd.DataFrame(rows, columns=["key", "in_per_m", "out_per_m",
+                                     "batch_in_per_m", "batch_out_per_m"])
+    df["cache_rd_per_m"] = 0.0
+    df["reasoning"] = False
+    return df
+
+
+def test_batch_pricing_needs_both_published_halves():
+    """Substituting on a published batch input price alone bills output at the
+    zero a missing batch price parses as, and the model reads as free on the
+    output half of every workload."""
+    costed = RATE.compute_costs(
+        batch_frame([("both", 10.0, 30.0, 5.0, 15.0),
+                     ("input-only", 10.0, 30.0, 5.0, 0.0),
+                     ("neither", 10.0, 30.0, 0.0, 0.0)]),
+        input_tokens=1_000_000, output_tokens=1_000_000, api_calls=1,
+        cache_hit_pct=0, reasoning_mult=1.0, batch=True,
+    ).set_index("key")
+    assert costed.loc["both", "total_usd"] == 20.0
+    assert costed.loc["input-only", "total_usd"] == 40.0
+    assert costed.loc["neither", "total_usd"] == 40.0
+    assert list(costed.loc[["both", "input-only", "neither"], "batched"]) == \
+        [True, False, False]
+
+
+def verdict_frame(score: float) -> pd.DataFrame:
+    """A one-row view, cost-sorted, with FIT already blank — the state the
+    verdict has to describe rather than the arithmetic that produces it."""
+    return pd.DataFrame([{
+        "key": "the-pick", "model": "the-pick", "fit": float("nan"),
+        "tier": "BUDGET", "intelligence": score, "speed": float("nan"),
+        "total_usd": 1.0, "rel": 1.0, "deprecates": ""}])
+
+
+def verdict_lead(df: pd.DataFrame, weights: tuple) -> str:
+    return " ".join(str(m) for m in markdowns_of(lambda: RATE.verdict(
+        df.iloc[0], df, {"axis": "INT", "weights": weights}, RATE.CUSTOM,
+        "USD", 1.0)))
+
+
+def test_a_blank_fit_says_which_of_its_two_causes_it_is():
+    """FIT goes blank when nothing is asked of the ranking, and when what is
+    asked reads a score nothing in view carries. Reporting the second as every
+    weight being zero describes sliders the visitor can see are not."""
+    no_weights = verdict_lead(verdict_frame(50.0), (0, 0, 0))
+    assert "every priority weight is zero" in no_weights
+
+    no_scores = verdict_lead(verdict_frame(float("nan")), (5, 0, 0))
+    assert "nothing in view is scored on INT" in no_scores
+    assert "every priority weight is zero" not in no_scores
 
 
 def alt_frame(rows: list) -> pd.DataFrame:

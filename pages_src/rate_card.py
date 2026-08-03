@@ -444,6 +444,9 @@ def _row(key: str, name: str, maker: str, m: Dict, score_idx: Tuple[Dict, Dict],
         "ttft": aa.get("ttft"),
         "usage": usage or None,
         "ctx": _fmt_ctx(m.get("max_input_tokens")),
+        # The same figure the display string formats, kept as a number: whether
+        # a model can take the workload's input is a comparison, not a label.
+        "ctx_tokens": m.get("max_input_tokens"),
         "in_per_m": (m.get("input_cost_per_token") or 0) * per_m,
         "out_per_m": (m.get("output_cost_per_token") or 0) * per_m,
         "cache_rd_per_m": (m.get("cache_read_input_token_cost") or 0) * per_m,
@@ -598,7 +601,9 @@ def compute_costs(
     out_price = df["out_per_m"].copy()
 
     if batch:
-        has_batch = df["batch_in_per_m"] > 0
+        # Both halves or neither: substituting on a published batch input price
+        # alone bills output at the zero the missing batch price parses as.
+        has_batch = (df["batch_in_per_m"] > 0) & (df["batch_out_per_m"] > 0)
         in_price = in_price.where(~has_batch, df["batch_in_per_m"])
         out_price = out_price.where(~has_batch, df["batch_out_per_m"])
         df["batched"] = has_batch
@@ -1142,6 +1147,24 @@ def apply_filters(df: pd.DataFrame, f: dict) -> pd.DataFrame:
     return df
 
 
+def fits_context(df: pd.DataFrame, input_tokens: int) -> Tuple[pd.DataFrame, int]:
+    """The models that can take the workload's input, and how many cannot.
+
+    A ranking is a plan to run the workload, and a model whose context window
+    is smaller than one call's input cannot run it at any price. Models whose
+    context is unknown stay in view: absence of data is not disqualification,
+    the same rule every other blank in the catalog follows.
+    """
+    known = pd.to_numeric(df["ctx_tokens"], errors="coerce")
+    too_small = known.notna() & (known > 0) & (known < input_tokens)
+    return df[~too_small], int(too_small.sum())
+
+
+def context_note(n_excluded: int, input_tokens: int) -> str:
+    return (f"{n_excluded:,} MODEL{'S' if n_excluded > 1 else ''} OUT OF VIEW · "
+            f"CONTEXT WINDOW SMALLER THAN {input_tokens:,} INPUT TOKENS PER CALL")
+
+
 def search_catalog(base: pd.DataFrame, query: str) -> pd.DataFrame:
     """Name/maker/key lookup across the full catalog — the 'is model X in here
     and what does it cost' path."""
@@ -1221,7 +1244,13 @@ def verdict(pick: pd.Series, df: pd.DataFrame, f: dict, opt_label: str,
     axis_col = AXES[f["axis"]]
     st.markdown(f"## ▸ {pick['model']}")
     if pd.isna(pick["fit"]):
-        lead = "Best value in view — every priority weight is zero"
+        # FIT goes blank for two different reasons, and they are two different
+        # findings: nothing was asked of the ranking, or what was asked reads a
+        # score no model in view carries.
+        lead = ("Best value in view — every priority weight is zero"
+                if not any(f["weights"]) else
+                f"Best value in view — nothing in view is scored on "
+                f"{f['axis']}")
     elif opt_label == CUSTOM:
         lead = ("Best fit for SMART {} · CHEAP {} · FAST {} across "
                 "{:,} models in view".format(*f["weights"], len(df)))
@@ -1636,6 +1665,12 @@ def main():
 
     pool = (search_catalog(df_catalog, query) if query
             else apply_filters(df_catalog, f))
+    # A lookup is a catalog question, so it answers for every model. RECOMMEND
+    # and MATCH rank models to run this workload on, and one that cannot hold a
+    # call's input is not a candidate for it.
+    n_over_context = 0
+    if mode != "LOOK UP":
+        pool, n_over_context = fits_context(pool, p["input_tokens"])
     axis_col = AXES[f["axis"]]
 
     df = compute_costs(
@@ -1650,6 +1685,8 @@ def main():
         return
 
     applied_chips(p, f, mode, opt_label, query, len(df), fx)
+    if n_over_context:
+        st.caption(context_note(n_over_context, p["input_tokens"]))
     st.divider()
 
     if mode == "RECOMMEND":
