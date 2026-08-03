@@ -151,6 +151,13 @@ Flash-Lite. It is the slot, not the price tag: an older, cheaper model still on
 sale does not disqualify the current one, and a renamed or replaced slot inherits
 eligibility.
 
+The page also carries an **OPEN CHANNEL · NON-BINDING** watch: open-weights
+flagships that set a new high on the same AA index, beginning with the
+DeepSeek-R1 pattern. It is evidence about another route by which frontier
+capability diffuses, not another arm of the wager. Open weights have no canonical
+per-token price, their labs can sit outside the frozen vendor list, and flagship
+releases are not the frozen entry-level slot.
+
 | Lens | Date | How it gets there |
 |---|---|---|
 | **Price decline** | 2027-01-10 | Epoch AI's median 50×/year fall in the price of a fixed capability, counted from Fable 5's release. The wager's price term is a ratio, so this is just the time for a tenfold fall — independent of either sticker price. |
@@ -164,12 +171,13 @@ together. Neither is good to better than a season. January 10 and March 8 are th
 forecast; June 27 is the resolution bound — missing the window is not a NO,
 missing the deadline is.
 
-Four caveats do most of the work.
+Five caveats do most of the work.
 
 - **Matching the index is not general equivalence.** The AA index is an exam-style composite: long-context behaviour and agentic reliability are not in it, and a verbose entry-level model can cost more per finished task than a frontier model at ten times the per-token rate.
 - **The arm is a joint event** — the index *and* a tenth of the price, together. The historical-lag lens tracks only capability and the price-decline lens only price, and 3 of the 9 historical matches with a known price cleared the index at less than a tenfold price gap, so they would have failed this wager's own price term.
 - **METR is a secondary check, and non-binding.** It has measured no entry-level model in either suite version, and none of Fable 5 either, so it cannot be read today. If both ends are ever measured on one suite version before the deadline, an entry-level model at or above the proxy's p50 is corroboration and nothing more.
 - **METR's 50% threshold is not its 80%** — the Mythos preview measures 1,044.8 min at 50% but 185.9 min at 80%.
+- **The open channel is non-binding.** It can show an open-weights flagship reaching the target sooner, but that model has no canonical price and may sit outside both the frozen vendors and their entry-level slots. It settles nothing.
 
 The 10 matched pairs behind the historical-lag lens come from only **5 catch-up
 releases** — one cheap model can clear three standing frontier highs at once — so
@@ -180,7 +188,7 @@ treat the effective sample as 5.
 | Data | Source |
 |---|---|
 | **50% / 80% time horizons** — the non-binding secondary check | [METR](https://metr.org/time-horizons/), from the published `benchmark_results_1_1.yaml` behind their chart |
-| **Intelligence index** | [Artificial Analysis](https://artificialanalysis.ai/), via OpenRouter's listing (read 2026-08-01) and this repo's committed AA API payload (vintage ≤2026-07-05). Each row's `aa_version` says which. Where a model publishes several configurations, the highest-scoring one is recorded, for every row. |
+| **Intelligence index** — binding tiers plus the non-binding open channel | [Artificial Analysis](https://artificialanalysis.ai/), via OpenRouter's listing (read 2026-08-01) and this repo's committed AA API payload (vintage ≤2026-07-05). Each row's `aa_version` says which. Where a model publishes several configurations, the highest-scoring one is recorded, for every row. |
 | **Price-decline rate** | [Epoch AI](https://epoch.ai/data-insights/llm-inference-price-trends) — 9× to 900× per year, median 50× |
 | **Prices and release dates** | Vendor announcements and pricing docs, archived where the vendor blocks fetches |
 
@@ -192,12 +200,19 @@ when the data does. `data/history/<date>/` keeps the raw payloads each row was r
 from, append-only, because Artificial Analysis re-scores older models when its
 index changes and tags no version in either feed.
 
+The third `tier` value, `open`, records only open-weights flagship high-water
+marks, never an open vendor's budget tier. Its price columns remain blank: a
+downloadable model has hosting offers and self-run costs, but no canonical price.
+The binding calculations explicitly select only `frontier` and `bottom`, so these
+rows are a non-binding page watch and nothing else.
+
 ```bash
 uv run python scripts/timeline_fetch.py     # new snapshot + diff vs the last one
 ```
 
 Then run the `/timeline-refresh` skill, which turns that diff into sourced
-`timeline.csv` edits. Roughly quarterly.
+`timeline.csv` edits and checks for a new open-weights flagship high-water mark.
+Roughly quarterly.
 
 `wager.json` is the **frozen** prediction the scheduled emails were built around.
 It is deliberately not kept in sync — the page shows a badge when live data has

@@ -1,6 +1,6 @@
 ---
 name: timeline-refresh
-description: Refresh the trickle-down wager's data spine — pull new snapshots of OpenRouter, METR and Artificial Analysis, find models and price events the timeline is missing, propose sourced timeline.csv edits, and recompute both wager predictions. Use when asked to refresh, update, or re-check the WAGER page, timeline.csv, or the wager predictions, and roughly quarterly.
+description: Refresh the trickle-down wager's data spine — pull new snapshots of OpenRouter, METR and Artificial Analysis, find binding-tier models, non-binding open-weights high-water marks and price events the timeline is missing, propose sourced timeline.csv edits, and recompute both wager predictions. Use when asked to refresh, update, or re-check the WAGER page, timeline.csv, or the wager predictions, and roughly quarterly.
 ---
 
 # Refreshing the trickle-down wager
@@ -48,6 +48,13 @@ web for, since the previous snapshot's date:
   vendor adding a tier below the old slot counts, and the old slot stops being
   the entry level. An older, cheaper model still on sale does not take the slot.
 - **New frontier models**, and whether each set a new high on the AA index.
+- **New open-weights flagship high-water marks.** This is a non-binding channel
+  of downloadable flagship weights approaching closed frontier models — the
+  DeepSeek-R1-versus-o1 pattern — not a vendor's budget models. Add a candidate
+  only if it beats every earlier `open` row on the AA index and its exact score
+  exists in one of this repo's committed AA feeds. A hosted route does not give
+  open weights a canonical price: all four price cells stay blank. These rows
+  settle nothing.
 - **Price events** — cuts, rises, promotional rates ending, intro pricing
   expiring.
 - **METR publications.** A new blog post, a new suite version, or new models in
@@ -93,9 +100,11 @@ apply the accepted ones to `timeline.csv`.
 
 Column notes:
 
-- `tier` — `frontier` or `bottom`. The slot, not the price. A cheap frontier
-  model is still frontier. `bottom` is the entry-level slot: the value is data
-  and stays, but nothing a reader sees says "lineup bottom".
+- `tier` — `frontier`, `bottom`, or `open`. The slot, not the price. A cheap
+  frontier model is still frontier. `bottom` is the entry-level slot: the value
+  is data and stays, but nothing a reader sees says "lineup bottom". `open` is
+  the non-binding open-weights flagship high-water channel, never an open
+  vendor's cheapest tier.
 - `metr_key` — the model's key in METR's YAML, or blank. The p50 and p80 cells
   must match that key exactly; `timeline_fetch.py` checks both.
 - `metr_source` — always the v1.1 URL. Never mix suite versions in one column:
@@ -106,6 +115,11 @@ Column notes:
   from it carry its vintage (`≤2026-07-05` at the last freeze). If a refresh
   fetches the AA API with a key, the rows it sources move to that date.
 - `notes` — anything a reader would otherwise get wrong.
+
+For every `open` row, verify the release date and use the vendor's announcement
+or official model card as `source_url`. Keep launch and current price columns
+blank and say in `notes` that the row is a non-binding open-weights high-water
+mark with no canonical price.
 
 ### 5. Recompute and reconcile
 
@@ -119,6 +133,12 @@ The page recomputes live from `timeline.csv`, so it moves on its own.
 should not be edited to match — the page already shows a badge when live data
 has moved away from it, and that divergence is information. Only rewrite
 `wager.json` if the wager itself is being restated, and say so in the commit.
+
+`open` rows must be inert here. `milestones()` and `method_a()` select only
+`frontier` and `bottom`; `resolution()` selects only eligible `bottom` rows; and
+the price-decline dates depend only on the frozen constants and baseline. If an
+open row moves any prediction, milestone, resolution field or frozen date, stop
+and fix the filtering before accepting the refresh.
 
 If it is re-frozen, three things must move with it: `tests/test_wager.py`, which
 pins every number; the `cron` in `.github/workflows/wager-email.yml`, whose

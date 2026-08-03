@@ -79,7 +79,8 @@ def chart_figure(yardstick: str):
         palette = st.get_option("theme.chartCategoricalColors")
         PAGE.capability_chart(
             PAGE.timeline_frame(rows), yardstick,
-            {"FRONTIER": palette[0], "ENTRY-LEVEL": palette[1]})
+            {"FRONTIER": palette[0], "ENTRY-LEVEL": palette[1],
+             "OPEN · NON-BINDING": palette[2]})
     finally:
         st.plotly_chart = original
     return captured[-1]
@@ -216,6 +217,27 @@ def test_the_story_needs_every_figure_it_formats():
             lambda d=doctored: PAGE.story(
                 d, wager.milestones(d), wager.resolution(d))
         ) == [PAGE.STORY_UNTELLABLE], blank
+
+
+def test_the_open_channel_is_computed_and_non_binding(page):
+    rows = wager.load_timeline()
+    res = wager.resolution(rows)
+    best = max((r for r in rows if r["tier"] == "open"),
+               key=lambda r: r["aa_intel"])
+    body = text_of(page)
+
+    assert "OPEN CHANNEL · NON-BINDING" in body
+    assert f"{best['model']} at AA {best['aa_intel']:.1f}" in body
+    assert f"{res['baseline_aa'] - best['aa_intel']:.1f} points short" in body
+    assert "It settles nothing." in body
+
+    fig = chart_figure("AA INDEX")
+    assert "OPEN · NON-BINDING" in {trace.name for trace in fig.data}
+    open_dots = next(trace for trace in fig.data
+                     if trace.name == "OPEN · NON-BINDING")
+    assert open_dots.marker.symbol == "circle-open"
+    assert any(trace.line.dash == "dot" for trace in fig.data
+               if trace.name == "OPEN · NON-BINDING")
 
 
 def test_no_implementation_vocabulary_reaches_the_reader(page):

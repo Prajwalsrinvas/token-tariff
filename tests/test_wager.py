@@ -48,6 +48,34 @@ EXPECTED_SLOWEST = dt.date(2027, 6, 27)
 EXPECTED_MIDPOINT = dt.date(2026, 10, 21)
 EXPECTED_DEADLINE = dt.date(2027, 6, 27)
 
+# Curated open-weights flagship high-water marks. The third item is the exact
+# key in the committed feed named by the row's aa_version.
+EXPECTED_OPEN = {
+    "deepseek-r1": (dt.date(2025, 1, 20), 18.5,
+                    "deepseek/deepseek-r1"),
+    "command-a": (dt.date(2025, 3, 13), 22.5, "cohere/command-a"),
+    "gpt-oss-120b": (dt.date(2025, 8, 5), 23.8,
+                     "openai/gpt-oss-120b"),
+    "deepseek-v3.1-terminus": (dt.date(2025, 9, 22), 30.4,
+                               "deepseek/deepseek-v3.1-terminus"),
+    "deepseek-v3.2": (dt.date(2025, 12, 1), 32.0,
+                      "deepseek/deepseek-v3.2"),
+    "glm-4.7": (dt.date(2025, 12, 22), 33.7, "z-ai/glm-4.7"),
+    "kimi-k2.5": (dt.date(2026, 1, 27), 35.4,
+                  "moonshotai/kimi-k2.5"),
+    "glm-5": (dt.date(2026, 2, 11), 39.5, "glm-5"),
+    "glm-5.1": (dt.date(2026, 4, 7), 40.2, "z-ai/glm-5.1"),
+    "kimi-k2.6": (dt.date(2026, 4, 20), 44.2,
+                  "moonshotai/kimi-k2.6"),
+    "deepseek-v4-pro": (dt.date(2026, 4, 24), 44.3,
+                        "deepseek/deepseek-v4-pro"),
+    "minimax-m3": (dt.date(2026, 5, 31), 44.4,
+                   "minimax/minimax-m3"),
+    "glm-5.2": (dt.date(2026, 6, 16), 51.1, "z-ai/glm-5.2"),
+    "kimi-k3": (dt.date(2026, 7, 26), 57.1,
+                "moonshotai/kimi-k3"),
+}
+
 
 @pytest.fixture(scope="module")
 def rows():
@@ -97,6 +125,50 @@ def test_effective_sample_is_smaller_than_the_pair_count(preds):
     assert a["n_matchers"] == 5
     assert a["n_priced"] == 9
     assert a["n_under_price_bar"] == 3
+
+
+def test_open_rows_are_sourced_non_binding_high_water_marks(rows):
+    """The watch is a sequence, not an open-model catalog. Every row improves
+    on the prior open flagship, has no invented price, and reproduces a score
+    that already exists in the committed feed its version names."""
+    benchmark = json.loads((ROOT / "benchmark_scores.json").read_text())
+    aa = json.loads((ROOT / "aa_models.json").read_text())
+    open_rows = [r for r in rows if r["tier"] == "open"]
+
+    assert {r["model"] for r in open_rows} == set(EXPECTED_OPEN)
+    assert [r["aa_intel"] for r in open_rows] == sorted(
+        r["aa_intel"] for r in open_rows)
+    for row in open_rows:
+        date, score, feed_key = EXPECTED_OPEN[row["model"]]
+        assert (row["release_date"], row["aa_intel"]) == (date, score)
+        assert all(row[col] is None for col in (
+            "launch_price_in", "launch_price_out", "current_price_in",
+            "current_price_out"))
+        assert "Non-binding" in row["notes"]
+        if row["aa_version"] == "2026-08-01":
+            assert benchmark[feed_key]["intelligence"] == score
+        else:
+            assert row["aa_version"] == "≤2026-07-05"
+            assert aa[feed_key]["intelligence"] == score
+
+
+def test_open_rows_are_inert_to_every_wager_derivation(rows, frozen):
+    """Adding the non-binding watch cannot move the contract indirectly.
+    Exercise every derived object over the full spine and over the exact same
+    spine with `open` removed; explicit frontier/bottom filters make them equal."""
+    binding_rows = [r for r in rows if r["tier"] != "open"]
+
+    assert wager.milestones(rows) == wager.milestones(binding_rows)
+    assert wager.method_a(rows) == wager.method_a(binding_rows)
+    assert wager.predictions(rows) == wager.predictions(binding_rows)
+    assert wager.resolution(rows) == wager.resolution(binding_rows)
+
+    live = wager.predictions(rows)
+    assert str(live["a"]["date"]) == frozen["predictions"]["method_a"]["date"]
+    assert str(live["b"]["date"]) == frozen["predictions"]["method_b"]["date"]
+    assert str(live["slow"]["date"]) == \
+        frozen["predictions"]["slowest_trend"]["date"]
+    assert str(wager.DEADLINE) == frozen["deadline"]
 
 
 def test_frozen_document_matches_a_fresh_recomputation(preds, frozen):

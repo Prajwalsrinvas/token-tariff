@@ -40,11 +40,17 @@ import wager  # noqa: E402
 st.set_page_config(page_title="WAGER — TOKEN TARIFF", page_icon="▮",
                    layout="wide")
 
-# Two series, two jobs: where the frontier is, and where the cheap seats are.
+# Three series, three jobs: where the frontier is, where the cheap seats are,
+# and how close downloadable flagship weights have come without entering the
+# wager at all.
 # The CSV's tier value stays `bottom` — it is data — but nothing a reader sees
 # says "lineup bottom", because the wager is written on the entry-level slot.
-TIER_LABELS = {"frontier": "FRONTIER", "bottom": "ENTRY-LEVEL"}
-TIER_ORDER = ["FRONTIER", "ENTRY-LEVEL"]
+TIER_LABELS = {
+    "frontier": "FRONTIER",
+    "bottom": "ENTRY-LEVEL",
+    "open": "OPEN · NON-BINDING",
+}
+TIER_ORDER = ["FRONTIER", "ENTRY-LEVEL", "OPEN · NON-BINDING"]
 
 # The two things a model can be measured on, one axis at a time. METR counts
 # minutes of autonomous work and spans six orders of magnitude, so it reads on
@@ -54,7 +60,8 @@ YARDSTICKS = {
         col="aa_intel", log=False, title="ARTIFICIAL ANALYSIS INTELLIGENCE INDEX",
         help="Artificial Analysis' intelligence index, read from a single "
              "snapshot so models from different eras are on one scale. This is "
-             "the instrument the wager resolves on."),
+             "the instrument the wager resolves on; the open-weights series is "
+             "a non-binding watch on the same ruler."),
     "METR HORIZON": dict(
         col="metr_horizon_min_p50", log=True, title="50% TIME HORIZON (MIN, LOG)",
         help="Task length at which a model succeeds half the time, measured by "
@@ -588,6 +595,41 @@ wager is that those {res['gap_points']:.1f} points close before
 """))
 
 
+def open_channel(rows: list, res: dict):
+    """The parallel diffusion path the binding slot definition leaves out.
+
+    It is deliberately a reading of `open` rows, not another wager derivation:
+    no price enters, no eligible-vendor check runs, and no date moves.
+    """
+    open_rows = [r for r in rows
+                 if r["tier"] == "open" and r["aa_intel"] is not None]
+    if not open_rows or res["baseline_aa"] is None:
+        return
+    best = max(open_rows, key=lambda r: r["aa_intel"])
+    r1 = next((r for r in open_rows if r["model"] == "deepseek-r1"), None)
+    if r1 is None or res["best_bottom_aa"] is None:
+        return
+
+    target_gap = res["baseline_aa"] - best["aa_intel"]
+    entry_lead = best["aa_intel"] - res["best_bottom_aa"]
+    st.caption("OPEN CHANNEL · NON-BINDING")
+    with reading():
+        st.markdown(f"""
+**{r1['release_date']:%Y-%m} — DeepSeek R1 makes the parallel route visible.**
+Its [model card]({r1['source_url']}) describes performance comparable to o1
+across math, code and reasoning while releasing the weights. The page's common
+AA ruler records the channel instead of treating that catch-up as outside the
+frame.
+
+**The open high-water mark is {best['model']} at AA {best['aa_intel']:.1f}.**
+It sits **{target_gap:.1f} points short** of the {res['baseline_aa']:.1f} target
+and **{entry_lead:.1f} points ahead** of the entry-level leader,
+{res['best_bottom']}. **NON-BINDING:** open weights have no canonical per-token
+price, the channel includes labs outside the frozen vendor list, and it tracks
+flagships outside the frozen entry-slot rule. It settles nothing.
+""")
+
+
 def _axis_y(value: float, log: bool) -> float:
     """Shapes and annotations are positioned in the axis' own coordinates, and
     a log axis' coordinates are exponents. Plotly does not convert for us: pass
@@ -597,8 +639,8 @@ def _axis_y(value: float, log: bool) -> float:
 
 
 def capability_chart(df: pd.DataFrame, yardstick: str, colors: dict):
-    """Frontier and entry-level tier over time on one axis, with the three
-    moments that shaped the trend called out."""
+    """Frontier, entry-level and the non-binding open channel on one axis,
+    with the moments that shaped the trend called out."""
     spec = YARDSTICKS[yardstick]
     plot = df.dropna(subset=[spec["col"]]).sort_values("date")
     if plot.empty:
@@ -616,8 +658,13 @@ def capability_chart(df: pd.DataFrame, yardstick: str, colors: dict):
         hovertemplate="%{customdata[0]} · %{customdata[1]}<br>"
                       "%{x|%Y-%m-%d} · %{y:.4g}<extra></extra>",
     )
+    # An open marker and dotted step keep the watch visually subordinate to
+    # the two binding channels even before the legend label is read.
+    for trace in fig.data:
+        if trace.name == TIER_LABELS["open"]:
+            trace.update(marker=dict(size=10, symbol="circle-open", line_width=2))
 
-    # The line is the running best within a tier, drawn as a step. Joining the
+    # The line is the running best within a channel, drawn as a step. Joining the
     # releases in date order instead would slope downward every time a vendor
     # shipped something below the standing best — Gemini 3.5 Flash-Lite landing
     # after Luna reads as the cheap tier getting worse, which is not what
@@ -628,7 +675,8 @@ def capability_chart(df: pd.DataFrame, yardstick: str, colors: dict):
             continue
         fig.add_scatter(
             x=tier["date"], y=tier[spec["col"]].cummax(), mode="lines",
-            line=dict(color=colors[label], width=2, shape="hv"),
+            line=dict(color=colors[label], width=2, shape="hv",
+                      dash="dot" if label == TIER_LABELS["open"] else "solid"),
             name=label, hoverinfo="skip", showlegend=False,
         )
 
@@ -692,11 +740,11 @@ def capability_chart(df: pd.DataFrame, yardstick: str, colors: dict):
     )
     st.plotly_chart(fig, width="stretch")
     st.caption("DOTS: INDIVIDUAL RELEASES · STEPS: THE BEST AVAILABLE IN THAT "
-               "TIER AT THAT MOMENT")
+               "CHANNEL AT THAT MOMENT · OPEN IS NON-BINDING")
     # An empty tier is the finding, not a gap in the plot — say so, or the
     # METR view reads as broken rather than as the reason METR cannot settle
     # this.
-    missing = [label for tier, label in TIER_LABELS.items()
+    missing = [label for tier, label in TIER_LABELS.items() if tier != "open"
                if plot[plot["tier"] == tier].empty]
     if missing:
         st.caption(
@@ -897,6 +945,13 @@ in either suite — no Haiku, no Flash, no Flash-Lite, no Luna, no nano — and 
 horizon is published for {res['baseline']} either. The only "mini" entries are
 GPT-4o mini (release date only, no horizon) and o4-mini.
 
+**The open channel is non-binding.** Open weights have no canonical per-token
+price: a hosted route is one provider's offer, while running the weights yourself
+has a different cost entirely. The channel also includes labs outside the frozen
+vendor list and tracks flagships rather than the frozen entry-level slots. It is
+evidence that capability diffuses; it cannot satisfy either definition that
+makes a model eligible to settle this wager.
+
 **It could resolve YES on a technicality.** An index version change that rescores
 everything, or a vendor moving a mid-tier model into its entry slot. The terms
 name the slot a vendor prices and markets as its cheapest for that reason, and
@@ -939,10 +994,15 @@ under 1.0), so mixing them would manufacture progress.
 **Blanks are blanks.** Every row in `timeline.csv` carries a source URL, and a
 fact that could not be sourced is left empty rather than estimated — which is
 why some launch prices, and the price ratios that depend on them, are missing.
+
+**The open channel is non-binding.** Its rows are open-weights flagship
+high-water marks on the AA index, not budget tiers from open-model vendors.
+Their price columns stay blank because open weights have no canonical price;
+they never enter the wager's vendor, slot, lag or resolution filters.
 """)
         st.caption("THE FULL TIMELINE")
         st.dataframe(
-            df[["model", "vendor", "tier", "release_date", "aa_intel",
+            df[["model", "vendor", "tier_label", "release_date", "aa_intel",
                 "metr_horizon_min_p50", "current_price_in", "current_price_out",
                 "source_url"]],
             hide_index=True, height=320,
@@ -950,7 +1010,8 @@ why some launch prices, and the price ratios that depend on them, are missing.
                 "model": st.column_config.TextColumn("MODEL", width="medium",
                                                      pinned=True),
                 "vendor": st.column_config.TextColumn("VENDOR", width="small"),
-                "tier": st.column_config.TextColumn("TIER", width="small"),
+                "tier_label": st.column_config.TextColumn("CHANNEL",
+                                                          width="small"),
                 "release_date": st.column_config.DateColumn("RELEASED",
                                                             width="small"),
                 "aa_intel": st.column_config.NumberColumn("AA", format="%.1f",
@@ -1009,8 +1070,9 @@ def main():
     df = timeline_frame(rows)
 
     palette = (st.get_option("theme.chartCategoricalColors")
-               or ["#58A6FF", "#F0883E"])
-    colors = {"FRONTIER": palette[0], "ENTRY-LEVEL": palette[1]}
+               or ["#58A6FF", "#F0883E", "#A371F7"])
+    colors = {label: palette[i % len(palette)]
+              for i, label in enumerate(TIER_ORDER)}
 
     headline(frozen)
     st.space()
@@ -1023,6 +1085,8 @@ def main():
     st.divider()
 
     story(rows, ms, res)
+    st.space()
+    open_channel(rows, res)
 
     st.space()
     head = st.container(horizontal=True, vertical_alignment="bottom",
@@ -1033,7 +1097,8 @@ def main():
             "YARDSTICK", list(YARDSTICKS), default="AA INDEX",
             label_visibility="collapsed",
             help="The AA index is what the wager resolves on: it covers both "
-                 "tiers. METR counts minutes of autonomous work and has never "
+                 "binding tiers and carries the non-binding open watch. METR "
+                 "counts minutes of autonomous work and has never "
                  "measured an entry-level model, which is why it is the "
                  "secondary check.",
         )
