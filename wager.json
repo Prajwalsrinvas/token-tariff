@@ -1,8 +1,21 @@
 {
   "wager": "THE TRICKLE-DOWN WAGER",
-  "claim": "A lineup-bottom model — the cheapest model its vendor ships — will match Claude Fable 5, the frontier as of June 2026, on one of two yardsticks: METR's 50% time horizon, or the Artificial Analysis intelligence index at no more than a tenth of Fable 5's price.",
+  "version": 2,
+  "claim": "By June 27, 2027, an entry-level model — the cheapest slot in a major vendor's lineup (Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini Flash-Lite) — will match Claude Fable 5's launch score of 59.9 on the Artificial Analysis intelligence index at no more than a tenth of Fable 5's price: at or below $2.00 per million tokens on this page's fixed 3:1 input:output blend.",
   "frozen_on": "2026-08-01",
+  "amended_on": "2026-08-03",
+  "deadline": "2027-06-27",
   "page": "https://token-tariff.streamlit.app/WAGER",
+  "amendment": {
+    "changed": [
+      "A deadline: 2027-06-27, with an explicit NO condition. It is the date the slowest price decline Epoch AI fitted reaches a tenfold fall, counted from Fable 5's release — past it, the trend claim is false rather than pending.",
+      "METR is demoted from a co-equal resolution arm to a non-binding secondary check. It has measured neither Fable 5 nor any entry-level model, so an arm written on it cannot be read.",
+      "The qualifying model is an \"entry-level model\": the slot a vendor designates as its cheapest, over a frozen list of vendors, rather than whichever listing happens to carry the lowest price. The old wording turned on price, under which GPT-5.4 nano and the older, still cheaper GPT-5 nano both had a claim to the same position.",
+      "The price term is stated as a fixed number — $2.00 per million tokens on the 3:1 blend — as well as a ratio, so no one has to derive it before arguing with it."
+    ],
+    "why": "The terms are clarified before the midpoint check, while the outcome is unknown and no wording can be argued to favour it. What must happen is unchanged: the same baseline, the same index, the same tenth-of-the-price term, the same forecast dates.",
+    "v1": "The original wording is preserved in this file's git history."
+  },
   "framing": "Two illustrative scenarios, not a calibrated forecast. Each takes one published trend at face value and runs it forward. They land close together because capability diffusion and price decline are two views of the same underlying process — proximity between them is not corroboration, and neither date is good to better than a season.",
   "baseline": {
     "model": "claude-fable-5",
@@ -12,32 +25,39 @@
     "price_in_per_mtok": 10.0,
     "price_out_per_mtok": 50.0,
     "blended_price_per_mtok": 20.0,
-    "metr_horizon_min_p50": null,
-    "metr_proxy": {
-      "model": "claude-mythos-preview-early",
-      "p50_horizon_min": 1044.78,
-      "p80_horizon_min": 185.912,
-      "note": "Provisional. METR has published no horizon for Fable 5 or Mythos 5. This is an early preview of what Anthropic describes as the same underlying model, and its p50 estimate sits above METR's stated 16 h reliability ceiling.",
-      "source": "https://metr.org/assets/benchmark_results_1_1.yaml"
-    }
+    "metr_horizon_min_p50": null
   },
   "resolution": {
-    "resolves_yes_if_either": [
-      "METR measures any lineup-bottom model at or above Fable 5's 50% time horizon, using whichever METR suite version measured both ends.",
-      "A lineup-bottom model reaches Fable 5's launch Artificial Analysis intelligence index of 59.9, compared inside a single AA snapshot, at no more than one tenth of Fable 5's cost per token."
-    ],
+    "resolves_yes_if": "An entry-level model from an eligible vendor reaches Fable 5's launch Artificial Analysis intelligence index of 59.9, compared inside a single AA snapshot, at or below $2.00 per million tokens on the fixed 3:1 input:output blend. One model, both terms, at one time.",
+    "resolves_no_if": "No qualifying model meets that rule by 23:59 UTC on 2027-06-27. The evidence must be publicly available by that instant; the AA snapshot and the vendor price page proving it may be captured up to 14 days later, and nothing first published after the deadline counts.",
+    "deadline": "2027-06-27",
+    "archival_grace_days": 14,
+    "binding_arms": 1,
     "cost_share": 0.1,
     "price_cap_blended_per_mtok": 2.0,
-    "lineup_bottom_definition": "The cheapest model a major vendor ships in its current lineup — Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini Flash-Lite. Membership is lineup position, not a price threshold.",
-    "joint_event_note": "Arm 2 requires capability and price together. Neither prediction method models that conjunction: Method A tracks only when the index gets matched, Method B only how fast price falls. Of the 9 historical matches where both prices are known, 3 cleared the index at less than a tenfold price gap and so would have failed arm 2 on the day they matched.",
+    "entry_level_definition": "The cheapest slot a major vendor designates in its current lineup — Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini Flash-Lite. Membership is the slot, not a price threshold: an older cheaper model still on sale does not disqualify the current entry-level model, and no model outside the slot qualifies by being cheap.",
+    "eligible_vendors": ["Anthropic", "OpenAI", "Google"],
+    "slot_inheritance": "A renamed or replaced entry slot inherits eligibility — whatever succeeds Flash-Lite is Google's entry-level model under whatever name. What does not inherit is a relabelling: the slot is the one a vendor prices and markets as its cheapest, so moving a mid-tier model into the name does not qualify it.",
+    "joint_event_note": "Resolution requires capability and price together. Neither prediction method models that conjunction: the historical-lag lens tracks only when the index gets matched, the price-decline lens only how fast price falls. Of the 9 historical matches where both prices are known, 3 cleared the index at less than a tenfold price gap and so would have failed this wager on the day they matched.",
+    "secondary_check": {
+      "instrument": "METR 50% time horizon",
+      "binding": false,
+      "proxy_model": "claude-mythos-preview-early",
+      "proxy_p50_horizon_min": 1044.78,
+      "proxy_p80_horizon_min": 185.912,
+      "suite": "METR-Horizon-v1.1",
+      "note": "Fable 5 has no published horizon; this early preview of what Anthropic describes as the same underlying model is the only METR-measured member of the family, and its p50 estimate sits above METR's stated 16 h reliability ceiling. METR has measured no entry-level model in either suite version, so this check cannot be read today. If it becomes readable — both ends measured on one suite version before the deadline — an entry-level model at or above the proxy's p50 is corroboration. It does not settle the wager either way.",
+      "source": "https://metr.org/assets/benchmark_results_1_1.yaml"
+    },
     "checklist": [
+      "Check the date first. Past 23:59 UTC on 2027-06-27 the wager resolves NO, unless a qualifying model was already public by then.",
       "Refresh the data spine: run scripts/timeline_fetch.py, then the /timeline-refresh skill.",
-      "List every lineup-bottom model shipping on the resolution date.",
-      "Arm 1 — check metr.org/assets/benchmark_results_*.yaml for any of them. At the freeze date METR had measured none.",
-      "Arm 2 — read each one's AA intelligence index from a single snapshot, and its published per-token price.",
-      "Arm 2 passes if any is at or above 59.9 on that snapshot's index AND at or below one tenth of Fable 5's cost.",
+      "List every entry-level model Anthropic, OpenAI and Google ship on the resolution date — the slot each vendor prices as its cheapest.",
+      "Read each one's AA intelligence index from a single snapshot, and its published per-token price.",
+      "It resolves YES if any is at or above 59.9 on that snapshot's index AND at or below $2.00 per MTok on the 3:1 blend. Both terms, one model.",
       "If the AA index version has changed since the freeze, re-read Fable 5 on the same snapshot and compare against that figure instead of 59.9.",
-      "Record the outcome and the snapshot it was read from under data/history/."
+      "Optional corroboration: check metr.org/assets/benchmark_results_*.yaml for any of them. A horizon at or above the proxy's 1,044.78 min is a secondary check and settles nothing on its own.",
+      "Record the outcome as data/history/DATE/resolution.json, carrying resolved, resolved_by and read_from — the snapshot the reading was taken against. That file is what the page reads once the cutoff has passed."
     ],
     "status_at_freeze": {
       "resolved": false,
@@ -51,7 +71,7 @@
     "method_a": {
       "name": "A — historical frontier-to-bottom lag",
       "date": "2027-03-08",
-      "rule": "Median lag from a frontier model setting a new high on the AA index to the first lineup-bottom model reaching that index, added to Fable 5's release date.",
+      "rule": "Median lag from a frontier model setting a new high on the AA index to the first entry-level model reaching that index, added to Fable 5's release date.",
       "median_lag_months": 8.94,
       "mean_lag_months": 9.68,
       "n_pairs": 10,
@@ -124,10 +144,12 @@
       "name": "B — Epoch price decline at 9x/yr",
       "date": "2027-06-27",
       "rate_per_year": 9.0,
-      "note": "Method B run at the slowest decline Epoch fitted across the benchmarks it tracks. It is the slowest historical trend, not a confidence bound — nothing about the fit says the future stays inside it."
+      "note": "Method B run at the slowest decline Epoch fitted across the benchmarks it tracks. It is the slowest historical trend, not a confidence bound — nothing about the fit says the future stays inside it. The deadline is set here: a trend slower than anything measured would still have landed by this date.",
+      "sets_the_deadline": true
     },
     "earliest": "2027-01-10",
-    "latest": "2027-03-08"
+    "latest": "2027-03-08",
+    "forecast_note": "January 10 and March 8 are the forecast. June 27 is the resolution bound. Missing the forecast window is not a NO; missing the deadline is."
   },
   "sends": [
     {
@@ -142,7 +164,14 @@
       "due": "2027-01-10",
       "subject": "Trickle-down wager — the letter comes due",
       "issue_title": "wager: letter due (2027-01-10)",
-      "purpose": "The earlier of the two predicted dates. Delivers the letter and the resolution checklist."
+      "purpose": "The earlier of the two predicted dates. Delivers the letter and the resolution checklist, with the deadline still ahead."
+    },
+    {
+      "id": "deadline-resolution",
+      "due": "2027-06-28",
+      "subject": "Trickle-down wager — reading the result",
+      "issue_title": "wager: deadline resolution (2027-06-28)",
+      "purpose": "The morning after the cutoff. Everything that can count is already public, so the checklist is worked against a closed question and the outcome recorded YES or NO."
     }
   ],
   "idempotency": {
@@ -150,11 +179,12 @@
     "note": "A send counts as done when an issue with its issue_title exists, open or closed. Issue existence is read from the API at run time, so it cannot drift from reality the way a committed flag can when the write-back commit fails. The email is sent first and the issue opened immediately after; if opening the issue fails the run exits non-zero, so a duplicate send next month is visible rather than silent."
   },
   "caveats": [
+    "Matching the index is not general equivalence. The Artificial Analysis index is an exam-style composite: a model can reach a score without being a substitute for the model it matched. Long-context behaviour and agentic reliability are not in it, and a verbose entry-level model can cost more per finished task than a frontier model at ten times the per-token rate.",
     "METR's 50% threshold is not its 80% threshold. The Mythos preview measures 1044.8 min at 50% but 185.9 min at 80%, a 5.6x difference. A model that matches at 50% has not matched at 80%.",
-    "METR has measured no lineup-bottom model in either suite, so arm 1 cannot resolve until METR publishes one.",
+    "METR has measured no entry-level model in either suite, which is why the secondary check cannot be read and the binding arm is the index.",
     "Two Artificial Analysis feeds of different vintages are in use: the OpenRouter listing read 2026-08-01, and this repo's committed AA API payload, which predates GPT-5.6 and Opus 5 and is dated no later than 2026-07-05. Both are the same index generation, but rows carry the vintage they were read at. The headline comparison — Fable 5 at 59.9 against Luna at 51.2 — is entirely within the fresh OpenRouter feed.",
     "Artificial Analysis does not tag an index version in the feeds this repo reads, so the read date is the version key — which is why data/history/ is append-only.",
     "Where a model publishes several configurations, timeline.csv records the highest-scoring published one, consistently, for every row.",
-    "The two dates are not independent evidence. Capability diffusion and price decline are two views of one process, so their landing two months apart says nothing about how likely either is."
+    "The two forecast dates are not independent evidence. Capability diffusion and price decline are two views of one process, so their landing two months apart says nothing about how likely either is."
   ]
 }

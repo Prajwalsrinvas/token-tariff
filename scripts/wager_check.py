@@ -1,12 +1,12 @@
 """
 Send a wager email when one comes due.
 
-Reads `wager.json` for the two scheduled sends, works out whether either is due
-and not already sent, fills the matching template from live data, mails it
-through Resend, and opens a status-only issue as the record.
+Reads `wager.json` for the scheduled sends, works out whether any is due and not
+already sent, fills the matching template from live data, mails it through
+Resend, and opens a status-only issue as the record.
 
     uv run python scripts/wager_check.py --dry-run          # what would happen
-    uv run python scripts/wager_check.py --dry-run --as-of 2027-01-10
+    uv run python scripts/wager_check.py --dry-run --as-of 2027-06-27
     uv run python scripts/wager_check.py                    # send for real
 
 Idempotency is the issue, not a stored flag. A send counts as done when a
@@ -45,9 +45,12 @@ import wager  # noqa: E402
 # from the repo root but nothing guarantees that a human does.
 SCRIPTS = pathlib.Path(__file__).resolve().parent
 
+# One template per send id in wager.json. A send with no template is a letter
+# that never arrives, so the tests pin the two lists together.
 TEMPLATES = {
     "wager-letter": SCRIPTS / "wager_letter.md",
     "midpoint-check": SCRIPTS / "wager_midpoint.md",
+    "deadline-resolution": SCRIPTS / "wager_deadline.md",
 }
 ISSUE_LABEL = "wager"
 RESEND_URL = "https://api.resend.com/emails"
@@ -77,11 +80,14 @@ def render(send: dict, doc: dict, today: dt.date) -> str:
         "closest": res["best_bottom"],
         "closest_aa": f"{res['best_bottom_aa']:.1f}",
         "gap": f"{res['gap_points']:.1f}",
+        "price_cap": f"{res['price_cap']:,.2f}" if res["price_cap"] else "—",
         "median_lag": a["median_lag_months"],
         "n_pairs": a["n_pairs"],
         "method_a_date": a["date"],
         "method_b_date": doc["predictions"]["method_b"]["date"],
         "slow_date": doc["predictions"]["slowest_trend"]["date"],
+        "deadline": doc["deadline"],
+        "grace_days": doc["resolution"]["archival_grace_days"],
         "n_matchers": a["n_distinct_matchers"],
         "midpoint_date": next(x["due"] for x in doc["sends"]
                               if x["id"] == "midpoint-check"),
@@ -90,7 +96,30 @@ def render(send: dict, doc: dict, today: dt.date) -> str:
         "repo": "https://github.com/Prajwalsrinvas/token-tariff",
     }
     body = TEMPLATES[send["id"]].read_text()
-    if res["resolved"]:
+    if send["id"] == "deadline-resolution":
+        # Past the cutoff, only the recorded artifact under data/history/ may
+        # say YES or NO — this send reports the record or asks for one, never
+        # a live recomputation's verdict.
+        recorded = wager.recorded_resolution()
+        if recorded:
+            outcome = (f"YES — {recorded.get('resolved_by')}"
+                       if recorded["resolved"] else "NO")
+            body += (f"\n**The recorded resolution is {outcome}**, read from "
+                     f"{recorded.get('read_from', 'data/history/')}. The page "
+                     f"renders the same record.\n")
+        elif res["unevaluable"]:
+            body += (f"\n**Nothing is recorded and the arm cannot be read "
+                     f"from the data committed here:** {res['unevaluable']}. "
+                     f"Refresh the spine, work the checklist, and record the "
+                     f"outcome under `data/history/`.\n")
+        else:
+            body += (f"\n**No resolution is recorded yet — the wager stays "
+                     f"VERIFYING.** On the data committed here the closest is "
+                     f"{res['best_bottom']} at {res['best_bottom_aa']:.1f}, "
+                     f"{res['gap_points']:.1f} points short, but only a "
+                     f"resolution recorded under `data/history/` settles it. "
+                     f"Work the checklist and record what it finds.\n")
+    elif res["resolved"]:
         body += (f"\n**It has already resolved YES.** {res['resolved_by']} "
                  f"cleared the bar. Check that this is not an artefact before "
                  f"celebrating.\n")
@@ -125,6 +154,21 @@ def send_email(send: dict, body: str, key: str, to: str):
     response.raise_for_status()
 
 
+def _status_row(send: dict, res: dict) -> str:
+    """The status cell of the marker issue. The deadline send reports the
+    recorded artifact or the lack of one; every other send reports where the
+    live recomputation stands."""
+    if send["id"] == "deadline-resolution":
+        recorded = wager.recorded_resolution()
+        if not recorded:
+            return "Resolution | verifying — nothing recorded yet"
+        if recorded["resolved"]:
+            return f"Resolution | recorded YES — {recorded.get('resolved_by')}"
+        return "Resolution | recorded NO"
+    live = f"yes — {res['resolved_by']}" if res["resolved"] else "open"
+    return f"Live status | {live}"
+
+
 def open_issue(send: dict, doc: dict, repo: str, token: str, today: dt.date):
     """The record, and the marker that stops a second send. Status only — no
     recipient, no letter body, nothing that is not already public in the repo."""
@@ -135,12 +179,13 @@ def open_issue(send: dict, doc: dict, repo: str, token: str, today: dt.date):
         f"{send['purpose']}\n\n"
         f"| | |\n|---|---|\n"
         f"| Baseline | {res['baseline']} at AA {res['baseline_aa']:.1f} |\n"
-        f"| Closest bottom-tier model | {res['best_bottom']} at AA "
+        f"| Closest entry-level model | {res['best_bottom']} at AA "
         f"{res['best_bottom_aa']:.1f} |\n"
         f"| Gap | {res['gap_points']:.1f} points |\n"
-        f"| Bottom-tier models with a METR horizon | "
+        f"| Deadline | {res['deadline']} |\n"
+        f"| Entry-level models with a METR horizon | "
         f"{res['metr_measurable']} |\n"
-        f"| Resolved | {'yes — ' + res['resolved_by'] if res['resolved'] else 'no'} |\n\n"
+        f"| {_status_row(send, res)} |\n\n"
         f"Terms are in `wager.json`; the [page]({doc['page']}) renders them. "
         f"This issue is the idempotency marker: while it exists, "
         f"`{send['id']}` will not send again.\n"

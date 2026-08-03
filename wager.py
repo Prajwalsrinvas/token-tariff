@@ -3,7 +3,7 @@ THE TRICKLE-DOWN WAGER — the data spine and the arithmetic behind it.
 
 Reads `timeline.csv` (one curated, sourced row per tracked model) and derives
 everything the WAGER page, the scheduled email, and the refresh skill need:
-frontier milestones, the first bottom-tier model to match each one, the two
+frontier milestones, the first entry-level model to match each one, the two
 prediction methods, and whether the wager has resolved.
 
 Standard library only, so the arithmetic itself has no dependencies to
@@ -35,13 +35,31 @@ AA_API_VINTAGE = dt.date(2026, 7, 5)
 # The model the wager is about.
 BASELINE = "claude-fable-5"
 
+# The price term as a number, frozen with the rest of the terms. Derived from
+# the baseline's blended price at the freeze — a tenth of $20.00 — but not read
+# from it: a wager whose ceiling moves when a vendor reprices the baseline is a
+# wager whose bar the other side can move. wager.json carries the same figure
+# and the tests pin the two together; this constant is the one the code reads.
+PRICE_CAP_BLENDED = 2.00
+
+# The vendors whose entry-level slot can settle this. Frozen with the terms: a
+# fourth lab getting there first is a different claim, and the page says so.
+ELIGIBLE_VENDORS = ("Anthropic", "OpenAI", "Google")
+
+# The resolution bound. Past it the wager is false rather than pending. It is
+# where the slowest price decline Epoch fitted reaches a tenfold fall, run from
+# the baseline's release — a trend slower than anything measured would still
+# have landed by this date. wager.json carries the same date and the tests pin
+# the two together; this constant is the one the code reads.
+DEADLINE = dt.date(2027, 6, 27)
+
 # Epoch AI measured the price of a fixed level of benchmark performance falling
 # 9x-900x per year across six benchmarks, median 50x.
 # https://epoch.ai/data-insights/llm-inference-price-trends
 EPOCH_MEDIAN_DECLINE = 50.0
 EPOCH_SLOW_DECLINE = 9.0
 
-# The wager's price term: a bottom-tier model must match the baseline's index
+# The wager's price term: an entry-level model must match the baseline's index
 # at no more than this share of the baseline's cost.
 COST_SHARE = 0.10
 
@@ -80,7 +98,7 @@ def blended_price(row, in_out_ratio=3.0):
 
 def milestones(rows):
     """Frontier models that set a new high-water mark on the AA index at their
-    release, each paired with the first bottom-tier model from any vendor to
+    release, each paired with the first entry-level model from any vendor to
     reach that index.
 
     High-water mark rather than a hand-picked list: which releases count as
@@ -99,7 +117,7 @@ def milestones(rows):
         match = next((b for b in bottom
                       if b["release_date"] > r["release_date"]
                       and b["aa_intel"] >= r["aa_intel"]), None)
-        # The closest a bottom-tier model has come while falling short — the
+        # The closest an entry-level model has come while falling short — the
         # near-misses are the interesting part of an open row.
         later = [b for b in bottom if b["release_date"] > r["release_date"]]
         closest = max(later, key=lambda b: b["aa_intel"], default=None)
@@ -147,7 +165,7 @@ def method_a(rows):
 
     The pairs are not independent of each other. A single cheap release can
     clear several standing frontier highs at once, so `n_matchers` — the number
-    of distinct bottom-tier models doing the clearing — is the sample size that
+    of distinct entry-level models doing the clearing — is the sample size that
     matters, and it is far smaller than the pair count.
     """
     ms = milestones(rows)
@@ -188,7 +206,7 @@ def method_b(rows, rate=EPOCH_MEDIAN_DECLINE, from_date=None,
              cost_share=COST_SHARE):
     """Extrapolate Epoch AI's price decline for a fixed level of capability.
 
-    The wager's price term is a ratio — a bottom-tier model must match the
+    The wager's price term is a ratio — an entry-level model must match the
     baseline at <= 1/10th its cost — so the answer is the time for the price
     of baseline-level capability to fall 10x, whatever the two sticker prices
     are. That makes this method independent of the input:output mix, and of
@@ -213,15 +231,29 @@ def method_b(rows, rate=EPOCH_MEDIAN_DECLINE, from_date=None,
 
 
 def resolution(rows):
-    """Where the two resolution arms stand today.
+    """Where the binding arm stands today.
 
-    Arm 1 (METR): any bottom-tier model measured at or above the baseline's
-    50% time horizon. Arm 2 (Artificial Analysis): any bottom-tier model at or
-    above the baseline's launch index, at <= COST_SHARE of its cost, compared
-    inside one AA snapshot.
+    One arm binds: an entry-level model from an eligible vendor, released on or
+    before the deadline, at or above the baseline's launch AA index and at or
+    below PRICE_CAP_BLENDED, compared inside one AA snapshot. METR is carried
+    alongside as a secondary check — it has measured neither the baseline nor
+    any entry-level model, so it cannot settle anything, and it does not enter
+    `resolved`.
+
+    A candidate's release date is in the CSV; the date its price took effect is
+    not. Whether a qualifying price was published before the cutoff or after it
+    is adjudicated by hand against the snapshot recorded on the deadline, as the
+    resolution checklist sets out — this function reads only what the spine
+    carries.
+
+    Today's date is not read here. Whether an unresolved wager is still OPEN or
+    has run past DEADLINE depends on when the question is asked, and this
+    function stays a pure function of the CSV so the tests can pin its output.
     """
     base = baseline_row(rows)
-    bottom = [r for r in rows if r["tier"] == "bottom"]
+    bottom = [r for r in rows
+              if r["tier"] == "bottom" and r["vendor"] in ELIGIBLE_VENDORS
+              and r["release_date"] <= DEADLINE]
 
     # The baseline has no published horizon; the family's early preview is the
     # only METR-measured member and stands in provisionally.
@@ -230,11 +262,22 @@ def resolution(rows):
     metr_target = proxy["metr_horizon_min_p50"] if proxy else None
     metr_measured = [b for b in bottom if b["metr_horizon_min_p50"] is not None]
 
+    # The ceiling is the frozen constant; the baseline's live blended price is
+    # reported next to it as information, and a missing one costs the reader a
+    # figure rather than the arm.
     base_price = blended_price(base)
-    price_cap = base_price * COST_SHARE if base_price else None
-    aa_hits = [b for b in bottom
-               if b["aa_intel"] is not None and b["aa_intel"] >= base["aa_intel"]
-               and (blended_price(b) or math.inf) <= price_cap]
+    price_cap = PRICE_CAP_BLENDED
+    # No target index means no arm: half the rule is unreadable, so nothing can
+    # clear it. Saying so beats comparing a score against None and calling it a
+    # crash.
+    reason = None if base["aa_intel"] is not None else (
+        f"{base['model']} carries no AA index in timeline.csv, so the "
+        f"capability term has no target to test against and the arm cannot be "
+        f"evaluated")
+    aa_hits = [] if reason else [
+        b for b in bottom
+        if b["aa_intel"] is not None and b["aa_intel"] >= base["aa_intel"]
+        and (blended_price(b) or math.inf) <= price_cap]
     best = max((b for b in bottom if b["aa_intel"] is not None),
                key=lambda b: b["aa_intel"], default=None)
 
@@ -243,16 +286,18 @@ def resolution(rows):
         "baseline_aa": base["aa_intel"],
         "baseline_price": base_price,
         "price_cap": price_cap,
+        "deadline": DEADLINE,
         "metr_target_min": metr_target,
         "metr_proxy": proxy["model"] if proxy else None,
         "metr_measurable": len(metr_measured),
         "best_bottom": best["model"] if best else None,
         "best_bottom_aa": best["aa_intel"] if best else None,
         "best_bottom_price": blended_price(best) if best else None,
-        "gap_points": (base["aa_intel"] - best["aa_intel"]) if best else None,
-        "resolved": bool(aa_hits) or bool(metr_measured and metr_target and any(
-            b["metr_horizon_min_p50"] >= metr_target for b in metr_measured)),
+        "gap_points": (base["aa_intel"] - best["aa_intel"])
+                      if best and base["aa_intel"] is not None else None,
+        "resolved": bool(aa_hits),
         "resolved_by": aa_hits[0]["model"] if aa_hits else None,
+        "unevaluable": reason,
     }
 
 
@@ -283,11 +328,37 @@ def load_wager(path=WAGER_FILE):
         return json.load(f)
 
 
+def _snapshot_dates(history_dir=HISTORY_DIR):
+    try:
+        return sorted(d for d in os.listdir(history_dir)
+                      if os.path.isdir(os.path.join(history_dir, d)))
+    except OSError:
+        return []
+
+
 def latest_snapshot(history_dir=HISTORY_DIR):
     """Newest dated snapshot directory, or None if there are none."""
-    try:
-        dates = sorted(d for d in os.listdir(history_dir)
-                       if os.path.isdir(os.path.join(history_dir, d)))
-    except OSError:
-        return None
+    dates = _snapshot_dates(history_dir)
     return dates[-1] if dates else None
+
+
+def recorded_resolution(history_dir=HISTORY_DIR):
+    """The written-down outcome, from the newest snapshot that carries one.
+
+    Convention: `data/history/<date>/resolution.json`, carrying at least
+    `resolved`, `resolved_by` and `read_from` — the snapshot the reading was
+    taken against. Past the deadline this file is the wager's status. A
+    resolution is something read on a date and recorded, not a recomputation:
+    a timeline row added afterwards must not be able to reopen a settled
+    question, or to settle one that was recorded as NO.
+
+    None until one is recorded, which is the state between the cutoff and the
+    reading rather than an error.
+    """
+    for date in reversed(_snapshot_dates(history_dir)):
+        try:
+            with open(os.path.join(history_dir, date, "resolution.json")) as f:
+                return json.load(f)
+        except (OSError, json.JSONDecodeError):
+            continue
+    return None

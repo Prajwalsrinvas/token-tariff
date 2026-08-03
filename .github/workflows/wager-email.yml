@@ -1,14 +1,15 @@
 ---
-# Delivers the two scheduled trickle-down-wager emails.
+# Delivers the three scheduled trickle-down-wager emails.
 #
-# The cron days are the day-of-month of the two due dates in wager.json —
-# 2026-10-21 for the midpoint check and 2027-01-10 for the letter — so a send
-# fires on its own date rather than up to a month later. The letter opens "The
-# date is today", and on a monthly tick that was a lie eleven times out of
-# twelve. Re-derive these day numbers whenever wager.json is re-frozen.
+# The cron days are the day-of-month of the three due dates in wager.json —
+# 2026-10-21 for the midpoint check, 2027-01-10 for the letter, 2027-06-28 for
+# the deadline reading — so a send fires on its own date rather than up to a
+# month later. The letter opens "The date is today", and on a monthly tick that
+# was a lie eleven times out of twelve. Re-derive these day numbers whenever
+# wager.json is re-frozen.
 #
-# Both days run every month: the job is a no-op until a send is due, the issue
-# marker makes a second run harmless, and firing more often than strictly
+# All three days run every month: the job is a no-op until a send is due, the
+# issue marker makes a second run harmless, and firing more often than strictly
 # needed is the cheap direction to be wrong in.
 #
 # GitHub disables scheduled workflows after 60 days with no repository
@@ -18,7 +19,7 @@ name: wager email
 
 on:
   schedule:
-    - cron: "0 9 10,21 * *"   # 09:00 UTC on the 10th and the 21st
+    - cron: "0 9 10,21,28 * *"   # 09:00 UTC on the 10th, 21st and 28th
   workflow_dispatch:
 
 permissions:
