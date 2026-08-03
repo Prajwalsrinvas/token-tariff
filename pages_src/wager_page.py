@@ -386,6 +386,11 @@ def terms(preds: dict, res: dict, frozen: dict):
             f"3:1 input:output blend, against {res['baseline']}'s "
             f"{_price(res['baseline_price'])}. There is one arm; nothing else "
             f"settles this.\n\n"
+            f"**The price is the vendor's own list price.** Promotional or "
+            f"time-limited discounts and third-party route prices do not "
+            f"satisfy the term — a resale listing at half the list rate is one "
+            f"reseller's offer, and a discount that expires is not the price "
+            f"of the capability.\n\n"
             f"**Deadline.** {rules['resolves_no_if']}\n\n"
             f"**Eligible vendors** are frozen at "
             f"{vendor_list(rules['eligible_vendors'], 'and')}. "
@@ -396,8 +401,8 @@ def terms(preds: dict, res: dict, frozen: dict):
             f"tracks when the index gets matched, the other how fast price "
             f"falls. Of the **{a['n_priced']}** historical matches where both "
             f"prices are known, **{a['n_under_price_bar']}** cleared the index "
-            f"at less than a tenfold price gap and would have failed this "
-            f"wager on the day they matched.\n\n"
+            f"at less than a tenfold price gap at today's published rates, and "
+            f"a repeat at those prices would fail this wager's price term.\n\n"
             f"**Secondary check — METR, non-binding.** METR has published a "
             f"horizon for **{res['metr_measurable']}** entry-level models — "
             f"none, in either suite version — and none for {res['baseline']} "
@@ -871,9 +876,10 @@ def drift(preds: dict, frozen: dict):
 # =============================================================================
 
 
-def why_i_believe_it(preds: dict):
+def why_i_believe_it(preds: dict, ms: list):
     """The two lenses in full, and what the sample really is."""
     a, b = preds["a"], preds["b"]
+    n_open = sum(1 for m in ms if m["lag_months"] is None)
     with st.expander("WHY I BELIEVE IT"):
         st.markdown(f"""
 **The historical-lag lens** takes the median of {a['n_pairs']} matched lags
@@ -881,6 +887,11 @@ def why_i_believe_it(preds: dict):
 than fitting a trend. The lags are shrinking, so a fitted trend would predict
 sooner — median is the conservative reading, and with one pair more than twice
 any other it is also the robust one.
+
+**Only completed catch-ups are in the median.** The {n_open} milestones nothing
+cheap has reached yet are still running, and a lag that has not finished can only
+land at or above the months already elapsed — so a median taken over the pairs
+that have closed reads shorter than the one the whole record will settle at.
 
 **The sample is smaller than the pair count.** Those {a['n_pairs']} pairs are
 produced by **{a['n_matchers']} catch-up releases**: one cheap model that clears
@@ -931,8 +942,8 @@ rates do not capture.
 decline are two views of one process, so the lenses landing two months apart is
 not corroboration. And the conjunction bites: of the {a['n_priced']} historical
 matches where both prices are known, **{a['n_under_price_bar']}** cleared the
-index at less than a tenfold price gap and would have failed this wager's price
-term on the day they matched.
+index at less than a tenfold price gap at today's published rates, and a repeat
+at those prices would fail this wager's price term.
 
 **50% is not 80%.** METR's headline horizon is the task length a model clears
 half the time. The Mythos preview measures **1,044.8 min at 50% but 185.9 min at
@@ -1113,7 +1124,7 @@ def main():
     st.divider()
 
     st.markdown("### ▸ THE SMALL PRINT")
-    why_i_believe_it(preds)
+    why_i_believe_it(preds, ms)
     what_could_make_it_wrong(preds, res, frozen)
     full_evidence(df)
     frozen_artifact(frozen)

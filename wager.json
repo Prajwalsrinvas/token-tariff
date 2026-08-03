@@ -11,7 +11,8 @@
       "A deadline: 2027-06-27, with an explicit NO condition. It is the date the slowest price decline Epoch AI fitted reaches a tenfold fall, counted from Fable 5's release — past it, the trend claim is false rather than pending.",
       "METR is demoted from a co-equal resolution arm to a non-binding secondary check. It has measured neither Fable 5 nor any entry-level model, so an arm written on it cannot be read.",
       "The qualifying model is an \"entry-level model\": the slot a vendor designates as its cheapest, over a frozen list of vendors, rather than whichever listing happens to carry the lowest price. The old wording turned on price, under which GPT-5.4 nano and the older, still cheaper GPT-5 nano both had a claim to the same position.",
-      "The price term is stated as a fixed number — $2.00 per million tokens on the 3:1 blend — as well as a ratio, so no one has to derive it before arguing with it."
+      "The price term is stated as a fixed number — $2.00 per million tokens on the 3:1 blend — as well as a ratio, so no one has to derive it before arguing with it.",
+      "The price term reads the vendor's own published list price. Promotional or time-limited discounts and third-party route prices do not satisfy it — a resale listing at half the list rate is one reseller's offer, and a discount that expires is not the price of the capability."
     ],
     "why": "The terms are clarified before the midpoint check, while the outcome is unknown and no wording can be argued to favour it. What must happen is unchanged: the same baseline, the same index, the same tenth-of-the-price term, the same forecast dates.",
     "v1": "The original wording is preserved in this file's git history."
@@ -28,8 +29,8 @@
     "metr_horizon_min_p50": null
   },
   "resolution": {
-    "resolves_yes_if": "An entry-level model from an eligible vendor reaches Fable 5's launch Artificial Analysis intelligence index of 59.9, compared inside a single AA snapshot, at or below $2.00 per million tokens on the fixed 3:1 input:output blend. One model, both terms, at one time.",
-    "resolves_no_if": "No qualifying model meets that rule by 23:59 UTC on 2027-06-27. The evidence must be publicly available by that instant; the AA snapshot and the vendor price page proving it may be captured up to 14 days later, and nothing first published after the deadline counts.",
+    "resolves_yes_if": "An entry-level model from an eligible vendor reaches Fable 5's launch Artificial Analysis intelligence index of 59.9, compared inside a single AA snapshot, at or below $2.00 per million tokens on the fixed 3:1 input:output blend. The price is the vendor's own published list price: promotional or time-limited discounts and third-party route prices do not satisfy the term. One model, both terms, at one time.",
+    "resolves_no_if": "No qualifying model meets that rule by 23:59 UTC on 2027-06-27. The evidence must be publicly available by that instant; the AA snapshot and the vendor's own list-price page proving it may be captured up to 14 days later, and nothing first published after the deadline counts.",
     "deadline": "2027-06-27",
     "archival_grace_days": 14,
     "binding_arms": 1,
@@ -38,7 +39,7 @@
     "entry_level_definition": "The cheapest slot a major vendor designates in its current lineup — Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini Flash-Lite. Membership is the slot, not a price threshold: an older cheaper model still on sale does not disqualify the current entry-level model, and no model outside the slot qualifies by being cheap.",
     "eligible_vendors": ["Anthropic", "OpenAI", "Google"],
     "slot_inheritance": "A renamed or replaced entry slot inherits eligibility — whatever succeeds Flash-Lite is Google's entry-level model under whatever name. What does not inherit is a relabelling: the slot is the one a vendor prices and markets as its cheapest, so moving a mid-tier model into the name does not qualify it.",
-    "joint_event_note": "Resolution requires capability and price together. Neither prediction method models that conjunction: the historical-lag lens tracks only when the index gets matched, the price-decline lens only how fast price falls. Of the 9 historical matches where both prices are known, 3 cleared the index at less than a tenfold price gap and so would have failed this wager on the day they matched.",
+    "joint_event_note": "Resolution requires capability and price together. Neither prediction method models that conjunction: the historical-lag lens tracks only when the index gets matched, the price-decline lens only how fast price falls. Of the 9 historical matches where both prices are known, 3 cleared the index at less than a tenfold price gap at today's published rates, and a repeat at those prices would fail this wager's price term.",
     "secondary_check": {
       "instrument": "METR 50% time horizon",
       "binding": false,
@@ -53,7 +54,7 @@
       "Check the date first. Past 23:59 UTC on 2027-06-27 the wager resolves NO, unless a qualifying model was already public by then.",
       "Refresh the data spine: run scripts/timeline_fetch.py, then the /timeline-refresh skill.",
       "List every entry-level model Anthropic, OpenAI and Google ship on the resolution date — the slot each vendor prices as its cheapest.",
-      "Read each one's AA intelligence index from a single snapshot, and its published per-token price.",
+      "Read each one's AA intelligence index from a single snapshot, and its published per-token price — the vendor's own list price, not a promotional or time-limited rate and not a third-party route's listing.",
       "It resolves YES if any is at or above 59.9 on that snapshot's index AND at or below $2.00 per MTok on the 3:1 blend. Both terms, one model.",
       "If the AA index version has changed since the freeze, re-read Fable 5 on the same snapshot and compare against that figure instead of 59.9.",
       "Optional corroboration: check metr.org/assets/benchmark_results_*.yaml for any of them. A horizon at or above the proxy's 1,044.78 min is a secondary check and settles nothing on its own.",

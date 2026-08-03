@@ -4,7 +4,7 @@
 
 **▸ [Live app — token-tariff.streamlit.app](https://token-tariff.streamlit.app/)**
 
-Three modes, one per question. **RECOMMEND** — *what should I use?* Pick a use-case preset (chatbot, coding agent, summarization, …), shape the workload (tokens per call, number of calls, cache-hit rate, reasoning overhead, batch pricing), say what to optimize for, and a **verdict** names one model and why, with a cheaper option and a more capable one beside it. **MATCH** — *the same for less:* name the model you run today and see who holds its score for a smaller bill. **LOOK UP** — *what does X cost?* the whole catalog, searchable, unscored models included. Under every mode: a ranked ledger with scores, speed and real usage, and an efficient-frontier chart. Every control lives in the URL, mode included, so any comparison is a shareable link. Prices and scores refresh hourly from live feeds — nothing is hand-maintained.
+Three modes, one per question. **RECOMMEND** — *what should I use?* Pick a use-case preset (chatbot, coding agent, summarization, …), shape the workload (tokens per call, number of calls, cache-hit rate, reasoning overhead, batch pricing), say what to optimize for, and a **verdict** names one model and why, with a cheaper option and a more capable one beside it. **MATCH** — *the same for less:* name the model you run today and see who holds its score for a smaller bill. **LOOK UP** — *what does X cost?* the whole catalog, searchable, unscored models included. Under every mode: a ranked ledger with scores, speed and real usage, and an efficient-frontier chart. Every control lives in the URL, mode included, so any comparison is a shareable link. Prices and scores refresh hourly from live feeds — the model rows are derived, never hand-listed.
 
 <table>
 <tr>
@@ -45,7 +45,7 @@ Three modes, one per question. **RECOMMEND** — *what should I use?* Pick a use
 
 ## Where the data comes from
 
-Everything is derived at runtime from live feeds, so new models appear automatically once the feeds list them — there is no hand-maintained model list.
+Model rows are derived at runtime from live feeds, so new models appear automatically once the feeds list them — there is no hand-maintained model list. What the repo maintains is the frame around them: which billing providers count as a direct route, the name crosswalks between feeds, and the use-case presets.
 
 | Data | Source |
 |---|---|
@@ -142,8 +142,10 @@ blend. Both terms, one model, at one time. That single arm is the whole rule —
 nothing else settles it.
 
 **Resolves NO** when none does by 23:59 UTC on 2027-06-27. The evidence has to be
-public by that instant; the AA snapshot and vendor price page proving it may be
-captured up to 14 days later.
+public by that instant; the AA snapshot and the vendor's own list-price page
+proving it may be captured up to 14 days later. The price term reads the list
+price a vendor publishes — a promotional rate or a third-party route's listing
+does not satisfy it.
 
 *Entry-level model* means the slot a vendor designates as its cheapest in its
 current lineup — Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini

@@ -292,7 +292,7 @@ def test_the_document_is_v2_with_a_dated_amendment(frozen):
     assert dt.date.fromisoformat(frozen["amended_on"]) >= \
         dt.date.fromisoformat(frozen["frozen_on"])
     amendment = frozen["amendment"]
-    assert len(amendment["changed"]) == 4
+    assert len(amendment["changed"]) == 5
     assert amendment["why"] and amendment["v1"]
     # The forecast is not what the amendment touched.
     assert frozen["predictions"]["method_a"]["date"] == str(EXPECTED_METHOD_A)
@@ -326,12 +326,13 @@ def _blanked_baseline(rows, **blanks):
 
 def qualifying(rows, **overrides):
     """An entry-level row that clears both terms — the shape a YES arrives in.
-    Built from a real row so every column the arm reads is present."""
+    Built from a real row so every column the arm reads is present, and read in
+    the baseline's own AA snapshot, since the arm compares inside one."""
     base = wager.baseline_row(rows)
     row = dict(next(r for r in rows if r["tier"] == "bottom"))
     row.update(model="doctored-entry-level", vendor="Google",
                release_date=wager.DEADLINE - dt.timedelta(days=1),
-               aa_intel=base["aa_intel"],
+               aa_intel=base["aa_intel"], aa_version=base["aa_version"],
                current_price_in=0.5, current_price_out=0.5)
     row.update(overrides)
     return row
@@ -393,6 +394,98 @@ def test_a_missing_baseline_index_cannot_be_evaluated(rows):
     assert res["resolved_by"] is None
     assert res["gap_points"] is None
     assert wager.BASELINE in res["unevaluable"]
+
+
+def test_a_candidate_read_in_another_snapshot_cannot_settle_it(rows):
+    """The arm compares inside a single AA snapshot. Artificial Analysis
+    rescores old models when the index changes and tags no version, so the read
+    date is the version key — and a candidate rescored in a later reading, held
+    against a target frozen in an earlier one, is two snapshots."""
+    base = wager.baseline_row(rows)
+    rescored = qualifying(rows, aa_version="2027-01-01")
+    assert rescored["aa_version"] != base["aa_version"]
+    assert wager.resolution(rows + [rescored])["resolved"] is False
+
+    same_snapshot = qualifying(rows)
+    assert same_snapshot["aa_version"] == base["aa_version"]
+    assert wager.resolution(rows + [same_snapshot])["resolved"] is True
+
+
+def test_a_published_price_of_zero_clears_the_ceiling(rows):
+    """Free is under the ceiling. Unpriced is not shown to be under it, and the
+    two must not collapse into one falsy value."""
+    free = qualifying(rows, current_price_in=0.0, current_price_out=0.0)
+    assert wager.blended_price(free) == 0.0
+    assert wager.resolution(rows + [free])["resolved"] is True
+
+    unpriced = qualifying(rows, current_price_in=None, current_price_out=None)
+    assert wager.blended_price(unpriced) is None
+    assert wager.resolution(rows + [unpriced])["resolved"] is False
+
+
+def test_the_archival_grace_is_one_number_in_two_files(frozen):
+    """`wager.GRACE_DAYS` bounds the evidence a recorded reading may be taken
+    from; `wager.json` is what the letter and any future arbiter quote."""
+    assert wager.GRACE_DAYS == frozen["resolution"]["archival_grace_days"]
+
+
+def _record(history_dir, date, artifact):
+    (history_dir / date).mkdir(exist_ok=True)
+    (history_dir / date / "resolution.json").write_text(json.dumps(artifact))
+
+
+def test_an_unreadable_recorded_resolution_is_skipped(tmp_path):
+    """Past the cutoff this file is the wager's status, which makes it the last
+    place to take a malformed reading at its word. Each artifact below is
+    written into the newest snapshot, where it would win if it were readable,
+    and the older valid reading has to survive every one of them."""
+    good = {"resolved": False, "resolved_by": None,
+            "read_from": "data/history/2027-06-28"}
+    _record(tmp_path, "2027-06-28", good)
+    for date in ("2027-07-05", "2027-07-12"):
+        (tmp_path / date).mkdir()
+    assert wager.recorded_resolution(tmp_path) == good
+
+    for bad in (
+        ["resolved"],  # not an object
+        {"read_from": "data/history/2027-07-05"},  # no verdict
+        {"resolved": "yes", "read_from": "data/history/2027-07-05"},
+        # a YES that names nothing settles nothing
+        {"resolved": True, "resolved_by": "   ",
+         "read_from": "data/history/2027-07-05"},
+        {"resolved": True, "resolved_by": None,
+         "read_from": "data/history/2027-07-05"},
+        # read against a snapshot this history does not hold
+        {"resolved": True, "resolved_by": "gemini-4-flash-lite",
+         "read_from": "data/history/2027-07-04"},
+        {"resolved": True, "resolved_by": "gemini-4-flash-lite",
+         "read_from": "not-a-date"},
+        # evidence captured past the archival grace
+        {"resolved": True, "resolved_by": "gemini-4-flash-lite",
+         "read_from": "data/history/2027-07-12"},
+    ):
+        _record(tmp_path, "2027-07-05", bad)
+        assert wager.recorded_resolution(tmp_path) == good, bad
+
+    # The grace is inclusive: the last day it admits is a reading, not a
+    # rejection — and a NO has nothing to name.
+    last_day = str(wager.DEADLINE + dt.timedelta(days=wager.GRACE_DAYS))
+    (tmp_path / last_day).mkdir(exist_ok=True)
+    _record(tmp_path, "2027-07-05", {"resolved": True, "resolved_by": "gemini-4",
+                                     "read_from": f"data/history/{last_day}/"})
+    assert wager.recorded_resolution(tmp_path)["resolved_by"] == "gemini-4"
+
+
+def test_a_directory_that_is_not_a_date_is_not_a_snapshot(tmp_path):
+    """The directory name is the version key, so a name that is not a date is
+    not a reading. One sorting after every real date would otherwise take the
+    newest slot and answer the wager from a scratch directory."""
+    _record(tmp_path, "2027-06-28", {"resolved": False, "resolved_by": None,
+                                     "read_from": "data/history/2027-06-28"})
+    _record(tmp_path, "zzz-scratch", {"resolved": True, "resolved_by": "draft",
+                                      "read_from": "data/history/zzz-scratch"})
+    assert wager.latest_snapshot(tmp_path) == "2027-06-28"
+    assert wager.recorded_resolution(tmp_path)["resolved"] is False
 
 
 def test_the_recorded_resolution_is_the_newest_one_written(tmp_path):

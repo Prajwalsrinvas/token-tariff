@@ -18,9 +18,11 @@ claim is false rather than pending. The forecast dates were {method_b_date} and
 {method_a_date}; missing those was not a NO, and missing the cutoff is.
 
 **What counts.** The evidence had to be publicly available by 23:59 UTC on
-{deadline}. The AA snapshot and the vendor price page proving it may be captured
-up to {grace_days} days after that — capture is allowed to lag, publication is
-not, and nothing first published after the cutoff counts.
+{deadline}. The AA snapshot and the vendor's own list-price page proving it may
+be captured up to {grace_days} days after that — capture is allowed to lag,
+publication is not, and nothing first published after the cutoff counts. The
+price is the list price the vendor publishes: a promotional or time-limited
+discount, and a third-party route's listing, do not satisfy the term.
 
 **Where it stood when the wager was frozen.** {baseline} scored {baseline_aa} on
 the index. The best any entry-level model managed was {closest} at

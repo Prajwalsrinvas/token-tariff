@@ -53,6 +53,13 @@ ELIGIBLE_VENDORS = ("Anthropic", "OpenAI", "Google")
 # the two together; this constant is the one the code reads.
 DEADLINE = dt.date(2027, 6, 27)
 
+# The archival grace: evidence has to be public by the deadline, but the AA
+# snapshot and the vendor list price proving it may be captured this many days
+# later. It bounds the evidence date a recorded resolution may be read from.
+# wager.json carries the same figure and the tests pin the two together; this
+# constant is the one the code reads.
+GRACE_DAYS = 14
+
 # Epoch AI measured the price of a fixed level of benchmark performance falling
 # 9x-900x per year across six benchmarks, median 50x.
 # https://epoch.ai/data-insights/llm-inference-price-trends
@@ -235,7 +242,9 @@ def resolution(rows):
 
     One arm binds: an entry-level model from an eligible vendor, released on or
     before the deadline, at or above the baseline's launch AA index and at or
-    below PRICE_CAP_BLENDED, compared inside one AA snapshot. METR is carried
+    below PRICE_CAP_BLENDED, compared inside one AA snapshot. A candidate whose
+    index was read at a different `aa_version` than the baseline's is two
+    snapshots rather than one, so it cannot clear the arm. METR is carried
     alongside as a secondary check — it has measured neither the baseline nor
     any entry-level model, so it cannot settle anything, and it does not enter
     `resolved`.
@@ -274,10 +283,16 @@ def resolution(rows):
         f"{base['model']} carries no AA index in timeline.csv, so the "
         f"capability term has no target to test against and the arm cannot be "
         f"evaluated")
+    def under_cap(row):
+        # A price the timeline does not carry cannot be shown to clear the
+        # ceiling; a published price of zero clears it.
+        price = blended_price(row)
+        return price is not None and price <= price_cap
+
     aa_hits = [] if reason else [
         b for b in bottom
         if b["aa_intel"] is not None and b["aa_intel"] >= base["aa_intel"]
-        and (blended_price(b) or math.inf) <= price_cap]
+        and b["aa_version"] == base["aa_version"] and under_cap(b)]
     best = max((b for b in bottom if b["aa_intel"] is not None),
                key=lambda b: b["aa_intel"], default=None)
 
@@ -329,17 +344,59 @@ def load_wager(path=WAGER_FILE):
 
 
 def _snapshot_dates(history_dir=HISTORY_DIR):
+    """Snapshot directory names, oldest first. The name is the version key, so
+    a directory whose name is not an ISO date is not a snapshot and takes no
+    part in the ordering."""
     try:
-        return sorted(d for d in os.listdir(history_dir)
-                      if os.path.isdir(os.path.join(history_dir, d)))
+        names = os.listdir(history_dir)
     except OSError:
         return []
+    dated = []
+    for name in names:
+        if not os.path.isdir(os.path.join(history_dir, name)):
+            continue
+        try:
+            dt.date.fromisoformat(name)
+        except ValueError:
+            continue
+        dated.append(name)
+    return sorted(dated)
 
 
 def latest_snapshot(history_dir=HISTORY_DIR):
     """Newest dated snapshot directory, or None if there are none."""
     dates = _snapshot_dates(history_dir)
     return dates[-1] if dates else None
+
+
+def _is_readable_resolution(artifact, history_dir):
+    """Whether an artifact carries a reading this function may report.
+
+    A YES has to name what settled it, and the reading has to point at evidence
+    the terms admit: a snapshot that exists in the same history directory, dated
+    no later than the deadline plus the archival grace. The bound is on the
+    evidence rather than on the artifact — a file written late about a snapshot
+    taken in time is the case the grace exists for.
+    """
+    if not isinstance(artifact, dict):
+        return False
+    if not isinstance(artifact.get("resolved"), bool):
+        return False
+    if artifact["resolved"]:
+        by = artifact.get("resolved_by")
+        if not isinstance(by, str) or not by.strip():
+            return False
+    read_from = artifact.get("read_from")
+    if not isinstance(read_from, str):
+        return False
+    name = os.path.basename(read_from.rstrip("/"))
+    try:
+        read_date = dt.date.fromisoformat(name)
+    except ValueError:
+        return False
+    if read_date > DEADLINE + dt.timedelta(days=GRACE_DAYS):
+        return False
+    return os.path.isdir(os.path.join(history_dir, name))
 
 
 def recorded_resolution(history_dir=HISTORY_DIR):
@@ -352,13 +409,19 @@ def recorded_resolution(history_dir=HISTORY_DIR):
     a timeline row added afterwards must not be able to reopen a settled
     question, or to settle one that was recorded as NO.
 
+    An artifact that does not satisfy `_is_readable_resolution` is skipped like
+    an unreadable one: this file decides the wager once the cutoff has passed,
+    which is the last place to take a malformed reading at its word.
+
     None until one is recorded, which is the state between the cutoff and the
     reading rather than an error.
     """
     for date in reversed(_snapshot_dates(history_dir)):
         try:
             with open(os.path.join(history_dir, date, "resolution.json")) as f:
-                return json.load(f)
+                artifact = json.load(f)
         except (OSError, json.JSONDecodeError):
             continue
+        if _is_readable_resolution(artifact, history_dir):
+            return artifact
     return None
