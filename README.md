@@ -1,78 +1,131 @@
 # ▮ Token Tariff
 
-**A live LLM API cost calculator and model-picker.** Describe your workload once and Token Tariff answers two questions at a glance: **what does it cost on every model**, and **which model is the smartest buy for that money?**
+Token Tariff is an LLM API cost calculator. You describe your workload once, and
+it tells you what that workload would cost on every model and which model gives
+you the most capability for the money.
 
-**▸ [Live app — token-tariff.streamlit.app](https://token-tariff.streamlit.app/)**
+**[Open the app → token-tariff.streamlit.app](https://token-tariff.streamlit.app/)**
 
-Three modes, one per question. **RECOMMEND** — *what should I use?* Pick a use-case preset (chatbot, coding agent, summarization, …), shape the workload (tokens per call, number of calls, cache-hit rate, reasoning overhead, batch pricing), say what to optimize for, and a **verdict** names one model and why, with a cheaper option and a more capable one beside it. **MATCH** — *the same for less:* name the model you run today and see who holds its score for a smaller bill. **LOOK UP** — *what does X cost?* the whole catalog, searchable, unscored models included. Under every mode: a ranked ledger with scores, speed and real usage, and an efficient-frontier chart. Every control lives in the URL, mode included, so any comparison is a shareable link. Prices and scores refresh hourly from live feeds — the model rows are derived, never hand-listed.
+It has three modes:
+
+- **RECOMMEND** — "What should I use?" Pick a use case, adjust the workload, say
+  whether you care most about quality, price or speed, and get one recommended
+  model with a cheaper and a more capable alternative beside it.
+- **MATCH** — "Can I get the same for less?" Name the model you use today and see
+  which models score as well or better, cheapest first.
+- **LOOK UP** — "What does this model cost?" Search the whole catalog, including
+  models that have no benchmark score.
+
+Every setting is saved in the URL, so any comparison can be shared as a link.
+Prices and scores come from live sources and refresh every hour; nobody
+maintains the model list by hand.
 
 <table>
 <tr>
 <td width="50%" valign="top">
-<b>① RECOMMEND — verdict-led picking</b><br/>
-<sub>One recommended model with its reasons, the alternatives worth a second look, a cost-ranked ledger, and the efficient frontier.</sub><br/>
-<a href="screenshots/01-verdict.png"><img src="screenshots/01-verdict.png" alt="Verdict, quick cuts, ranked ledger, and efficient-frontier chart"/></a>
+<b>① RECOMMEND</b><br/>
+<sub>One recommended model with its reasons, the alternatives, a cost-ranked table, and a price-vs-score chart.</sub><br/>
+<a href="screenshots/01-verdict.png"><img src="screenshots/01-verdict.png" alt="Recommendation, alternatives, ranked table, and price-vs-score chart"/></a>
 </td>
 <td width="50%" valign="top">
-<b>② MATCH — same smarts, less money</b><br/>
-<sub>Name the model you run today; the view keeps only models that match or beat it and names the cheapest. Here: claude-opus-4-8's intelligence for 3.3× less.</sub><br/>
-<a href="screenshots/02-anchor.png"><img src="screenshots/02-anchor.png" alt="Anchor mode: cheapest model matching claude-opus-4-8 within tolerance"/></a>
+<b>② MATCH</b><br/>
+<sub>Only models that score at least as well as the one you name, cheapest first. Here: claude-opus-4-8's score for 3.3× less.</sub><br/>
+<a href="screenshots/02-anchor.png"><img src="screenshots/02-anchor.png" alt="Match mode: the cheapest model that scores as well as claude-opus-4-8"/></a>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 <b>③ Use-case presets</b><br/>
-<sub>One click reshapes the whole comparison — workload, score axis, tiers, and priorities. Shown: the coding-agent preset on the coding index.</sub><br/>
-<a href="screenshots/03-coding.png"><img src="screenshots/03-coding.png" alt="Coding-agent preset with the coding-index frontier"/></a>
+<sub>One click sets the workload, the score to rank by, and the priorities. Shown: the coding-agent preset, ranked on the coding score.</sub><br/>
+<a href="screenshots/03-coding.png"><img src="screenshots/03-coding.png" alt="Coding-agent preset ranked on the coding score"/></a>
 </td>
 <td width="50%" valign="top">
-<b>④ Full rate card, any currency</b><br/>
-<sub>Select any row for its complete rate card — cache/batch prices, context, capabilities, real tokens/day. USD or INR throughout.</sub><br/>
-<a href="screenshots/04-detail-inr.png"><img src="screenshots/04-detail-inr.png" alt="Per-model rate card detail with INR pricing"/></a>
+<b>④ Full price sheet, in USD or INR</b><br/>
+<sub>Click any row for its complete pricing: cache and batch rates, context window, capabilities, and real daily usage.</sub><br/>
+<a href="screenshots/04-detail-inr.png"><img src="screenshots/04-detail-inr.png" alt="Full pricing for one model, shown in INR"/></a>
 </td>
 </tr>
 </table>
 
-## How it helps you decide
+## Features
 
-- **Use-case presets** — CHATBOT / CODING AGENT / AGENT / SUMMARIZE / EXTRACTION each set a typical workload shape, the matching score axis (intelligence, coding, or agentic), a sensible tier range, the required capabilities, and the priority weights in one click — with a plain-language note on what they model. Everything stays editable; edit anything and a PRESET MODIFIED chip offers the way back. An in-app **GUIDE** walks through every mode.
-- **Optimize for → verdict** — BALANCED / SMARTEST / CHEAPEST / FASTEST sets the SMART / CHEAP / FAST weights behind a **FIT** score (0–100) per model, and the verdict names the best fit and its reasons; the individual sliders sit under ADVANCED, and weights outside the four read as CUSTOM. FIT is a weighted blend of *percentile ranks* within the current view — score rank, cheapness rank, speed rank — so one extreme outlier can't dominate. It stays a table column: the number moves with the filtered set, the reasons don't.
-- **One verdict, two alternatives** — a CHEAPER OPTION (costs less, gives up at most 5 index points) and a MORE CAPABLE OPTION (at least 3 points better, at the lowest cost that buys them), each stating its tradeoff. Neither appears unless something qualifies.
-- **MATCH** — name the model you run today and the field narrows to models that match or beat its score (within your tolerance), ranked by workload cost: *"who matches this model's intelligence for less?"*
-- **LOOK UP** — find any model by name, maker, or LiteLLM key across the full catalog, unscored models included; an empty box lists everything.
-- **Efficient frontier** — score vs. workload cost on a log axis with the Pareto frontier drawn; everything below the line is beaten on both price and score.
-- **Axis toggle** — general intelligence, coding, or agentic index; specialized models rank very differently.
+- **Use-case presets.** Chatbot, coding agent, agent, summarize and extraction.
+  Each one sets a typical workload size, which score to rank by (general
+  intelligence, coding or agentic), a sensible range of model sizes, the
+  capabilities you need, and your priorities. You can change anything
+  afterwards; a "PRESET MODIFIED" label appears with a way back. A built-in
+  guide explains every mode.
+- **Optimize for.** Choose balanced, smartest, cheapest or fastest. Behind this
+  are three weights (smart, cheap, fast) that you can also set by hand under
+  ADVANCED. Each model gets a FIT score from 0 to 100, built from how it ranks
+  on score, price and speed among the models on screen. Using ranks rather than
+  raw numbers stops one extreme model from dominating.
+- **A recommendation with two alternatives.** A cheaper option, which costs less
+  and gives up at most 5 points of score, and a more capable option, which is at
+  least 3 points better at the lowest extra cost. Each only appears if a model
+  qualifies.
+- **Price-vs-score chart.** Every model plotted by score against the cost of your
+  workload, with a line connecting the best-value models. Anything below the
+  line is beaten on both price and score by something on it.
+- **Three score types.** General intelligence, coding and agentic. Specialized
+  models rank very differently depending on which you pick.
 
 ## Where the data comes from
 
-Model rows are derived at runtime from live feeds, so new models appear automatically once the feeds list them — there is no hand-maintained model list. What the repo maintains is the frame around them: which billing providers count as a direct route, the name crosswalks between feeds, and the use-case presets.
-
 | Data | Source |
 |---|---|
-| **Prices** — per-token in/out, cache, batch, context windows, capability flags, deprecation dates | [LiteLLM pricing catalog](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) |
-| **Scores** — intelligence, coding, and agentic indices | [Artificial Analysis](https://artificialanalysis.ai/), via [OpenRouter's model listing](https://openrouter.ai/api/v1/models) (keyless, ~90 models, only source of the agentic index) plus the [AA API](https://artificialanalysis.ai/documentation) (free key, 500+ models) filling the gaps |
-| **Speed** — median output tokens/sec and time-to-first-token | Artificial Analysis API |
-| **Usage** — tokens/day actually routed per model, 7-day average | [OpenRouter rankings dataset](https://openrouter.ai/data) (needs an OpenRouter key) — real production traffic, not benchmark popularity |
+| Prices: per-token input and output, cache, batch, context window, capabilities, retirement dates | [LiteLLM's pricing catalog](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) |
+| Scores: intelligence, coding and agentic | [Artificial Analysis](https://artificialanalysis.ai/), through [OpenRouter's model list](https://openrouter.ai/api/v1/models) (no key needed, about 90 models, and the only source of the agentic score) and the [Artificial Analysis API](https://artificialanalysis.ai/documentation) (free key, 500+ models) |
+| Speed: output tokens per second and time to first token | Artificial Analysis API |
+| Usage: tokens per day actually sent to each model, 7-day average | [OpenRouter's usage data](https://openrouter.ai/data) (needs a key). This is real traffic, not popularity on benchmarks. |
 
-Every fetch is cached for an hour and written to a local JSON snapshot (`model_prices_and_context_window.json`, `benchmark_scores.json`, `aa_models.json`, `usage_rankings.json`) that serves as an offline fallback — so keyless runs still render the last snapshotted scores, speed, and usage. The only stored mappings are `score_overrides.json` and `aa_overrides.json` — small crosswalks for models whose names diverge between feeds; an unmatched model simply shows blanks.
+Each source is fetched at most once an hour and saved to a local file
+(`model_prices_and_context_window.json`, `benchmark_scores.json`,
+`aa_models.json`, `usage_rankings.json`). If a source is unavailable or you have
+no key, the app uses the last saved copy.
 
-**The catalog is computed, not curated:**
+The model list is built automatically:
 
-- **Default view** — every model with both a price and a score (~110 across all major makers).
-- **LOOK UP** — adds the unscored remainder of the pricing catalog (~120 more).
-- Duplicate routes (direct API vs. OpenRouter vs. Groq) and spelling/word-order aliases collapse to one row per model — the maker's own API wins, else the cheapest route.
-- Dated snapshots collapse onto their base model; deprecated and zero-priced entries are dropped.
-- **Tiers** (FRONTIER / ADVANCED / CAPABLE / BUDGET) are live quartiles of the intelligence index across scored models, so they track the field as it moves.
+- By default you see every model that has both a price and a score, about 110.
+  LOOK UP adds about 120 more that have a price but no score.
+- A model sold through several providers (its maker's own API, OpenRouter, Groq
+  and so on) appears once. The maker's own price wins, or failing that the
+  cheapest.
+- Dated versions of a model are merged into the base model. Retired and free
+  entries are dropped.
+- Size tiers (FRONTIER, ADVANCED, CAPABLE, BUDGET) are the four quarters of the
+  intelligence score across all scored models, so they move as new models
+  arrive.
+- Model names don't always match between sources. `score_overrides.json` and
+  `aa_overrides.json` are small lookup tables that link them. A model that can't
+  be matched shows blanks rather than a guess.
 
-## The cost model
+## How cost is calculated
 
-Total cost per model = (input tokens × effective input price + output tokens × effective output price) × calls, where:
+Cost per model = (input tokens × input price + output tokens × output price) ×
+number of calls, adjusted for three settings:
 
-- **Prompt-cache hit rate** — the cached share of input tokens is billed at each model's cache-read rate. Models with no published cache pricing get no discount — which is the point: at an 80% hit rate, models with cheap cache reads pull far ahead.
-- **Reasoning multiplier** — reasoning models bill thinking tokens as output; the multiplier applies to reasoning-capable models only.
-- **Batch API** — published batch prices replace live prices where available (typically ~50% off).
+- **Cache hit rate.** The share of input served from a prompt cache is charged
+  at that model's cache price. Models that don't publish a cache price get no
+  discount, so at high hit rates, models with cheap caching pull well ahead.
+- **Reasoning multiplier.** Reasoning models charge their thinking as output
+  tokens. The multiplier increases output tokens for reasoning models only.
+- **Batch pricing.** Where a model publishes batch prices (usually about half
+  price), they replace the normal ones.
 
-Assumptions: cache math counts reads only (write premiums are a one-time cost per prompt prefix); tokenizers differ across providers, so `tiktoken` estimates are approximate for non-OpenAI models. **Cost is per-token at the token counts you enter, applied identically to every model** — but tokenizers and verbosity differ, so the same task can spend a different number of tokens on each model (reasoning models at high effort especially). A lower per-token rate can still mean a higher cost *per finished task*, so treat the ranking as a screen and confirm on your own workload. **Benchmark scores are likewise a screen, not a guarantee** — always evaluate a shortlist on your own prompts before switching models.
+Some limits to keep in mind:
+
+- Cache cost counts reads only. Writing to the cache is a one-time cost per
+  prompt and is left out.
+- Token counts come from OpenAI's tokenizer, so they are approximate for other
+  vendors' models.
+- The same task can use very different numbers of tokens on different models,
+  especially reasoning models at high effort. A lower price per token can still
+  mean a higher cost per finished task.
+- Benchmark scores are a starting point, not a guarantee.
+
+Use the ranking to build a shortlist, then test that shortlist on your own
+prompts before switching.
 
 ## Run it locally
 
@@ -81,198 +134,242 @@ curl -LsSf https://astral.sh/uv/install.sh | sh   # skip if you already have uv
 uv run streamlit run app.py
 ```
 
-`uv run` creates the environment from `pyproject.toml` + `uv.lock` on first launch. Dependencies live in `pyproject.toml` (locked in `uv.lock`, installed with [uv](https://docs.astral.sh/uv/)) — there is no `requirements.txt`.
+The first run installs everything listed in `pyproject.toml` (versions pinned in
+`uv.lock`). There is no `requirements.txt`.
 
 ### Optional API keys
 
-Both keys are free-tier, and the app makes at most one request per hour per feed. Set them in `.streamlit/secrets.toml` (gitignored) or as environment variables:
+Both keys are free, and the app calls each source at most once an hour. Put them
+in `.streamlit/secrets.toml`, which git ignores, or set them as environment
+variables:
 
 ```toml
 # .streamlit/secrets.toml
-AA_API_KEY = "your-key"          # https://artificialanalysis.ai/ — free, 1,000 req/day
-OPENROUTER_API_KEY = "your-key"  # https://openrouter.ai/ — datasets API
+AA_API_KEY = "your-key"          # https://artificialanalysis.ai/ (free, 1,000 requests a day)
+OPENROUTER_API_KEY = "your-key"  # https://openrouter.ai/ (for usage data)
 ```
 
-- `AA_API_KEY` keeps speed (TOK/S, TTFT, the FAST priority) and the expanded score coverage live.
-- `OPENROUTER_API_KEY` keeps usage (USE B/D, tokens/day on the rate card) live.
+- `AA_API_KEY` keeps speed figures and the wider score coverage current.
+- `OPENROUTER_API_KEY` keeps the daily usage figures current.
 
-Without a key, each feed serves its committed snapshot — everything still renders, it just ages until the next keyed refresh; elements with no data hide gracefully.
+Without keys the app still works. It shows the last saved data and hides
+anything it has no data for.
 
 ## URL parameters
 
-Every control is bound to the URL, so any view is a shareable link.
+Every setting is stored in the URL.
 
 | Parameter | Meaning | Example |
 |---|---|---|
-| `mode` | RECOMMEND, MATCH, or LOOK UP | `?mode=MATCH` |
+| `mode` | RECOMMEND, MATCH or LOOK UP | `?mode=MATCH` |
 | `preset` | Use-case preset (RECOMMEND) | `?preset=CODING+AGENT` |
 | `q` | Model search (LOOK UP) | `?q=kimi` |
 | `prov` | Provider filter (repeatable) | `?prov=Anthropic&prov=Google` |
-| `tiers` | Tier filter (repeatable) | `?tiers=FRONTIER` |
+| `tiers` | Size-tier filter (repeatable) | `?tiers=FRONTIER` |
 | `input_tokens` | Input tokens per call | `?input_tokens=50000` |
 | `output_tokens` | Output tokens per call | `?output_tokens=3000` |
 | `api_calls` | Number of calls | `?api_calls=1000` |
-| `cache` | Prompt-cache hit rate (%) | `?cache=80` |
-| `rmult` | Reasoning output multiplier | `?rmult=3.0` |
-| `batch` | Batch API pricing | `?batch=true` |
-| `opt` | Optimize for (weights outside the four read as CUSTOM) | `?opt=CHEAPEST` |
-| `w_smart` / `w_cheap` / `w_fast` | Priority weights (0–5), and what `opt` writes | `?w_fast=5` |
-| `anchor` | Reference model, by catalog name (MATCH) | `?anchor=claude-opus-4-8` |
-| `tol` | Match tolerance (points) | `?tol=3` |
-| `axis` | Score axis | `?axis=CODE` |
+| `cache` | Cache hit rate (%) | `?cache=80` |
+| `rmult` | Reasoning multiplier | `?rmult=3.0` |
+| `batch` | Use batch pricing | `?batch=true` |
+| `opt` | Optimize for (any other weights show as CUSTOM) | `?opt=CHEAPEST` |
+| `w_smart` / `w_cheap` / `w_fast` | Priority weights, 0–5 (what `opt` sets) | `?w_fast=5` |
+| `anchor` | The model to match (MATCH) | `?anchor=claude-opus-4-8` |
+| `tol` | How many points below it still counts as a match | `?tol=3` |
+| `axis` | Which score to rank by | `?axis=CODE` |
 | `caps` | Required capabilities (repeatable) | `?caps=VISION&caps=TOOLS` |
-| `ccy` | Display currency | `?ccy=INR` |
+| `ccy` | Currency | `?ccy=INR` |
 
 ## The WAGER page
 
-A second page, **WAGER**, asks a different question from the calculator: not what a
-model costs today, but how long the frontier stays the frontier. Frontier
-intelligence keeps arriving at the cheapest slot in every vendor's lineup a few
-months later at a fraction of the price — the page shows that history from sourced
-data and then stakes a falsifiable claim on the next repetition.
+The app has a second page, WAGER: a bet I made with myself in August 2026.
 
-**The claim.** By **June 27, 2027**, an entry-level model will match Claude Fable
-5 — the frontier as of June 2026 — on the Artificial Analysis intelligence index
-at no more than a tenth of Fable 5's price.
+**How it started.** I was talking with a friend about Claude Fable 5, the
+strongest model at the time, and said something like: this is the worst it will
+ever be. Every model from here on only gets better and cheaper. Around the same
+time I compared o1, OpenAI's first reasoning model from late 2024, with GPT-5.6
+Luna, OpenAI's cheapest model in mid-2026. Luna beat it on both price and
+benchmark scores. So the obvious next question was: how long until Fable 5's
+level shows up in the cheapest models too?
 
-**Resolves YES** when one entry-level model from Anthropic, OpenAI or Google
-reaches Fable 5's launch **Artificial Analysis** index — 59.9 at the freeze,
-49.6 re-read on AA's index v4.3 — compared inside a single AA snapshot, at **$2.00 per MTok or less** on a fixed 3:1 input:output
-blend. Both terms, one model, at one time. That single arm is the whole rule —
-nothing else settles it.
+**The idea.** The page looks back at how this has played out before. Within
+months of a top model's release, some vendor's cheapest model reaches the same
+benchmark score for a small fraction of the price. Then it commits to a date for
+the next time. There's no money and no one on the other side. To keep it fun
+and honest, the repo emails me on three fixed dates so I have to check whether I
+was right.
 
-**Resolves NO** when none does by 23:59 UTC on 2027-06-27. The evidence has to be
-public by that instant; the AA snapshot and the vendor's own list-price page
-proving it may be captured up to 14 days later. The price term reads the list
-price a vendor publishes — a promotional rate or a third-party route's listing
-does not satisfy it.
+**The prediction.** By June 27, 2027, one of the cheapest models from Anthropic,
+OpenAI or Google will score as well as Claude Fable 5 did at launch. Fable 5 was
+the strongest model in June 2026. The cheap model must also cost no more than a
+tenth of Fable 5's price.
 
-*Entry-level model* means the slot a vendor designates as its cheapest in its
-current lineup — Claude Haiku, OpenAI's mini / nano / Luna slot, Gemini
-Flash-Lite. It is the slot, not the price tag: an older, cheaper model still on
-sale does not disqualify the current one, and a renamed or replaced slot inherits
-eligibility.
+### How it is judged
 
-The page also carries an **OPEN CHANNEL · NON-BINDING** watch: open-weights
-flagships that set a new high on the same AA index, beginning with the
-DeepSeek-R1 pattern. It is evidence about another route by which frontier
-capability diffuses, not another arm of the wager. Open weights have no canonical
-per-token price, their labs can sit outside the frozen vendor list, and flagship
-releases are not the frozen entry-level slot.
+- **The score** is the [Artificial Analysis](https://artificialanalysis.ai/)
+  intelligence index, a combined score across several benchmarks. Artificial
+  Analysis sometimes changes how the index is calculated, which rescales every
+  model. So the cheap model and Fable 5 are always compared using the same
+  version of the index. When I made the prediction, Fable 5 scored 59.9. After a
+  change in September 2026 (index version 4.3), it scores 49.6. The target is
+  the same; only the scale changed.
+- **The price** must be at most $2.00 per million tokens, a tenth of Fable 5's
+  $20. Prices are compared as a 3:1 mix of input and output tokens, which is how
+  this page turns two prices into one number. It must be the vendor's own
+  published list price. A temporary promotion, or a reseller's cheaper price,
+  doesn't count.
+- **"Cheapest model"** means the model a vendor sells as the cheapest in its
+  current lineup: Claude Haiku, OpenAI's mini, nano or Luna, and Gemini
+  Flash-Lite. An older model that happens to cost less doesn't change which one
+  that is. If a vendor renames the line, the new name takes its place.
+- **Both conditions**, score and price, must be met by the same model at the
+  same time, and it must be public by 23:59 UTC on June 27, 2027. Evidence
+  (the score and the price page) can be saved up to 14 days after that.
 
-| Lens | Date | How it gets there |
+If no model qualifies by the deadline, the prediction was wrong.
+
+### When I expect it
+
+I gave two estimates, each based on a different trend:
+
+| Estimate | Date | Based on |
 |---|---|---|
-| **Price decline** | 2027-01-10 | Epoch AI's median 50×/year fall in the price of a fixed capability, counted from Fable 5's release. The wager's price term is a ratio, so this is just the time for a tenfold fall — independent of either sticker price. |
-| **Historical lag** | 2027-03-08 | Median 8.9-month lag over 10 matched pairs, from a frontier model setting a new index high to the first entry-level model reaching it. |
-| Slowest fitted trend | 2027-06-27 | The price-decline lens at the slowest decline Epoch fitted, 9×/year. The deadline is set here: a trend slower than anything measured would still have landed by this date. Not a confidence bound. |
+| Price trend | 2027-01-10 | [Epoch AI](https://epoch.ai/data-insights/llm-inference-price-trends) found that the price of a given level of AI capability falls about 50× a year (median). At that rate a tenfold drop takes about seven months from Fable 5's release. |
+| Past catch-ups | 2027-03-08 | Looking back, cheap models took a median of 8.9 months to match each new top model. |
+| Deadline | 2027-06-27 | The slowest price decline Epoch measured, 9× a year. If even that pace holds, the target should be reached by this date. |
 
-These are the dates as frozen. On the 2026-09-23 re-read (AA index v4.3) the
-historical-lag lens recomputes to **2027-04-20** — a 10.4-month median, with
-GPT-4o mini now the first match for GPT-4 and Luna for GPT-5 — and the page shows
-the frozen and live dates side by side rather than restating the headline. The
-price-decline dates read only Fable 5's release date, so no refresh moves them.
+These are rough estimates, not a precise forecast, and both rest on the same
+underlying trend. So the fact that they land close together isn't extra
+evidence. Missing January to March doesn't lose the bet; missing the deadline
+does.
 
-**These are two illustrative scenarios, not a calibrated forecast.** They land
-two months apart, which is not corroboration: capability diffusion and price
-decline are two views of the same underlying trend, so both dates ride on it
-together. Neither is good to better than a season. January 10 and March 8 are the
-forecast; June 27 is the resolution bound — missing the window is not a NO,
-missing the deadline is.
+The table shows the dates as I first recorded them. After the September 2026
+index change, the past-catch-up estimate moved to 2027-04-20, with a median of
+10.4 months. The page shows the original and updated dates side by side instead
+of quietly replacing them.
 
-Five caveats do most of the work.
+### Where it stands (checked 2026-09-23)
 
-- **Matching the index is not general equivalence.** The AA index is an exam-style composite: long-context behaviour and agentic reliability are not in it, and a verbose entry-level model can cost more per finished task than a frontier model at ten times the per-token rate.
-- **The arm is a joint event** — the index *and* a tenth of the price, together. The historical-lag lens tracks only capability and the price-decline lens only price, and at the freeze 3 of the 9 historical matches with a known price (2 of 9 on the v4.3 re-read) cleared the index at less than a tenfold price gap, so they would have failed this wager's own price term.
-- **METR is a secondary check, and non-binding.** It has measured no entry-level model in either suite version, and none of Fable 5 either, so it cannot be read today. If both ends are ever measured on one suite version before the deadline, an entry-level model at or above the proxy's p50 is corroboration and nothing more.
-- **METR's 50% threshold is not its 80%** — the Mythos preview measures 1,044.8 min at 50% but 185.9 min at 80%.
-- **The open channel is non-binding.** It can show an open-weights flagship reaching the target sooner, but that model has no canonical price and may sit outside both the frozen vendors and their entry-level slots. It settles nothing.
+- **Price: met.** GPT-6 Luna costs $0.20 per million tokens, well under the
+  $2.00 limit.
+- **Score: not yet.** The best cheap model scores 37.3 against Fable 5's 49.6,
+  12.3 points short.
 
-At the freeze, the 10 matched pairs behind the historical-lag lens came from only
-**5 catch-up releases** (6 on the v4.3 re-read) — one cheap model can clear three standing frontier highs at once — so
-treat the effective sample as 5.
+The page itself always shows the latest figures.
 
-### Data and refresh
+### What it doesn't show
+
+- **A matching score doesn't mean an equal model.** The index is a set of
+  exam-style tests. It doesn't measure long-document handling or how reliably a
+  model completes long tasks on its own.
+- **Price per token isn't cost per task.** A wordy cheap model can use far more
+  tokens than an expensive one, and end up costing more per finished job.
+- **Both halves at once is the hard part.** Of the 9 past catch-ups with known
+  prices, 3 matched the score but were less than 10× cheaper than the model they
+  matched (2 on the current index), so they would have failed this bet's price
+  condition.
+- **The sample is small.** Those past catch-ups come from only 5 cheap model
+  releases (6 on the current index), because one release often matches several
+  top models at once.
+- **METR, a second check, can't be used yet.** [METR](https://metr.org/time-horizons/)
+  measures how long a task a model can complete on its own. It hasn't tested
+  Fable 5 or any cheap model, so it's tracked on the page but doesn't decide
+  anything. Its results also depend heavily on the success rate used: an early
+  Fable-family model manages 1,044.8-minute tasks half the time, but only
+  185.9-minute tasks 80% of the time.
+- **Open-weight models are tracked, but don't count.** The page also follows
+  the strongest downloadable models, the pattern DeepSeek R1 started. They show
+  another way top-level capability spreads. They can't settle the bet, because
+  they have no single official price and often come from labs outside the three
+  vendors.
+
+### Data and upkeep
+
+Unlike the calculator, this page runs on a hand-curated file, `timeline.csv`.
+It has one row per model, and every row links to its source. Anything that
+couldn't be verified is left blank rather than estimated. `wager.py` calculates
+everything else from that file: which top models set new records, how long cheap
+models took to catch up, both estimates, and whether the prediction has come
+true.
 
 | Data | Source |
 |---|---|
-| **50% / 80% time horizons** — the non-binding secondary check | [METR](https://metr.org/time-horizons/), from the published `benchmark_results_1_1.yaml` behind their chart |
-| **Intelligence index** — binding tiers plus the non-binding open channel | [Artificial Analysis](https://artificialanalysis.ai/) API, every row read from one committed payload (`data/history/2026-09-23/`, index v4.3). AA rescales every model when the index changes version, so the whole column is re-read together and `aa_version` is the same on every row. Where a model publishes several configurations, the highest-scoring one is recorded, for every row. |
-| **Price-decline rate** | [Epoch AI](https://epoch.ai/data-insights/llm-inference-price-trends) — 9× to 900× per year, median 50× |
-| **Prices and release dates** | Vendor announcements and pricing docs, archived where the vendor blocks fetches |
+| Intelligence scores | [Artificial Analysis](https://artificialanalysis.ai/) API. Every row is read from the same download, saved in `data/history/`. Where a model has several settings (for example, reasoning on or off), the highest-scoring one is used, for every model. |
+| Task-length measurements | [METR](https://metr.org/time-horizons/)'s published results file (`benchmark_results_1_1.yaml`) |
+| Price-decline rate | [Epoch AI](https://epoch.ai/data-insights/llm-inference-price-trends): 9× to 900× a year, median 50× |
+| Prices and release dates | Vendor announcements and pricing pages, archived where the vendor blocks automated access |
 
-Unlike the calculator, this page is **curated, not computed**. `timeline.csv` holds
-one row per tracked model, every row carrying a source URL, and a fact that could
-not be sourced is left blank rather than estimated. `wager.py` derives everything
-else — milestones, lags, both predictions, resolution status — so the page moves
-when the data does. `data/history/<date>/` keeps the raw payloads each row was read
-from, append-only, because Artificial Analysis re-scores older models when its
-index changes and tags no version in either feed.
+`data/history/<date>/` keeps each raw download and is never edited afterwards.
+That matters because Artificial Analysis rescores old models when it changes its
+index, and its data carries no version number.
 
-The third `tier` value, `open`, records only open-weights flagship high-water
-marks, never an open vendor's budget tier. Its price columns remain blank: a
-downloadable model has hosting offers and self-run costs, but no canonical price.
-The binding calculations explicitly select only `frontier` and `bottom`, so these
-rows are a non-binding page watch and nothing else.
+To refresh the data, about once a quarter:
 
 ```bash
-uv run python scripts/timeline_fetch.py     # new snapshot + diff vs the last one
+uv run python scripts/timeline_fetch.py   # download fresh data and list what changed
 ```
 
-Then run the `/timeline-refresh` skill, which turns that diff into sourced
-`timeline.csv` edits and checks for a new open-weights flagship high-water mark.
-Roughly quarterly.
+Then run the `/timeline-refresh` Claude Code skill. It turns that list into
+proposed `timeline.csv` changes, each with a source, and recalculates the
+estimates.
 
-`wager.json` is the **frozen** prediction the scheduled emails were built around.
-It is deliberately not kept in sync — the page shows a badge when live data has
-moved away from it, and that divergence is the point. It is at version 2: a dated
-amendment record states what the 2026-08-03 clarification changed (the deadline,
-METR demoted to a secondary check, the entry-level definition written as a slot,
-the price ceiling stated as a number) and why, and v1 stays in git history. What
-must happen is unchanged.
+`wager.json` holds the prediction exactly as I made it. It is deliberately not
+updated when the data changes. The page flags any difference between the
+original and the latest numbers instead. The current version is 2. On
+2026-08-03 I clarified the wording: I added the deadline, made METR a secondary
+check, defined "cheapest model" by product line rather than price, and stated
+the price limit as a dollar figure. What has to happen didn't change. The
+original wording is in git history.
 
-### The scheduled letter
+### The scheduled emails
 
-`.github/workflows/wager-email.yml` sends three emails through Resend: a midpoint
-check on 2026-10-21, the wager letter on 2027-01-10, and the deadline reading on
-2027-06-28 — the morning after the cutoff, so the result is read against a closed
-question. Its cron fires on the 10th, 21st and 28th of each month — the day
-numbers of those three dates, so each letter arrives on its own date rather than
-up to a month late. Re-derive them if `wager.json` is ever re-frozen. A send
-counts as done when a labelled GitHub issue with its title exists, which is read
-from the API each run — a committed flag can disagree with reality whenever the
-write-back commit fails.
+A GitHub Actions workflow (`.github/workflows/wager-email.yml`) sends three
+emails through [Resend](https://resend.com/):
 
-**GitHub disables scheduled workflows after 60 days without repository activity.**
-The quarterly refresh commit is what keeps this one alive; if the repo goes quiet
-for two months, re-enable it from the Actions tab.
+- **2026-10-21**, a halfway check-in
+- **2027-01-10**, the letter, on the earlier estimated date
+- **2027-06-28**, the morning after the deadline, to record the result
+
+The workflow runs on the 10th, 21st and 28th of every month, matching those
+dates, and does nothing until one is due. After sending, it opens a GitHub issue
+as a record, which also stops the same email from going out twice.
+
+**GitHub turns off scheduled workflows after 60 days with no repository
+activity.** The quarterly data refresh commit keeps it running. If the repo goes
+quiet for two months, turn the workflow back on from the Actions tab.
 
 ```bash
-uv run python scripts/wager_check.py --dry-run --as-of 2027-01-10   # render the letter
-uv run pytest -q                                                    # the frozen numbers still recompute
+uv run python scripts/wager_check.py --dry-run --as-of 2027-01-10   # preview an email
+uv run pytest -q                                                    # run the tests
 ```
 
-**Security.** The recipient address and the Resend key exist only as Actions
-secrets (`WAGER_EMAIL_TO`, `RESEND_API_KEY`) and appear nowhere in this repo.
-With Resend's default test sender, `WAGER_EMAIL_TO` must be the Resend account's
-own address; to mail anywhere else, verify a domain and set a `RESEND_FROM`
-secret. The
-letter template is impersonal, and the issues the workflow opens carry status
-only — no address, no letter body. A `gitleaks` workflow scans every push and pull
-request, and the refresh skill requires a scan of the staged diff before any
-commit, because that step pulls raw API payloads into a public repo.
+**Privacy and secrets.** The recipient address and the Resend key are stored only
+as GitHub Actions secrets (`WAGER_EMAIL_TO`, `RESEND_API_KEY`) and never appear in
+the repo. With Resend's default test sender, emails can only go to the Resend
+account's own address; to send elsewhere, verify a domain and set a `RESEND_FROM`
+secret. The email text is impersonal, and the GitHub issues contain only status,
+not the address or the letter. Because the refresh saves raw downloads into a
+public repo, a `gitleaks` workflow scans every push for secrets, and the refresh
+skill checks the changes again before each commit.
 
 ## Design
 
-The interface is a dark graphite ledger — neutral dark gray, blue used only where it means something, JetBrains Mono throughout, square corners. The entire look lives in `.streamlit/config.toml`: theme colors, webfont, dataframe styling, and the categorical palette that colors the charts. There is no custom CSS.
+Dark gray background, blue only where it carries meaning, JetBrains Mono
+throughout, square corners. The whole look (colors, font, table styling and chart
+palette) is set in `.streamlit/config.toml`, with no custom CSS.
 
-## Attribution
+## Credits
 
-Intelligence, coding, and agentic scores are [Artificial Analysis](https://artificialanalysis.ai/) indices, served via OpenRouter's model API and the Artificial Analysis API; speed metrics come from the Artificial Analysis API; usage data from OpenRouter's rankings dataset. Prices are from LiteLLM's community-maintained catalog. Exchange rate from exchangerate-api.com.
+Intelligence, coding and agentic scores are from [Artificial
+Analysis](https://artificialanalysis.ai/), through OpenRouter's model list and
+the Artificial Analysis API. Speed figures are from the Artificial Analysis API.
+Usage figures are from OpenRouter. Prices are from LiteLLM's community-maintained
+catalog. Exchange rates are from exchangerate-api.com.
 
 ## The original version
 
 <details>
-<summary>Screenshots of this app's first incarnation — a plain cost calculator, before the rate-card redesign that became Token Tariff.</summary>
+<summary>Screenshots of the first version, a plain cost calculator, before it became Token Tariff.</summary>
 
 [LLM API Cost Calculator demo.webm](https://github.com/user-attachments/assets/b7bd21b6-ade2-4d56-b008-203e0724a464)
 

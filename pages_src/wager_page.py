@@ -198,11 +198,11 @@ def headline(frozen: dict):
                     f"{wager.DEADLINE:%B %Y}?")
         st.markdown(f"**My prediction: yes.** {_money(frozen['claim'])}")
         st.caption(
-            f"A PUBLIC, TIMESTAMPED SELF-PREDICTION — NO MONEY, NO "
-            f"COUNTERPARTY, NO ONE ON THE OTHER SIDE OF IT. FROZEN "
-            f"{frozen['frozen_on']}, TERMS CLARIFIED {frozen['amended_on']}; "
-            f"EVERY CHANGE IS IN GIT, AND {len(frozen['sends'])} SCHEDULED "
-            f"SELF-EMAILS FORCE A REVIEW WHETHER OR NOT IT IS GOING WELL."
+            f"A BET WITH MYSELF — NO MONEY, NO ONE ON THE OTHER SIDE. WRITTEN "
+            f"DOWN {frozen['frozen_on']}, TERMS CLARIFIED "
+            f"{frozen['amended_on']}; EVERY CHANGE IS IN GIT, AND "
+            f"{len(frozen['sends'])} SCHEDULED EMAILS MAKE ME CHECK BACK "
+            f"WHETHER OR NOT IT IS GOING WELL."
         )
 
 
