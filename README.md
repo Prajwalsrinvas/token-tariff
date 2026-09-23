@@ -136,8 +136,8 @@ data and then stakes a falsifiable claim on the next repetition.
 at no more than a tenth of Fable 5's price.
 
 **Resolves YES** when one entry-level model from Anthropic, OpenAI or Google
-reaches Fable 5's launch **Artificial Analysis** index of 59.9, compared inside a
-single AA snapshot, at **$2.00 per MTok or less** on a fixed 3:1 input:output
+reaches Fable 5's launch **Artificial Analysis** index — 59.9 at the freeze,
+49.6 re-read on AA's index v4.3 — compared inside a single AA snapshot, at **$2.00 per MTok or less** on a fixed 3:1 input:output
 blend. Both terms, one model, at one time. That single arm is the whole rule —
 nothing else settles it.
 
@@ -166,6 +166,12 @@ releases are not the frozen entry-level slot.
 | **Historical lag** | 2027-03-08 | Median 8.9-month lag over 10 matched pairs, from a frontier model setting a new index high to the first entry-level model reaching it. |
 | Slowest fitted trend | 2027-06-27 | The price-decline lens at the slowest decline Epoch fitted, 9×/year. The deadline is set here: a trend slower than anything measured would still have landed by this date. Not a confidence bound. |
 
+These are the dates as frozen. On the 2026-09-23 re-read (AA index v4.3) the
+historical-lag lens recomputes to **2027-04-20** — a 10.4-month median, with
+GPT-4o mini now the first match for GPT-4 and Luna for GPT-5 — and the page shows
+the frozen and live dates side by side rather than restating the headline. The
+price-decline dates read only Fable 5's release date, so no refresh moves them.
+
 **These are two illustrative scenarios, not a calibrated forecast.** They land
 two months apart, which is not corroboration: capability diffusion and price
 decline are two views of the same underlying trend, so both dates ride on it
@@ -176,13 +182,13 @@ missing the deadline is.
 Five caveats do most of the work.
 
 - **Matching the index is not general equivalence.** The AA index is an exam-style composite: long-context behaviour and agentic reliability are not in it, and a verbose entry-level model can cost more per finished task than a frontier model at ten times the per-token rate.
-- **The arm is a joint event** — the index *and* a tenth of the price, together. The historical-lag lens tracks only capability and the price-decline lens only price, and 3 of the 9 historical matches with a known price cleared the index at less than a tenfold price gap, so they would have failed this wager's own price term.
+- **The arm is a joint event** — the index *and* a tenth of the price, together. The historical-lag lens tracks only capability and the price-decline lens only price, and at the freeze 3 of the 9 historical matches with a known price (2 of 9 on the v4.3 re-read) cleared the index at less than a tenfold price gap, so they would have failed this wager's own price term.
 - **METR is a secondary check, and non-binding.** It has measured no entry-level model in either suite version, and none of Fable 5 either, so it cannot be read today. If both ends are ever measured on one suite version before the deadline, an entry-level model at or above the proxy's p50 is corroboration and nothing more.
 - **METR's 50% threshold is not its 80%** — the Mythos preview measures 1,044.8 min at 50% but 185.9 min at 80%.
 - **The open channel is non-binding.** It can show an open-weights flagship reaching the target sooner, but that model has no canonical price and may sit outside both the frozen vendors and their entry-level slots. It settles nothing.
 
-The 10 matched pairs behind the historical-lag lens come from only **5 catch-up
-releases** — one cheap model can clear three standing frontier highs at once — so
+At the freeze, the 10 matched pairs behind the historical-lag lens came from only
+**5 catch-up releases** (6 on the v4.3 re-read) — one cheap model can clear three standing frontier highs at once — so
 treat the effective sample as 5.
 
 ### Data and refresh
@@ -190,7 +196,7 @@ treat the effective sample as 5.
 | Data | Source |
 |---|---|
 | **50% / 80% time horizons** — the non-binding secondary check | [METR](https://metr.org/time-horizons/), from the published `benchmark_results_1_1.yaml` behind their chart |
-| **Intelligence index** — binding tiers plus the non-binding open channel | [Artificial Analysis](https://artificialanalysis.ai/), via OpenRouter's listing (read 2026-08-01) and this repo's committed AA API payload (vintage ≤2026-07-05). Each row's `aa_version` says which. Where a model publishes several configurations, the highest-scoring one is recorded, for every row. |
+| **Intelligence index** — binding tiers plus the non-binding open channel | [Artificial Analysis](https://artificialanalysis.ai/) API, every row read from one committed payload (`data/history/2026-09-23/`, index v4.3). AA rescales every model when the index changes version, so the whole column is re-read together and `aa_version` is the same on every row. Where a model publishes several configurations, the highest-scoring one is recorded, for every row. |
 | **Price-decline rate** | [Epoch AI](https://epoch.ai/data-insights/llm-inference-price-trends) — 9× to 900× per year, median 50× |
 | **Prices and release dates** | Vendor announcements and pricing docs, archived where the vendor blocks fetches |
 

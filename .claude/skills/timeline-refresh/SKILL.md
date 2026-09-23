@@ -34,8 +34,20 @@ price changes, AA index changes, new METR measurements, and any `timeline.csv`
 cell that disagrees with the fresh snapshot. Read that output before anything
 else — it is the agenda.
 
-Set `AA_API_KEY` first if you have it; without it the Artificial Analysis API is
-skipped and only the models OpenRouter routes carry AA scores.
+Set `AA_API_KEY` first — it lives in `.streamlit/secrets.toml` (gitignored),
+which the script does not read on its own. Pass it without printing it:
+
+```bash
+AA_API_KEY="$(python3 -c "import tomllib;print(tomllib.load(open('.streamlit/secrets.toml','rb'))['AA_API_KEY'])")" \
+  uv run python scripts/timeline_fetch.py
+```
+
+Without it the Artificial Analysis API is skipped, and the OpenRouter listing
+alone cannot re-read the column: it carries no score for the older and delisted
+models (GPT-4, o1, o3, Opus 4.x, the 3.x family) the milestones rest on. The
+raw API payload also names each configuration and checkpoint, which is how
+step 3's configuration rule gets applied. Do not source `aa_intel` from the
+OpenRouter route: its `cohere/command-a` score turned out to be Command A+'s.
 
 ### 2. Search for what the feeds do not carry
 
@@ -65,7 +77,11 @@ web for, since the previous snapshot's date:
   the index changes and tags no version in either feed. If the whole column has
   shifted, say so loudly — every lag pair and the wager's 59.9 threshold are
   read on one snapshot, and a version change means comparing against the
-  snapshot's own Fable 5 figure rather than 59.9.
+  snapshot's own Fable 5 figure rather than 59.9. Re-read **every** row from the
+  new payload — never patch the rows that happen to be covered — and re-check
+  the open channel's high-water sequence, since the rescale is not uniform and
+  earlier marks can stop being marks. v4.2/v4.3 (2026-09-04/07) was the first
+  such change: Fable 5 went 59.9 → 49.6.
 
 ### 3. Distinguish the official price from the route price
 
@@ -109,11 +125,10 @@ Column notes:
   must match that key exactly; `timeline_fetch.py` checks both.
 - `metr_source` — always the v1.1 URL. Never mix suite versions in one column:
   the same model scores differently under v1.0.
-- `aa_version` — the date the AA figure was read, which is the only version key
-  either feed offers. It is **not** automatically the snapshot date: the
-  committed `aa_models.json` is older than the OpenRouter pull, and rows sourced
-  from it carry its vintage (`≤2026-07-05` at the last freeze). If a refresh
-  fetches the AA API with a key, the rows it sources move to that date.
+- `aa_version` — the `data/history/` snapshot the AA figure was read from, the
+  only version key either feed offers. It is the same on every row:
+  `test_every_index_is_read_from_one_snapshot` fails otherwise, because
+  milestones compare scores across rows.
 - `notes` — anything a reader would otherwise get wrong.
 
 For every `open` row, verify the release date and use the vendor's announcement
@@ -140,13 +155,25 @@ the price-decline dates depend only on the frozen constants and baseline. If an
 open row moves any prediction, milestone, resolution field or frozen date, stop
 and fix the filtering before accepting the refresh.
 
-If it is re-frozen, three things must move with it: `tests/test_wager.py`, which
-pins every number; the `cron` in `.github/workflows/wager-email.yml`, whose
-day-of-month values are the day numbers of the new due dates; and the README
-table. `uv run pytest -q` fails until they agree.
+`tests/test_wager.py` pins the live recomputation separately from the frozen
+document: `LIVE_*`, `EXPECTED_OPEN` and the live-status test move on every
+refresh that changes a milestone, deliberately, while `FROZEN_*` and the
+timeline-independent dates (Method B, slowest trend, deadline, sends) never do.
+Running the tests boots the rate card, which rewrites the app's root caches
+(`aa_models.json`, `benchmark_scores.json`, `model_prices_and_context_window.json`)
+— restore them with `git checkout --` unless refreshing the app's fallback is
+part of the change.
+
+If it is re-frozen, three more things must move with it: the `FROZEN_*` pins;
+the `cron` in `.github/workflows/wager-email.yml`, whose day-of-month values are
+the day numbers of the new due dates; and the README table. `uv run pytest -q`
+fails until they agree.
 
 The page's prose recomputes from `timeline.csv` — the contender, the gap and the
-price ceiling are f-strings over the derivation, not sentences to hand-edit.
+price ceiling are f-strings over the derivation, not sentences to hand-edit. The three HOW IT WENT acts are the exception to watch: their headlines name
+specific catch-ups ("Haiku takes o1"), so when a refresh reassigns a milestone,
+read the acts on the rendered page and make any claim that no longer holds
+conditional on the data, as Act 1 does for GPT-4o mini.
 
 If an entry-level model has reached the baseline's index at or under a tenth of
 its cost, the wager has resolved early. Say so plainly and check it is not an

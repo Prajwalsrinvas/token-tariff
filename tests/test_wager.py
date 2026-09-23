@@ -6,11 +6,15 @@ cron were all built around. It is a snapshot of an arithmetic that runs on a
 hand-curated CSV, and the failure mode is silent: a single edited cell can move
 a milestone, drop a lag pair, and shift both dates without anything complaining.
 
-So these tests do two jobs. They pin the numbers the wager was published with —
-if one moves, that is a decision, not a diff — and they check that recomputing
-from `timeline.csv` today still reproduces the frozen document exactly. When the
-wager is deliberately re-frozen, the expected values below move with it, and so
-must the cron day numbers, which are also checked here.
+So these tests pin two things, separately. The numbers the wager was published
+with (`FROZEN_*`, read from `wager.json`) never move unless the wager is
+deliberately re-frozen, and then the cron day numbers move with them. What the
+live `timeline.csv` recomputes to today (`LIVE_*`) moves on every refresh that
+changes a milestone — each refresh updates those pins on purpose, so a moved
+number is still a decision rather than a diff. The two are allowed to disagree:
+that disagreement is what the page's drift badge shows. The dates that do not
+depend on the timeline at all — the price-decline lens, the slowest trend, the
+deadline and the sends — must still agree with the frozen document exactly.
 """
 
 import datetime as dt
@@ -27,54 +31,63 @@ import wager  # noqa: E402
 
 ROOT = pathlib.Path(wager.ROOT)
 
-# Frontier milestone -> (matching bottom-tier model, lag in months to 2dp).
-EXPECTED_PAIRS = {
-    "gpt-4": ("claude-3-5-haiku", 19.75),
+# As published in wager.json on the freeze. These do not move with the data.
+FROZEN_MEDIAN_LAG = 8.94
+FROZEN_METHOD_A = dt.date(2027, 3, 8)
+
+# The AA snapshot every aa_intel in timeline.csv is read from. Milestones
+# compare scores across rows, so the column is one index version or nothing.
+LIVE_AA_SNAPSHOT = "2026-09-23"
+
+# Live: frontier milestone -> (matching entry-level model, lag in months to
+# 2dp), recomputed from timeline.csv on the AA v4.3 snapshot.
+LIVE_PAIRS = {
+    "gpt-4": ("gpt-4o-mini", 16.16),
     "claude-3-opus": ("claude-3-5-haiku", 8.05),
     "o1-preview": ("gpt-5-nano", 10.81),
     "o1": ("claude-haiku-4.5", 9.92),
-    "claude-3-7-sonnet": ("claude-haiku-4.5", 7.66),
+    "claude-3-7-sonnet": ("gpt-5.4-nano", 12.68),
     "o3": ("gpt-5.4-nano", 11.01),
     "claude-opus-4": ("gpt-5.4-nano", 9.82),
-    "gpt-5": ("gpt-5.4-nano", 7.29),
+    "gpt-5": ("gpt-5.6-luna", 11.04),
     "claude-opus-4.5": ("gpt-5.6-luna", 7.46),
     "claude-opus-4.6": ("gpt-5.6-luna", 5.06),
 }
 
-EXPECTED_MEDIAN_LAG = 8.94
-EXPECTED_METHOD_A = dt.date(2027, 3, 8)
+LIVE_MEDIAN_LAG = 10.37
+LIVE_METHOD_A = dt.date(2027, 4, 20)
 EXPECTED_METHOD_B = dt.date(2027, 1, 10)
 EXPECTED_SLOWEST = dt.date(2027, 6, 27)
 EXPECTED_MIDPOINT = dt.date(2026, 10, 21)
 EXPECTED_DEADLINE = dt.date(2027, 6, 27)
 
-# Curated open-weights flagship high-water marks. The third item is the exact
-# key in the committed feed named by the row's aa_version.
+# Curated open-weights flagship high-water marks on the live snapshot. The
+# third item is the model's slug in data/history/<aa_version>/aa_models.json.
 EXPECTED_OPEN = {
-    "deepseek-r1": (dt.date(2025, 1, 20), 18.5,
-                    "deepseek/deepseek-r1"),
-    "command-a": (dt.date(2025, 3, 13), 22.5, "cohere/command-a"),
-    "gpt-oss-120b": (dt.date(2025, 8, 5), 23.8,
-                     "openai/gpt-oss-120b"),
-    "deepseek-v3.1-terminus": (dt.date(2025, 9, 22), 30.4,
-                               "deepseek/deepseek-v3.1-terminus"),
-    "deepseek-v3.2": (dt.date(2025, 12, 1), 32.0,
-                      "deepseek/deepseek-v3.2"),
-    "glm-4.7": (dt.date(2025, 12, 22), 33.7, "z-ai/glm-4.7"),
-    "kimi-k2.5": (dt.date(2026, 1, 27), 35.4,
-                  "moonshotai/kimi-k2.5"),
-    "glm-5": (dt.date(2026, 2, 11), 39.5, "glm-5"),
-    "glm-5.1": (dt.date(2026, 4, 7), 40.2, "z-ai/glm-5.1"),
-    "kimi-k2.6": (dt.date(2026, 4, 20), 44.2,
-                  "moonshotai/kimi-k2.6"),
-    "deepseek-v4-pro": (dt.date(2026, 4, 24), 44.3,
-                        "deepseek/deepseek-v4-pro"),
-    "minimax-m3": (dt.date(2026, 5, 31), 44.4,
-                   "minimax/minimax-m3"),
-    "glm-5.2": (dt.date(2026, 6, 16), 51.1, "z-ai/glm-5.2"),
-    "kimi-k3": (dt.date(2026, 7, 26), 57.1,
-                "moonshotai/kimi-k3"),
+    "deepseek-r1": (dt.date(2025, 1, 20), 11.4, "deepseek-r1-0120"),
+    "gpt-oss-120b": (dt.date(2025, 8, 5), 11.6, "gpt-oss-120b"),
+    "deepseek-v3.1-terminus": (dt.date(2025, 9, 22), 14.8,
+                               "deepseek-v3-1-terminus-reasoning"),
+    "deepseek-v3.2": (dt.date(2025, 12, 1), 21.5, "deepseek-v3-2-reasoning"),
+    "glm-4.7": (dt.date(2025, 12, 22), 22.2, "glm-4-7"),
+    "kimi-k2.5": (dt.date(2026, 1, 27), 23.5, "kimi-k2-5"),
+    "glm-5": (dt.date(2026, 2, 11), 27.9, "glm-5"),
+    "deepseek-v4-pro": (dt.date(2026, 4, 24), 30.4, "deepseek-v4-pro-0424"),
+    "glm-5.2": (dt.date(2026, 6, 16), 33.7, "glm-5-2"),
+    "kimi-k3": (dt.date(2026, 7, 26), 43.6, "kimi-k3"),
+    "glm-5.3": (dt.date(2026, 8, 28), 44.8, "glm-5-3"),
+    "mimo-v2.6-pro": (dt.date(2026, 9, 22), 46.3, "mimo-v2-6-pro"),
 }
+
+
+def aa_snapshot(version: str) -> dict:
+    """slug -> intelligence index, from the raw AA API payload committed under
+    data/history/. Read from the snapshot rather than the app's root cache,
+    which the rate card rewrites whenever it fetches."""
+    payload = json.loads(
+        (ROOT / "data" / "history" / version / "aa_models.json").read_text())
+    return {m["slug"]: m["evaluations"]["artificial_analysis_intelligence_index"]
+            for m in payload["data"]}
 
 
 @pytest.fixture(scope="module")
@@ -97,12 +110,24 @@ def test_lag_pairs(rows):
     catches a timeline.csv edit changing which releases count as milestones."""
     pairs = {p["frontier"]: (p["matched_by"], round(p["lag_months"], 2))
              for p in wager.method_a(rows)["pairs"]}
-    assert pairs == EXPECTED_PAIRS
+    assert pairs == LIVE_PAIRS
+
+
+def test_every_index_is_read_from_one_snapshot(rows):
+    """Milestones compare aa_intel across rows, and AA rescales every model
+    when its index version changes — v4.3 moved Fable 5 from 59.9 to 49.6.
+    A column that mixes two versions puts two rulers on one axis, so a refresh
+    re-reads every row or none."""
+    versions = {r["aa_version"] for r in rows if r["aa_intel"] is not None}
+    assert versions == {LIVE_AA_SNAPSHOT}
+    scores = aa_snapshot(LIVE_AA_SNAPSHOT)
+    assert scores["claude-fable-5"] == \
+        wager.baseline_row(rows)["aa_intel"]
 
 
 def test_median_and_dates(preds):
-    assert round(preds["a"]["median_lag_months"], 2) == EXPECTED_MEDIAN_LAG
-    assert preds["a"]["date"] == EXPECTED_METHOD_A
+    assert round(preds["a"]["median_lag_months"], 2) == LIVE_MEDIAN_LAG
+    assert preds["a"]["date"] == LIVE_METHOD_A
     assert preds["b"]["date"] == EXPECTED_METHOD_B
     assert preds["slow"]["date"] == EXPECTED_SLOWEST
     assert preds["earliest"] == EXPECTED_METHOD_B
@@ -122,17 +147,15 @@ def test_midpoint(preds):
 def test_effective_sample_is_smaller_than_the_pair_count(preds):
     a = preds["a"]
     assert a["n_pairs"] == 10
-    assert a["n_matchers"] == 5
+    assert a["n_matchers"] == 6
     assert a["n_priced"] == 9
-    assert a["n_under_price_bar"] == 3
+    assert a["n_under_price_bar"] == 2
 
 
 def test_open_rows_are_sourced_non_binding_high_water_marks(rows):
     """The watch is a sequence, not an open-model catalog. Every row improves
     on the prior open flagship, has no invented price, and reproduces a score
     that already exists in the committed feed its version names."""
-    benchmark = json.loads((ROOT / "benchmark_scores.json").read_text())
-    aa = json.loads((ROOT / "aa_models.json").read_text())
     open_rows = [r for r in rows if r["tier"] == "open"]
 
     assert {r["model"] for r in open_rows} == set(EXPECTED_OPEN)
@@ -145,11 +168,7 @@ def test_open_rows_are_sourced_non_binding_high_water_marks(rows):
             "launch_price_in", "launch_price_out", "current_price_in",
             "current_price_out"))
         assert "Non-binding" in row["notes"]
-        if row["aa_version"] == "2026-08-01":
-            assert benchmark[feed_key]["intelligence"] == score
-        else:
-            assert row["aa_version"] == "≤2026-07-05"
-            assert aa[feed_key]["intelligence"] == score
+        assert aa_snapshot(row["aa_version"])[feed_key] == score
 
 
 def test_open_rows_are_inert_to_every_wager_derivation(rows, frozen):
@@ -164,29 +183,38 @@ def test_open_rows_are_inert_to_every_wager_derivation(rows, frozen):
     assert wager.resolution(rows) == wager.resolution(binding_rows)
 
     live = wager.predictions(rows)
-    assert str(live["a"]["date"]) == frozen["predictions"]["method_a"]["date"]
+    assert live["a"]["date"] == LIVE_METHOD_A
     assert str(live["b"]["date"]) == frozen["predictions"]["method_b"]["date"]
     assert str(live["slow"]["date"]) == \
         frozen["predictions"]["slowest_trend"]["date"]
     assert str(wager.DEADLINE) == frozen["deadline"]
 
 
-def test_frozen_document_matches_a_fresh_recomputation(preds, frozen):
-    """The drift check. The page renders live numbers and the emails render
-    frozen ones; while these agree, both tell the same story."""
+def test_the_frozen_document_is_what_was_published(frozen):
+    """The frozen historical-lag lens is a record, not a recomputation: it
+    stays as published while the live one moves with the timeline. It must
+    still be internally consistent — its median is the median of its own
+    pairs, and its window is its own two dates."""
     a, b = frozen["predictions"]["method_a"], frozen["predictions"]["method_b"]
-    assert a["date"] == str(preds["a"]["date"])
+    assert a["date"] == str(FROZEN_METHOD_A)
+    assert a["median_lag_months"] == FROZEN_MEDIAN_LAG
+    lags = sorted(p["lag_months"] for p in a["pairs"])
+    n = len(lags)
+    assert n == a["n_pairs"]
+    assert round((lags[n // 2 - 1] + lags[n // 2]) / 2, 2) == FROZEN_MEDIAN_LAG
+    assert len({p["matched_by"] for p in a["pairs"]}) == a["n_distinct_matchers"]
+    assert frozen["predictions"]["earliest"] == min(a["date"], b["date"])
+    assert frozen["predictions"]["latest"] == max(a["date"], b["date"])
+
+
+def test_the_timeline_independent_dates_still_recompute(preds, frozen):
+    """The price-decline lens and the slowest trend read only the baseline's
+    release date and Epoch's rates, so no timeline refresh can move them. If
+    one of these differs, the frozen document is wrong, not stale."""
+    b = frozen["predictions"]["method_b"]
     assert b["date"] == str(preds["b"]["date"])
     assert frozen["predictions"]["slowest_trend"]["date"] == str(preds["slow"]["date"])
     assert frozen["predictions"]["earliest"] == str(preds["earliest"])
-    assert frozen["predictions"]["latest"] == str(preds["latest"])
-    assert a["median_lag_months"] == round(preds["a"]["median_lag_months"], 2)
-    assert a["mean_lag_months"] == round(preds["a"]["mean_lag_months"], 2)
-    assert a["n_pairs"] == preds["a"]["n_pairs"]
-    assert a["n_distinct_matchers"] == preds["a"]["n_matchers"]
-    assert [(p["frontier"], p["matched_by"], p["lag_months"]) for p in a["pairs"]] == \
-        [(p["frontier"], p["matched_by"], round(p["lag_months"], 2))
-         for p in preds["a"]["pairs"]]
 
 
 def test_sends_are_the_midpoint_the_earlier_date_and_the_reading(frozen, preds):
@@ -253,13 +281,20 @@ def test_cron_fires_on_the_due_dates(frozen):
     assert days == {str(int(s["due"].split("-")[2])) for s in frozen["sends"]}
 
 
-def test_resolution_status_matches_the_frozen_status(rows, frozen):
-    res = wager.resolution(rows)
+def test_resolution_status_today_and_at_the_freeze(rows, frozen):
+    """The freeze status is a record of the index as it stood then; the live
+    status is the same reading on the current snapshot. On v4.3 the gap reads
+    wider because AA's rescale compressed cheaper models harder."""
     status = frozen["resolution"]["status_at_freeze"]
+    assert (status["closest_bottom_model"], status["closest_bottom_aa"],
+            status["gap_points"]) == ("gpt-5.6-luna", 51.2, 8.7)
+
+    res = wager.resolution(rows)
     assert res["resolved"] is status["resolved"] is False
-    assert res["best_bottom"] == status["closest_bottom_model"]
-    assert res["best_bottom_aa"] == status["closest_bottom_aa"]
-    assert round(res["gap_points"], 1) == status["gap_points"]
+    assert res["baseline_aa"] == 49.6
+    assert res["best_bottom"] == "gpt-5.6-luna"
+    assert res["best_bottom_aa"] == 37.3
+    assert round(res["gap_points"], 1) == 12.3
     assert res["metr_measurable"] == status["bottom_models_with_a_metr_horizon"]
     assert res["price_cap"] == frozen["resolution"]["price_cap_blended_per_mtok"]
 
@@ -295,7 +330,7 @@ def test_the_document_is_v2_with_a_dated_amendment(frozen):
     assert len(amendment["changed"]) == 5
     assert amendment["why"] and amendment["v1"]
     # The forecast is not what the amendment touched.
-    assert frozen["predictions"]["method_a"]["date"] == str(EXPECTED_METHOD_A)
+    assert frozen["predictions"]["method_a"]["date"] == str(FROZEN_METHOD_A)
     assert frozen["predictions"]["method_b"]["date"] == str(EXPECTED_METHOD_B)
 
 

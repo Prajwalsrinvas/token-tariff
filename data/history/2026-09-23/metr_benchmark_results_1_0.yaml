@@ -1,0 +1,606 @@
+benchmark_name: METR-Horizon-v1.0
+doubling_time_in_days:
+  all_time:
+    ci_high: 225.353
+    ci_low: 176.208
+    point_estimate: 201.15
+  from_2023_on:
+    ci_high: 229.176
+    ci_low: 138.411
+    point_estimate: 175.603
+long_tasks_version: 2ce7f1e0c4f8b7f2653e7014941a1a9f3ca908e2
+results:
+  claude_3_5_sonnet:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.481203
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 35.808873
+        ci_low: 10.531997
+        estimate: 19.764601
+      p80_horizon_length:
+        ci_high: 10.000262
+        ci_low: 1.818235
+        estimate: 4.192071
+    release_date: 2024-06-20
+    scaffolds:
+    - modular-public
+    - null
+  claude_3_5_sonnet_20241022:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.530535
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 60.891717
+        ci_low: 14.72191
+        estimate: 30.454555
+      p80_horizon_length:
+        ci_high: 15.195336
+        ci_low: 2.249329
+        estimate: 5.907631
+    release_date: 2024-10-22
+    scaffolds:
+    - modular-public
+    - null
+  claude_3_7_sonnet:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.605035
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 89.187313
+        ci_low: 28.87097
+        estimate: 55.258445
+      p80_horizon_length:
+        ci_high: 43.669897
+        ci_low: 7.749991
+        estimate: 20.378794
+    release_date: 2025-02-24
+    scaffolds:
+    - flock-public
+    - null
+  claude_3_opus:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.377459
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 14.764711
+        ci_low: 3.217769
+        estimate: 7.148402
+      p80_horizon_length:
+        ci_high: 4.612595
+        ci_low: 0.585264
+        estimate: 1.578216
+    release_date: 2024-03-04
+    scaffolds:
+    - modular-public
+    - null
+  claude_4_1_opus:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.677469
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 200.80836
+        ci_low: 55.954932
+        estimate: 109.263038
+      p80_horizon_length:
+        ci_high: 66.554968
+        ci_low: 8.357108
+        estimate: 27.289864
+    release_date: 2025-08-05
+    scaffolds:
+    - flock-public
+    - null
+  claude_4_opus:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.648693
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 140.617499
+        ci_low: 44.934856
+        estimate: 83.567793
+      p80_horizon_length:
+        ci_high: 61.850971
+        ci_low: 9.151599
+        estimate: 26.88671
+    release_date: 2025-05-22
+    scaffolds:
+    - flock-public
+    - null
+  claude_4_sonnet:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.632651
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 127.091712
+        ci_low: 38.322944
+        estimate: 73.660733
+      p80_horizon_length:
+        ci_high: 49.861238
+        ci_low: 7.941505
+        estimate: 21.948674
+    release_date: 2025-05-22
+    scaffolds:
+    - flock-public
+    - null
+  claude_opus_4_5:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.753054
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 821.560215
+        ci_low: 104.265659
+        estimate: 246.781803
+      p80_horizon_length:
+        ci_high: 114.200812
+        ci_low: 9.313074
+        estimate: 36.039286
+    release_date: 2025-11-24
+    scaffolds:
+    - flock-public
+    - metr_tasks_swaa/init_solver,generate
+  claude_sonnet_4_5:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.683012
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 225.752849
+        ci_low: 58.936193
+        estimate: 116.528413
+      p80_horizon_length:
+        ci_high: 73.824859
+        ci_low: 7.513898
+        estimate: 26.095319
+    release_date: 2025-09-29
+    scaffolds:
+    - flock-public
+    - null
+  davinci_002:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.161869
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 0.221209
+        ci_low: 0.093319
+        estimate: 0.144057
+      p80_horizon_length:
+        ci_high: 0.105813
+        ci_low: 0.034813
+        estimate: 0.056238
+    release_date: 2020-05-28
+    scaffolds:
+    - modular-public
+    - null
+  deepseek_r1:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.520133
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 52.750504
+        ci_low: 14.422102
+        estimate: 27.887616
+      p80_horizon_length:
+        ci_high: 13.373897
+        ci_low: 2.344816
+        estimate: 5.629461
+    release_date: 2025-01-20
+    scaffolds:
+    - flock-public
+    - null
+  deepseek_r1_0528:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.542232
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 64.081849
+        ci_low: 13.756178
+        estimate: 32.764282
+      p80_horizon_length:
+        ci_high: 15.485703
+        ci_low: 1.353217
+        estimate: 4.671541
+    release_date: 2025-05-28
+    scaffolds:
+    - flock-public
+    - null
+  deepseek_v3:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.474508
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 35.001162
+        ci_low: 10.37305
+        estimate: 19.822812
+      p80_horizon_length:
+        ci_high: 13.145861
+        ci_low: 2.208963
+        estimate: 5.424593
+    release_date: 2024-12-26
+    scaffolds:
+    - flock-public
+    - null
+  deepseek_v3_0324:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.497576
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 43.32637
+        ci_low: 12.569662
+        estimate: 24.594348
+      p80_horizon_length:
+        ci_high: 15.876695
+        ci_low: 3.283517
+        estimate: 7.452729
+    release_date: 2025-03-24
+    scaffolds:
+    - flock-public
+    - null
+  gemini_2_5_pro_preview:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.557925
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 69.856777
+        ci_low: 20.357511
+        estimate: 40.182282
+      p80_horizon_length:
+        ci_high: 27.288387
+        ci_low: 4.659581
+        estimate: 12.565677
+    release_date: 2025-06-05
+    scaffolds:
+    - flock-public
+    - null
+  gpt-oss-120b:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.574566
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 85.537034
+        ci_low: 19.901035
+        estimate: 45.110184
+      p80_horizon_length:
+        ci_high: 21.625724
+        ci_low: 2.416079
+        estimate: 8.35222
+    release_date: 2025-08-05
+    scaffolds:
+    - flock-public
+    - null
+  gpt2:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.101046
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 0.141825
+        ci_low: 0.009994
+        estimate: 0.053778
+      p80_horizon_length:
+        ci_high: 0.068612
+        ci_low: 0.001589
+        estimate: 0.0128
+    release_date: 2019-02-14
+    scaffolds:
+    - null
+  gpt_3_5_turbo_instruct:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.214611
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 1.115905
+        ci_low: 0.255148
+        estimate: 0.599247
+      p80_horizon_length:
+        ci_high: 0.492933
+        ci_low: 0.141649
+        estimate: 0.25538
+    release_date: 2022-03-15
+    scaffolds:
+    - modular-public
+    - null
+  gpt_4:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.361067
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 11.721889
+        ci_low: 2.768122
+        estimate: 6.024114
+      p80_horizon_length:
+        ci_high: 3.856515
+        ci_low: 0.495441
+        estimate: 1.367526
+    release_date: 2023-03-14
+    scaffolds:
+    - modular-public
+    - null
+  gpt_4_0125:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.351726
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 11.553041
+        ci_low: 3.267886
+        estimate: 6.346859
+      p80_horizon_length:
+        ci_high: 4.699039
+        ci_low: 0.854185
+        estimate: 1.913986
+    release_date: 2024-01-25
+    scaffolds:
+    - modular-public
+    - null
+  gpt_4_1106:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.404329
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 18.162454
+        ci_low: 4.468489
+        estimate: 9.394536
+      p80_horizon_length:
+        ci_high: 5.666518
+        ci_low: 0.73874
+        estimate: 2.01019
+    release_date: 2023-11-06
+    scaffolds:
+    - modular-public
+    - null
+  gpt_4_turbo:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.367357
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 14.21142
+        ci_low: 4.050277
+        estimate: 7.777455
+      p80_horizon_length:
+        ci_high: 6.034151
+        ci_low: 1.084966
+        estimate: 2.492662
+    release_date: 2024-04-09
+    scaffolds:
+    - modular-public
+    - null
+  gpt_4o:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.408517
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 19.508766
+        ci_low: 5.000948
+        estimate: 10.174857
+      p80_horizon_length:
+        ci_high: 5.947962
+        ci_low: 0.947346
+        estimate: 2.374364
+    release_date: 2024-05-13
+    scaffolds:
+    - modular-public
+    - null
+  gpt_5:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.698403
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 247.820152
+        ci_low: 67.703931
+        estimate: 130.816528
+      p80_horizon_length:
+        ci_high: 92.692214
+        ci_low: 9.79551
+        estimate: 32.984347
+    release_date: 2025-08-07
+    scaffolds:
+    - flock-secret
+    - null
+  gpt_5_1_codex_max:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.721134
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 336.504695
+        ci_low: 80.193214
+        estimate: 162.253699
+      p80_horizon_length:
+        ci_high: 129.233087
+        ci_low: 10.315095
+        estimate: 40.039035
+    release_date: 2025-11-19
+    scaffolds:
+    - flock-camel
+    - metr_tasks_swaa/init_solver,generate
+  grok_4:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.667187
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 208.297605
+        ci_low: 47.555449
+        estimate: 104.84751
+      p80_horizon_length:
+        ci_high: 55.346662
+        ci_low: 4.757614
+        estimate: 18.59131
+    release_date: 2025-07-09
+    scaffolds:
+    - flock-public
+    - null
+  kimi_k2_thinking:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.60027
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 100.591631
+        ci_low: 27.423314
+        estimate: 57.621724
+      p80_horizon_length:
+        ci_high: 38.984235
+        ci_low: 4.37601
+        estimate: 15.004943
+    release_date: 2025-11-06
+    scaffolds:
+    - flock-public
+    - metr_tasks_swaa/init_solver,generate
+  o1_elicited:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.56549
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 85.806317
+        ci_low: 19.822684
+        estimate: 41.551706
+      p80_horizon_length:
+        ci_high: 21.983284
+        ci_low: 2.557853
+        estimate: 7.645697
+    release_date: 2024-12-05
+    scaffolds:
+    - flock
+    - null
+  o1_preview:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.492955
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 39.370195
+        ci_low: 12.640748
+        estimate: 23.254728
+      p80_horizon_length:
+        ci_high: 13.27718
+        ci_low: 2.800499
+        estimate: 6.418505
+    release_date: 2024-09-12
+    scaffolds:
+    - duet
+    - null
+  o3:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.658782
+      is_sota: true
+      p50_horizon_length:
+        ci_high: 158.036682
+        ci_low: 46.571206
+        estimate: 91.443799
+      p80_horizon_length:
+        ci_high: 67.256198
+        ci_low: 9.243647
+        estimate: 27.30067
+    release_date: 2025-04-16
+    scaffolds:
+    - flock-secret
+    - null
+  o4-mini:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.642837
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 142.123876
+        ci_low: 37.053517
+        estimate: 76.748308
+      p80_horizon_length:
+        ci_high: 52.779547
+        ci_low: 6.654501
+        estimate: 20.147776
+    release_date: 2025-04-16
+    scaffolds:
+    - flock-secret
+    - null
+  qwen_2_5_72b:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.357771
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 12.146289
+        ci_low: 2.563669
+        estimate: 5.813798
+      p80_horizon_length:
+        ci_high: 3.916909
+        ci_low: 0.46914
+        estimate: 1.325385
+    release_date: 2024-09-19
+    scaffolds:
+    - flock-public
+    - null
+  qwen_2_72b:
+    benchmark_name: METR-Horizon-v1.0
+    metrics:
+      average_score:
+        estimate: 0.298999
+      is_sota: false
+      p50_horizon_length:
+        ci_high: 5.937061
+        ci_low: 0.945777
+        estimate: 2.536634
+      p80_horizon_length:
+        ci_high: 1.983832
+        ci_low: 0.185057
+        estimate: 0.595157
+    release_date: 2024-06-07
+    scaffolds:
+    - flock-public
+    - null
+swaa_version: 3d2ab4f0662a752409858a73e006af35e3fb7d64

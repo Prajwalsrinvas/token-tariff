@@ -15,8 +15,8 @@ the first entry-level model reaching it had a median of {median_lag} months over
 was {closest} at {closest_aa}, {gap} points short. If something cheap has landed
 above {baseline_aa} since, check its price before calling it: the binding arm
 also requires a tenth of {baseline}'s cost — at or below ${price_cap} per
-million tokens on the 3:1 blend — and a third of the historical catch-ups
-arrived with a smaller price gap than that.
+million tokens on the 3:1 blend — and {under_bar} of the {n_priced} priced
+historical catch-ups arrived with a smaller price gap than that.
 
 **What to do.**
 

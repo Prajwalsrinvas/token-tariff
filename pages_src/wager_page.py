@@ -297,6 +297,21 @@ def scorecard(rows: list, res: dict, frozen: dict):
         st.caption(f"THE BINDING ARM CANNOT BE EVALUATED — "
                    f"{res['unevaluable'].upper()}")
 
+    # The claim quotes the baseline's index as it read at the freeze. When AA
+    # changes index version the terms re-read the same model on the current
+    # snapshot, so the number moves while the bar does not — say which is which.
+    base = wager.baseline_row(rows)
+    frozen_aa = frozen["baseline"]["aa_intelligence_index"]
+    if res["baseline_aa"] is not None and res["baseline_aa"] != frozen_aa:
+        st.caption(
+            f"THE AA INDEX HAS CHANGED VERSION SINCE THE FREEZE. "
+            f"{res['baseline']} READ {frozen_aa:.1f} ON THE "
+            f"{frozen['baseline']['aa_snapshot']} SNAPSHOT AND READS "
+            f"{res['baseline_aa']:.1f} ON THE {base['aa_version']} ONE. THE "
+            f"TERMS COMPARE INSIDE ONE SNAPSHOT, SO THE TARGET IS THE SAME "
+            f"MODEL RE-READ ON THE CURRENT INDEX — THE BAR HAS NOT MOVED, THE "
+            f"RULER HAS.".upper())
+
     if past:
         st.caption(
             f"READ FROM {recorded['read_from']}".upper() if recorded else
@@ -485,7 +500,12 @@ def story(rows: list, ms: list, res: dict):
     plateau_high = max((m["frontier_aa"] for m in ms
                         if m["frontier_date"] < o1p["release_date"]),
                        default=None)
-    nano_clears = sum(1 for m in ms if m["matched_by"] == nano["model"])
+    # Which catch-ups the acts can claim is data, not narrative: an index
+    # version change reassigned GPT-4's first match from 3.5 Haiku to 4o mini.
+    mini_matched_g4 = by_frontier["gpt-4"]["matched_by"] == mini["model"]
+    haiku35_clears = [m for m in ms if m["matched_by"] == haiku35["model"]]
+    nano_clears = [m for m in ms if m["matched_by"] == nano["model"]]
+    nano_latest = max(nano_clears, key=lambda m: m["frontier_date"], default=None)
     luna_cut = (1 - luna["current_price_in"] / luna["launch_price_in"]
                 if luna["current_price_in"] is not None
                 and luna["launch_price_in"] else None)
@@ -505,19 +525,46 @@ def story(rows: list, ms: list, res: dict):
     figures = [
         g4_launch, mini_launch, g4_over_mini, plateau_high, luna_cut, shortest,
         headroom, res["best_bottom_aa"], res["best_bottom_price"],
-        res["gap_points"],
+        res["gap_points"], nano_latest,
         *(r["aa_intel"] for r in cast.values()),
         *(p for r in (g4, mini, nano, luna)
           for p in (r["launch_price_in"], r["launch_price_out"])),
         luna["current_price_in"], luna["current_price_out"],
         *(by_frontier[m]["lag_months"]
-          for m in ("gpt-4", "claude-3-opus", "o1", "gpt-5")),
-        *(by_frontier[m]["price_ratio"]
-          for m in ("claude-3-opus", "o1", "gpt-5")),
+          for m in ("gpt-4", "claude-3-opus", "o1")),
+        *(by_frontier[m]["price_ratio"] for m in ("claude-3-opus", "o1")),
+        *(m["lag_months"] for m in haiku35_clears),
     ]
-    if any(v is None for v in figures):
+    if nano_latest is not None:
+        figures += [nano_latest["lag_months"], nano_latest["price_ratio"]]
+    if any(v is None for v in figures) or not haiku35_clears:
         st.caption(STORY_UNTELLABLE)
         return
+
+    if mini_matched_g4:
+        mini_line = (
+            f"**{months_between(g4['release_date'], mini['release_date']):.0f} "
+            f"months later, the cheap tier catches it.** GPT-4o mini ships at "
+            f"${rate(mini['launch_price_in'])}/${rate(mini['launch_price_out'])} "
+            f"— {g4_over_mini:.0f}× cheaper than GPT-4's launch price on this "
+            f"page's 3:1 blend (${g4_launch:,.2f} → ${mini_launch:,.2f} per "
+            f"MTok) — and scores {mini['aa_intel']:.1f} against GPT-4's "
+            f"{g4['aa_intel']:.1f}: the first entry-level model to reach it, "
+            f"and the shape of everything after it.")
+    else:
+        mini_line = (
+            f"**{months_between(g4['release_date'], mini['release_date']):.0f} "
+            f"months later, the cheap tier is "
+            f"{g4['aa_intel'] - mini['aa_intel']:.1f} points away.** GPT-4o "
+            f"mini ships at ${rate(mini['launch_price_in'])}/"
+            f"${rate(mini['launch_price_out'])} — {g4_over_mini:.0f}× cheaper "
+            f"than GPT-4's launch price on this page's 3:1 blend "
+            f"(${g4_launch:,.2f} → ${mini_launch:,.2f} per MTok) — and scores "
+            f"{mini['aa_intel']:.1f} against GPT-4's {g4['aa_intel']:.1f}. A "
+            f"near-miss, and the shape of everything after it.")
+    haiku35_names = " and ".join(
+        f"{m['frontier']} ({m['lag_months']:.0f} months after it shipped)"
+        for m in haiku35_clears)
 
     st.markdown("### ▸ HOW IT WENT")
     with reading():
@@ -529,19 +576,11 @@ GPT-4 lands at ${rate(g4['launch_price_in'])}/${rate(g4['launch_price_out'])} an
 completes tasks that take a human about four minutes, half the time
 ([METR]({METR_URL})). On the index it scores {g4['aa_intel']:.1f}.
 
-**{months_between(g4['release_date'], mini['release_date']):.0f} months later,
-the cheap tier is a tenth of a point away.** GPT-4o mini ships at
-${rate(mini['launch_price_in'])}/${rate(mini['launch_price_out'])} —
-{g4_over_mini:.0f}× cheaper than GPT-4's launch price on this page's
-3:1 blend (${g4_launch:,.2f} → ${mini_launch:,.2f} per MTok) — and scores
-{mini['aa_intel']:.1f} against GPT-4's {g4['aa_intel']:.1f}. A near-miss, and
-the shape of everything after it.
+{mini_line}
 
-**{haiku35['release_date']:%Y-%m} — the first clean catch-up.** Claude 3.5 Haiku
-reaches {haiku35['aa_intel']:.1f}, clearing GPT-4
-({by_frontier['gpt-4']['lag_months']:.0f} months after it shipped) and Claude 3
-Opus ({by_frontier['claude-3-opus']['lag_months']:.0f} months) at
-1/{by_frontier['claude-3-opus']['price_ratio']:.0f} of Opus's price.
+**{haiku35['release_date']:%Y-%m} — Haiku reaches a flagship.** Claude 3.5 Haiku
+reaches {haiku35['aa_intel']:.1f}, clearing {haiku35_names}, at
+1/{by_frontier['claude-3-opus']['price_ratio']:.0f} of Claude 3 Opus's price.
 
 Expensive frontier capability keeps arriving at the cheapest slot in a lineup
 months later. That is the whole thesis. The rest is how fast, and whether it
@@ -576,11 +615,12 @@ thing being chased keeps accelerating.
 1/{by_frontier['o1']['price_ratio']:.0f} of the price: December 2024's reasoning
 frontier, at entry-level rates.
 
-**{nano['release_date']:%Y-%m} — the lag shortens.** GPT-5.4 nano clears
-{nano_clears} standing frontier highs at once — GPT-5's index in
-{by_frontier['gpt-5']['lag_months']:.0f} months — on one
+**{nano['release_date']:%Y-%m} — one release, several frontiers.** GPT-5.4 nano
+clears {len(nano_clears)} standing frontier highs at once — the latest,
+{nano_latest['frontier']}, {nano_latest['lag_months']:.0f} months after it
+shipped — on one
 ${rate(nano['launch_price_in'])}/${rate(nano['launch_price_out'])} release, at
-1/{by_frontier['gpt-5']['price_ratio']:.0f} of GPT-5's price.
+1/{nano_latest['price_ratio']:.0f} of {nano_latest['frontier']}'s price.
 
 **{luna['release_date']:%Y-%m} — the price war.** Luna launches at
 ${rate(luna['launch_price_in'])}/${rate(luna['launch_price_out'])} and is cut
@@ -978,19 +1018,20 @@ it first would not settle this either.
 
 def full_evidence(df: pd.DataFrame):
     """Every row the page runs on, and how the feeds it came from behave."""
+    versions = sorted(df["aa_version"].dropna().loc[lambda s: s != ""].unique())
     with st.expander("FULL EVIDENCE"):
         st.markdown(f"""
-**Two feeds, two vintages.** Artificial Analysis publishes no index-version tag
-in either feed this repo reads, and it re-scores old models when the index
+**One snapshot, one ruler.** Artificial Analysis publishes no index-version tag
+in either feed this repo reads, and it re-scores every model when the index
 changes — so a 2024 score read today is not the score that was published in
-2024. Scores come from two feeds of different ages: OpenRouter's listing, read
-**{wager.SNAPSHOT_DATE}**, and this repo's committed AA API payload, which
-predates GPT-5.6 and Opus 5 and is dated no later than
-**{wager.AA_API_VINTAGE}**. Each row's `aa_version` says which it was read at.
-The AA payload covers the models OpenRouter has since delisted, which is the
-only way to put GPT-4 and the baseline on one axis; the comparison the wager
-turns on sits entirely inside the fresh OpenRouter feed. `data/history/` is
-append-only so a future version change is visible rather than silent.
+2024. Every AA figure here is read from the Artificial Analysis API payload of
+**{', '.join(versions)}**, committed under `data/history/`, which covers old
+and delisted models alongside current ones and names each configuration. When
+the index changes version, the whole column is re-read from one payload rather
+than patched row by row: two versions on one axis would manufacture and erase
+milestones. The figures the wager was frozen with are in the earlier
+snapshots; `data/history/` is append-only so each version change stays
+visible.
 
 **One configuration rule, applied to every row.** Models that publish several
 configurations — thinking and non-thinking, reasoning and not, adaptive — are

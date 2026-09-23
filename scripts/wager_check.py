@@ -63,6 +63,7 @@ def render(send: dict, doc: dict, today: dt.date) -> str:
     letter that arrives months late still describes the data as it is."""
     rows = wager.load_timeline()
     res = wager.resolution(rows)
+    live_a = wager.method_a(rows)
     a = doc["predictions"]["method_a"]
     frozen_on = dt.date.fromisoformat(doc["frozen_on"])
 
@@ -80,6 +81,10 @@ def render(send: dict, doc: dict, today: dt.date) -> str:
         "closest": res["best_bottom"],
         "closest_aa": f"{res['best_bottom_aa']:.1f}",
         "gap": f"{res['gap_points']:.1f}",
+        # Live, like the gap it sits beside: how many past catch-ups would
+        # have failed the price term.
+        "under_bar": live_a["n_under_price_bar"],
+        "n_priced": live_a["n_priced"],
         "price_cap": f"{res['price_cap']:,.2f}" if res["price_cap"] else "—",
         "median_lag": a["median_lag_months"],
         "n_pairs": a["n_pairs"],
@@ -96,6 +101,18 @@ def render(send: dict, doc: dict, today: dt.date) -> str:
         "repo": "https://github.com/Prajwalsrinvas/token-tariff",
     }
     body = TEMPLATES[send["id"]].read_text()
+    # The claim quotes the baseline's index at the freeze; the figures above
+    # are the same model re-read on the current snapshot. A reader holding the
+    # frozen number needs to be told the ruler changed, not the bar.
+    frozen_aa = doc["baseline"]["aa_intelligence_index"]
+    if res["baseline_aa"] is not None and res["baseline_aa"] != frozen_aa:
+        base = wager.baseline_row(rows)
+        body += (f"\n**The index changed version after the freeze.** "
+                 f"{values['baseline']} read {frozen_aa:.1f} on the "
+                 f"{doc['baseline']['aa_snapshot']} snapshot and reads "
+                 f"{res['baseline_aa']:.1f} on the {base['aa_version']} one. "
+                 f"The terms compare inside one snapshot, so every figure here "
+                 f"is on the current index — the same bar, re-read.\n")
     if send["id"] == "deadline-resolution":
         # Past the cutoff, only the recorded artifact under data/history/ may
         # say YES or NO — this send reports the record or asks for one, never

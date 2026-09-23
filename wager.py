@@ -27,11 +27,6 @@ HISTORY_DIR = os.path.join(ROOT, "data", "history")
 # the start of the midpoint check-in interval.
 SNAPSHOT_DATE = dt.date(2026, 8, 1)
 
-# The Artificial Analysis API payload this repo committed is older than the
-# OpenRouter read — it predates GPT-5.6 and Opus 5. Rows sourced from it carry
-# this vintage rather than the freeze date.
-AA_API_VINTAGE = dt.date(2026, 7, 5)
-
 # The model the wager is about.
 BASELINE = "claude-fable-5"
 
