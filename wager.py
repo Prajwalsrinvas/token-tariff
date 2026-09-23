@@ -98,6 +98,14 @@ def blended_price(row, in_out_ratio=3.0):
     return (in_out_ratio * pin + pout) / (in_out_ratio + 1)
 
 
+def closest_first(row):
+    """Sort key for "the closest entry-level model": highest index, and on a
+    tie the cheaper one — two models at the same score are not equally close
+    to a wager that also has a price term. An unpriced row loses the tie."""
+    price = blended_price(row)
+    return (row["aa_intel"], -price if price is not None else -math.inf)
+
+
 def milestones(rows):
     """Frontier models that set a new high-water mark on the AA index at their
     release, each paired with the first entry-level model from any vendor to
@@ -122,7 +130,7 @@ def milestones(rows):
         # The closest an entry-level model has come while falling short — the
         # near-misses are the interesting part of an open row.
         later = [b for b in bottom if b["release_date"] > r["release_date"]]
-        closest = max(later, key=lambda b: b["aa_intel"], default=None)
+        closest = max(later, key=closest_first, default=None)
 
         entry = {
             "frontier": r["model"],
@@ -289,7 +297,7 @@ def resolution(rows):
         if b["aa_intel"] is not None and b["aa_intel"] >= base["aa_intel"]
         and b["aa_version"] == base["aa_version"] and under_cap(b)]
     best = max((b for b in bottom if b["aa_intel"] is not None),
-               key=lambda b: b["aa_intel"], default=None)
+               key=closest_first, default=None)
 
     return {
         "baseline": base["model"],

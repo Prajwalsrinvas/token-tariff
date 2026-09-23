@@ -207,6 +207,25 @@ def test_the_frozen_document_is_what_was_published(frozen):
     assert frozen["predictions"]["latest"] == max(a["date"], b["date"])
 
 
+def test_a_tie_on_the_index_goes_to_the_cheaper_model(rows):
+    """Two entry-level models at the same score are not equally close to a
+    wager with a price term, so the cheaper one is the contender — in the
+    scorecard and in every open milestone's near-miss."""
+    doctored = [dict(r) for r in rows]
+    top = max(r["aa_intel"] for r in doctored
+              if r["tier"] == "bottom" and r["aa_intel"] is not None)
+    twin = dict(next(r for r in doctored if r["tier"] == "bottom"))
+    twin.update(model="doctored-twin", vendor="Google", aa_intel=top,
+                release_date=dt.date(2026, 9, 1),
+                current_price_in=0.01, current_price_out=0.01)
+    doctored.append(twin)
+    assert wager.resolution(doctored)["best_bottom"] == "doctored-twin"
+    assert all(m["closest"] == "doctored-twin"
+               for m in wager.milestones(doctored)
+               if m["lag_months"] is None
+               and m["frontier_date"] < twin["release_date"])
+
+
 def test_the_timeline_independent_dates_still_recompute(preds, frozen):
     """The price-decline lens and the slowest trend read only the baseline's
     release date and Epoch's rates, so no timeline refresh can move them. If
@@ -292,7 +311,9 @@ def test_resolution_status_today_and_at_the_freeze(rows, frozen):
     res = wager.resolution(rows)
     assert res["resolved"] is status["resolved"] is False
     assert res["baseline_aa"] == 49.6
-    assert res["best_bottom"] == "gpt-5.6-luna"
+    # GPT-6 Luna ties GPT-5.6 Luna on the index at under half the price.
+    assert res["best_bottom"] == "gpt-6-luna"
+    assert res["best_bottom_price"] == 0.2
     assert res["best_bottom_aa"] == 37.3
     assert round(res["gap_points"], 1) == 12.3
     assert res["metr_measurable"] == status["bottom_models_with_a_metr_horizon"]
